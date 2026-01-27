@@ -8,7 +8,7 @@
                 <Row align="center">
                     <Col :span="14">
                         <ul class="menu_list">
-                            <li><router-link>Главная</router-link></li>
+                            <li><router-link to="/">Главная</router-link></li>
                             <li><router-link>Каталог</router-link></li>
                             <li><router-link>О нас</router-link></li>
                             <li><router-link>Новости</router-link></li>
@@ -62,30 +62,46 @@
                     <Col :span="19">
                         <div class="bottom_left">
                             <div class="banner">
-                                <span class="you">You</span>
-                                <span class="car">Car</span>
+                                <router-link to="/">
+                                    <span class="you">You</span>
+                                    <span class="car">Car</span>
+                                </router-link>
                             </div>
                             <div class="dropdown-wrapper">
-                                <DropdownMenu :items="carItems" defaultLabel="Автомобили" @select="handleCarSelect" />
-                                <DropdownMenu :items="carItems" defaultLabel="Коммерческий транспорт"
-                                    @select="handleCarSelect" />
-                                <DropdownMenu :items="carItems" defaultLabel="Мотоциклы" @select="handleCarSelect" />
+                                <div>
+                                    <span><router-link>Автомобили</router-link></span>
+                                    <SwapRightOutlined class="avto_icon" />
+                                </div>
+                                <div>
+                                    <span><router-link>Коммерческий транспорт</router-link></span>
+                                    <SwapRightOutlined class="avto_icon" />
+                                </div>
+                                <div>
+                                    <span><router-link>Мотоциклы</router-link></span>
+                                    <SwapRightOutlined class="avto_icon" />
+                                </div>
                             </div>
                             <div class="search">
                                 <a-input-search v-model:value="value" placeholder="input search text"
                                     style="width: 400px" @search="onSearch" />
                             </div>
                             <div class="message">
-                                <a-badge count="0">
-                                    <CommentOutlined class="messanger" />
-                                </a-badge>
+                                <router-link>
+                                    <a-badge count="0">
+                                        <CommentOutlined class="messanger" />
+                                    </a-badge>
+                                </router-link>
                             </div>
                         </div>
                     </Col>
                     <Col :span="5">
                         <div class="bottom_rigth">
                             <Button>Войти</Button>
-                            <Button type="primary">Регистрация</Button>
+                            <Button type="primary">
+                                <router-link to="singup">
+                                    Регистрация
+                                </router-link>
+                            </Button>
                         </div>
                     </Col>
                 </Row>
@@ -96,20 +112,11 @@
 
 <script setup>
 import { Button, Row, Col, Collapse } from 'ant-design-vue';
-import { CommentOutlined, InstagramOutlined, LinkedinOutlined, MailOutlined, PhoneOutlined, WhatsAppOutlined } from "@ant-design/icons-vue"
+import { CommentOutlined, InstagramOutlined, LinkedinOutlined, MailOutlined, PhoneOutlined, SwapRightOutlined, WhatsAppOutlined } from "@ant-design/icons-vue"
 import { ref } from 'vue';
-import { DropdownMenu } from '.';
 
 const value1 = ref('RU');
 
-// Dropdown uchun ma'lumotlar
-const carItems = ref([
-    { id: 1, label: 'Авто из США' },
-    { id: 2, label: 'Авто из Европы' },
-    { id: 3, label: 'Авто из Кореи' },
-    { id: 4, label: 'Авто из Китая' },
-    { id: 5, label: 'Авто из ОАЭ' },
-]);
 
 const focus = () => {
     console.log('focus');
@@ -119,15 +126,9 @@ const handleChange = value => {
     console.log(`selected ${value}`);
 };
 
-// Dropdown select handler
-const handleCarSelect = (item) => {
-    console.log('Tanlangan avtomobil:', item);
-    // Bu yerda kerakli logikani qo'shishingiz mumkin
-};
 </script>
 
 <style scoped>
-/* .navbar {} */
 /* UNDER NAVBAR */
 .under_navbar {
     background-color: #F6F6F6;
@@ -226,6 +227,27 @@ const handleCarSelect = (item) => {
 /* Dropdown wrapper styling */
 .dropdown-wrapper {
     display: flex;
-    gap: 10px;
+    gap: 15px;
+
+}
+
+.dropdown-wrapper>div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    a {
+        color: inherit;
+    }
+
+    span {
+        font-weight: 400;
+        font-size: 16px;
+        color: #010101;
+    }
+}
+
+.avto_icon {
+    color: #2684E5 !important;
 }
 </style>
