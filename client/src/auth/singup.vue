@@ -39,8 +39,8 @@
 
                     <!-- Submit Button -->
                     <a-form-item class="form-item">
-                        <a-button  :loading="loading" type="primary" html-type="submit" size="large"
-                            block class="submit-button">
+                        <a-button :loading="loading" type="primary" html-type="submit" size="large" block
+                            class="submit-button">
                             {{ loading ? "Loading..." : "Зарегистрироваться" }}
                         </a-button>
                     </a-form-item>
@@ -57,10 +57,12 @@
 
 <script setup>
 import { message } from 'ant-design-vue';
-import axios from 'axios';
+import api from '@/utils/axios';
 import { reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/useUserStore';
 
+const userStore = useUserStore()
 const router = useRouter()
 
 const formState = reactive({
@@ -144,7 +146,7 @@ const rules = {
 const onFinish = async (values) => {
     loading.value = true
     try {
-        const { data } = await axios.post("http://127.0.0.1:8000/auth/singup/", {
+        const { data } = await api.post("/auth/singup/", {
             username: values.name,
             email: values.email,
             password: values.password,
@@ -158,6 +160,7 @@ const onFinish = async (values) => {
         localStorage.setItem("refresh_token", refresh_token)
         localStorage.setItem("username", data.data.username)
         localStorage.setItem("useremail", data.data.email)
+        userStore.add_user(data.data.username, data.data.email, access_token)
         message.success(data.message)
         formState.name = ""
         formState.email = ""

@@ -67,11 +67,13 @@ class LoginView(APIView):
                 {
                     "success": True,
                     "message": "You have successfully logged in",
-                    "username": user.username,
-                    "email": user.email,
-                    "tokens": {
-                        "access_token": token["access_token"],
-                        "refresh_token": token["refresh"],
+                    "data": {
+                        "username": user.username,
+                        "email": user.email,
+                        "tokens": {
+                            "access_token": token["access_token"],
+                            "refresh_token": token["refresh"],
+                        },
                     },
                 }
             )
@@ -92,11 +94,8 @@ class LogOutView(APIView):
             refresh = serializer.validated_data["refresh"]
             token = RefreshToken(refresh)
             token.blacklist()
-            
-            return Response({
-                "success" : True, 
-                "message" : "You are success logout"
-            })
+
+            return Response({"success": True, "message": "You are success logout"})
 
 
 # Create your views here.

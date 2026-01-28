@@ -9,10 +9,10 @@
                     <Col :span="14">
                         <ul class="menu_list">
                             <li><router-link to="/">Главная</router-link></li>
-                            <li><router-link>Каталог</router-link></li>
-                            <li><router-link>О нас</router-link></li>
-                            <li><router-link>Новости</router-link></li>
-                            <li><router-link>Контакты</router-link></li>
+                            <li><router-link to="/">Каталог</router-link></li>
+                            <li><router-link to="/">О нас</router-link></li>
+                            <li><router-link to="/">Новости</router-link></li>
+                            <li><router-link to="/">Контакты</router-link></li>
                         </ul>
                     </Col>
                     <Col :span="10">
@@ -69,24 +69,24 @@
                             </div>
                             <div class="dropdown-wrapper">
                                 <div>
-                                    <span><router-link>Автомобили</router-link></span>
+                                    <span><router-link to="/">Автомобили</router-link></span>
                                     <SwapRightOutlined class="avto_icon" />
                                 </div>
                                 <div>
-                                    <span><router-link>Коммерческий транспорт</router-link></span>
+                                    <span><router-link to="/">Коммерческий транспорт</router-link></span>
                                     <SwapRightOutlined class="avto_icon" />
                                 </div>
                                 <div>
-                                    <span><router-link>Мотоциклы</router-link></span>
+                                    <span><router-link to="/">Мотоциклы</router-link></span>
                                     <SwapRightOutlined class="avto_icon" />
                                 </div>
                             </div>
                             <div class="search">
                                 <a-input-search v-model:value="value" placeholder="input search text"
-                                    style="width: 400px" @search="onSearch" />
+                                    style="width: 400px" />
                             </div>
                             <div class="message">
-                                <router-link>
+                                <router-link to="/">
                                     <a-badge count="0">
                                         <CommentOutlined class="messanger" />
                                     </a-badge>
@@ -95,7 +95,17 @@
                         </div>
                     </Col>
                     <Col :span="5">
-                        <div class="bottom_rigth">
+                        <div class="bottom_rigth" v-if="userStore.access_token">
+                            <router-link to="/">
+                                <div class="avatar">
+                                    <p>{{ userStore.username }}</p>
+                                    <a-spin v-if="loading" />
+                                    <img v-show="!loading" :src="userStore.avatarUrl" @load="onLoad" @error="onError"
+                                        alt="avatar image">
+                                </div>
+                            </router-link>
+                        </div>
+                        <div class="bottom_rigth" v-else>
                             <Button>
                                 <router-link to="login">
                                     Войти
@@ -118,10 +128,12 @@
 import { Button, Row, Col, Collapse } from 'ant-design-vue';
 import { CommentOutlined, InstagramOutlined, LinkedinOutlined, MailOutlined, PhoneOutlined, SwapRightOutlined, WhatsAppOutlined } from "@ant-design/icons-vue"
 import { ref } from 'vue';
+import { useUserStore } from '@/store/useUserStore';
 
+const userStore = useUserStore()
 const value1 = ref('RU');
-
-
+const value = ref("")
+const loading = ref(true)
 const focus = () => {
     console.log('focus');
 };
@@ -129,6 +141,14 @@ const focus = () => {
 const handleChange = value => {
     console.log(`selected ${value}`);
 };
+
+const onLoad = () => {
+    loading.value = false
+}
+
+const onError = () => {
+    loading.value = false
+}
 
 </script>
 
@@ -253,5 +273,24 @@ const handleChange = value => {
 
 .avto_icon {
     color: #2684E5 !important;
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    p {
+        margin-bottom: 0;
+        color: #293843ed;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    img {
+        width: 32px;
+        height: 32px;
+        border-radius: 100%;
+    }
 }
 </style>
