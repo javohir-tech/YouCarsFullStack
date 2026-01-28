@@ -11,10 +11,10 @@ from rest_framework.exceptions import ValidationError
 from .models import User
 
 # serializers
-from .serializers import SingUpSarializer, LoginSerilazer
+from .serializers import SingUpSarializer, LoginSerilazer, LogOutSerializer
 
 # SIMPLE JWT
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # ////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ class LoginView(APIView):
                 {
                     "success": True,
                     "message": "You have successfully logged in",
-                    "username" :user.username,
+                    "username": user.username,
                     "email": user.email,
                     "tokens": {
                         "access_token": token["access_token"],
@@ -75,6 +75,28 @@ class LoginView(APIView):
                     },
                 }
             )
+
+
+# ////////////////////////////////////////////////////////
+# /////////////////     LOGOUT      //////////////////////
+# ////////////////////////////////////////////////////////
+
+
+class LogOutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = LogOutSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            refresh = serializer.validated_data["refresh"]
+            token = RefreshToken(refresh)
+            token.blacklist()
+            
+            return Response({
+                "success" : True, 
+                "message" : "You are success logout"
+            })
 
 
 # Create your views here.

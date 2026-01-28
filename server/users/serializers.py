@@ -11,6 +11,9 @@ from rest_framework.exceptions import ValidationError
 # Simple JWT
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+# ////////////////////////////////////////////////////////
+# /////////////////     SINGUP      //////////////////////
+# ////////////////////////////////////////////////////////
 
 class SingUpSarializer(serializers.ModelSerializer):
 
@@ -50,6 +53,9 @@ class SingUpSarializer(serializers.ModelSerializer):
         user.save()
         return user
 
+# ////////////////////////////////////////////////////////
+# /////////////////     LOGIN      ///////////////////////
+# ////////////////////////////////////////////////////////
 
 class LoginSerilazer(serializers.Serializer):
     email = serializers.EmailField(required=True, write_only=True)
@@ -78,3 +84,10 @@ class LoginSerilazer(serializers.Serializer):
         attrs["user"] = current_user
 
         return attrs
+    
+# ////////////////////////////////////////////////////////
+# /////////////////     LOGOUT      //////////////////////
+# ////////////////////////////////////////////////////////
+class LogOutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(required = True)
+
