@@ -96,7 +96,7 @@
                     </Col>
                     <Col :span="5">
                         <div class="bottom_rigth" v-if="userStore.access_token">
-                            <router-link to="/">
+                            <router-link to="profile">
                                 <div class="avatar">
                                     <p>{{ userStore.username }}</p>
                                     <a-spin v-if="loading" />

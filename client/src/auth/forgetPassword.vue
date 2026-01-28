@@ -2,46 +2,28 @@
     <div class="registration-page">
         <div class="registration-container">
             <div class="registration-card">
-                <h1 class="title">Вход</h1>
-                <p class="subtitle">Войдите в свой аккаунт.</p>
+                <h1 class="title">Забыли пароль?</h1>
+                <p class="subtitle">Введите e-mail or username для восстановления</p>
 
                 <a-form :model="formState" :rules="rules" @finish="onFinish" @finishFailed="onFinishFailed"
                     layout="vertical" class="registration-form">
-                    <!-- E-mail -->
+                    <!-- E-mail or username -->
                     <a-form-item name="user_input" class="form-item">
                         <a-input v-model:value="formState.user_input" placeholder="E-mail or Username" size="large"
                             class="custom-input" />
-                    </a-form-item>
-
-                    <!-- Введите пароль -->
-                    <a-form-item name="password" class="form-item">
-                        <a-input-password v-model:value="formState.password" placeholder="Введите пароль" size="large"
-                            class="custom-input" />
-                    </a-form-item>
-
-                    <!-- Запомнить меня -->
-                    <a-form-item name="remember" class="form-item checkbox-item">
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <a-checkbox v-model:checked="formState.remember">
-                                Запомнить меня
-                            </a-checkbox>
-                            <router-link to="forget">
-                                Забыли пароль?
-                            </router-link>
-                        </div>
                     </a-form-item>
 
                     <!-- Submit Button -->
                     <a-form-item class="form-item">
                         <a-button :loading="loading" type="primary" html-type="submit" size="large" block
                             class="submit-button">
-                            {{ loading ? "Loading..." : "Войти" }}
+                            {{ loading ? "Loading..." : "Восстановить" }}
                         </a-button>
                     </a-form-item>
 
-                    <!-- Register Link -->
+                    <!-- Login Link -->
                     <div class="login-link">
-                        Нет аккаунта? <router-link to="singup">Зарегистрироваться</router-link>
+                        Вспомнили пароль? <router-link to="login">Войти</router-link>
                     </div>
                 </a-form>
             </div>
@@ -50,26 +32,20 @@
 </template>
 
 <script setup>
-// Api
-import api from '@/utils/axios';
-// ANTD
 import { message } from 'ant-design-vue';
-// VUE
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-// STORES
-import { useUserStore } from '@/store/useUserStore';
+import api from '@/utils/axios';
+import { notification } from 'ant-design-vue';
 
-const userStore = useUserStore()
 const router = useRouter()
 
 const formState = reactive({
     user_input: '',
-    password: '',
-    remember: false,
 });
 
 const loading = ref(false)
+
 
 const rules = {
     user_input: [
@@ -79,69 +55,30 @@ const rules = {
             trigger: 'blur',
         },
     ],
-    password: [
-        {
-            required: true,
-            message: 'Пожалуйста, введите пароль',
-            trigger: 'blur',
-        },
-        {
-            min: 8,
-            message: 'Пароль должен содержать минимум 8 символов',
-            trigger: 'blur',
-        },
-    ],
-    remember: [
-        {
-            validator: (rule, value) => {
-                if (!value) {
-                    return Promise.reject('Вы должны согласиться запомнить вас');
-                }
-                return Promise.resolve();
-            },
-            trigger: 'change',
-        },
-    ],
 };
 
 const onFinish = async (values) => {
     loading.value = true
     try {
-        const { data } = await api.post("auth/login/", {
-            user_input: values.user_input,
-            password: values.password
+        const data = await api.post("auth/forget/", {
+            user_input: values.user_input
         })
-
-        const email = data.data.email
-        const username = data.data.username
-        const access_token = data.data.tokens.access_token
-        const refresh_token = data.data.tokens.refresh_token
-        if (values.remember) {
-            localStorage.setItem("access_token", access_token)
-            localStorage.setItem("refresh_token", refresh_token)
-        }
-
-        userStore.add_user(username, email, access_token)
-
-        message.success(data.message)
-        router.push("/")
+        notification.success({ message: "Success", description: data.data.message })
+        router.push("verify")
+        // console.log(data)
     } catch (error) {
         if (error.response) {
             const errors = error.response
-            console.log(error.response)
-            if (errors.data.user) {
+            console.log(errors)
+            if (errors.data.code) {
+                message.warning(errors.data.code[0])
+            } else if (errors.data.user) {
                 message.error(errors.data.user[0])
-            } else if (errors.data.email) {
-                message.error(errors.data.email[0])
-            } else if (errors.data.input) {
-                message.error(errors.data.input[0])
             } else {
                 message.error("An error occurred.")
             }
-
         } else {
             message.error("No connection to the server.")
-            console.log(error)
         }
     } finally {
         loading.value = false
@@ -191,6 +128,17 @@ const onFinishFailed = (errorInfo) => {
     margin-bottom: 32px;
 }
 
+.success-alert {
+    background: #D4EDDA;
+    border: 1px solid #C3E6CB;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #155724;
+    line-height: 1.5;
+}
+
 .registration-form {
     width: 100%;
 }
@@ -238,20 +186,6 @@ const onFinishFailed = (errorInfo) => {
 
 :deep(.ant-input::placeholder) {
     color: #BFBFBF;
-}
-
-.checkbox-item {
-    margin-bottom: 24px;
-}
-
-:deep(.ant-checkbox-wrapper) {
-    font-size: 14px;
-    color: #000000;
-}
-
-:deep(.ant-checkbox-checked .ant-checkbox-inner) {
-    background-color: #2684E5;
-    border-color: #2684E5;
 }
 
 .submit-button {

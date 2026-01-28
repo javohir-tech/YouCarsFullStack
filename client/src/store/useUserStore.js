@@ -19,6 +19,12 @@ export const useUserStore = defineStore('user', {
             this.access_token = access_token
             localStorage.setItem("username", username)
             localStorage.setItem("email", email)
+        },
+
+        clear(){
+            this.username = ""
+            this.email = ""
+            this.access_token = ""
         }
     }
 

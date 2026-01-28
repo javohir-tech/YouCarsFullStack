@@ -3,7 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import mainLayout from '@/layout/mainLayout.vue'
 ///////////////// VIEWS ////////////////
 import { Home } from '@/views'
-import { login, singup } from '@/auth'
+import { forgetPassword, login, singup, verifyCode } from '@/auth'
+import Profile from '@/profile/profile.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,10 +23,23 @@ const router = createRouter({
           component: login
         },
         {
-          path: "",
-          component: Home, 
-          name : "Home"
+          path: "forget",
+          component: forgetPassword
         },
+        {
+          path: "verify", 
+          component : verifyCode
+        },
+        {
+          path: "",
+          component: Home,
+          name: "Home"
+        },
+        ///////// PROFILE ///////////
+        {
+          path: "profile",
+          component: Profile
+        }
       ]
     }
   ],

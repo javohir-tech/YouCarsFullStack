@@ -119,7 +119,7 @@ ROOT_URLCONF = "youcars.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -166,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" 
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/

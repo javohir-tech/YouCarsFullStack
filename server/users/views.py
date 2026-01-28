@@ -11,7 +11,12 @@ from rest_framework.exceptions import ValidationError
 from .models import User
 
 # serializers
-from .serializers import SingUpSarializer, LoginSerilazer, LogOutSerializer
+from .serializers import (
+    SingUpSarializer,
+    LoginSerilazer,
+    LogOutSerializer,
+    ForgetPasswordSerializer,
+)
 
 # SIMPLE JWT
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -96,6 +101,26 @@ class LogOutView(APIView):
             token.blacklist()
 
             return Response({"success": True, "message": "You are success logout"})
+
+
+# ////////////////////////////////////////////////////////
+# //////////////    FORGET PASSWORD   ///////////////////
+# ///////////////////////////////////////////////////////
+
+
+class ForgetPasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ForgetPasswordSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            return Response(
+                {
+                    "success": True,
+                    "message": "emailingizga habar yubordik .  emailingizni teksgiring",
+                }
+            )
 
 
 # Create your views here.

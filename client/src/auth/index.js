@@ -1,4 +1,5 @@
 import singup from "./singup.vue";
 import login from "./login.vue";
-
-export {singup , login}
+import forgetPassword from "./forgetPassword.vue";
+import verifyCode from "./verifyCode.vue";
+export { singup, login, forgetPassword, verifyCode }
