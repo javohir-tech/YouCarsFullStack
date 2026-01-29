@@ -48,6 +48,15 @@ class User(BaseModel, AbstractUser):
 
         return code
 
+    def check_email(self):
+        if self.email:
+            current_email = self.email.lower().strip()
+            self.email = current_email
+
+    def save(self, *args, **kwargs):
+        self.check_email()
+        super().save(*args, **kwargs)
+
 
 class UserConfirmation(BaseModel):
     code = models.CharField(max_length=4)

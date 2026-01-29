@@ -69,7 +69,7 @@ const onFinish = async (values) => {
         localStorage.setItem("verify_token", data.data.tokens.verify_token)
         router.push("verify")
         userStore.add_email(data.data.email)
-        console.log(data)
+        // console.log(data)
     } catch (error) {
         if (error.response) {
             const errors = error.response

@@ -41,6 +41,7 @@
 import { message } from 'ant-design-vue';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const router = useRouter()
 
@@ -59,8 +60,8 @@ const rules = {
             trigger: 'blur',
         },
         {
-            min: 6,
-            message: 'Пароль должен содержать минимум 6 символов',
+            min: 8,
+            message: 'Пароль должен содержать минимум 8 символов',
             trigger: 'blur',
         },
     ],
@@ -85,11 +86,39 @@ const rules = {
 const onFinish = async (values) => {
     loading.value = true
     try {
-        // Bu yerga o'zingizning API logikangizni yozing
-        console.log('Password values:', values)
-        
+        const edit_password_token = localStorage.getItem("edit_password_token")
+        const { data } = await axios.put(`${import.meta.env.VITE_API_URL}/auth/new_password/`,
+            {
+                password: values.password,
+                confirm_password: values.confirmPassword
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${edit_password_token}`
+                }
+            }
+        )
+        localStorage.removeItem("edit_password_token")
+        // console.log(data)
+        message.success(data.message)
+        router.push("login")
     } catch (error) {
-        message.error("Произошла ошибка")
+        if (error.response) {
+            const errors = error.response.data
+            if (errors.password) {
+                message.error(errors.password[0])
+            } else if (errors.confirm_password) {
+                message.error(errors.confirm_password[0])
+            } else if (errors.detail) {
+                message.error(errors.detail)
+            } else {
+                message.error('An error occurred.')
+            }
+            console.log(error.response)
+        } else {
+            message.error('No connection to the server')
+            console.log(error)
+        }
     } finally {
         loading.value = false
     }

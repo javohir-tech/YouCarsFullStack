@@ -1,7 +1,11 @@
 from .models import User
 
+# MODELS
+from .models import Auth_STATUS
+
 # DJANGO
 from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
@@ -140,7 +144,7 @@ class ForgetPasswordSerializer(serializers.Serializer):
             raise ValidationError({"code": "Code not found"})
 
         send_email(user_email, verify_code.first().code)
-        attrs['user'] = current_user
+        attrs["user"] = current_user
 
         return attrs
 
@@ -152,4 +156,42 @@ class CodeVerifySerializer(serializers.Serializer):
     code = serializers.CharField(max_length=4, write_only=True, required=True)
 
 
-# class
+# ////////////////////////////////////////////////////////
+# ////////////////    NEW PASSWORD    ////////////////////
+# ///////////////////////////////////////////////////////
+class NewPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(required=True, write_only=True)
+    confirm_password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        password = attrs["password"]
+        confirm_password = attrs["confirm_password"]
+
+        if 8 > len(password) or len(password) > 32:
+            raise validate_password(
+                {"password": "The password length must be between 8 and 32 characters."}
+            )
+
+        if password != confirm_password:
+            raise ValidationError({"password": "parol bir biriga mos emas"})
+
+        self.check_password(password)
+
+        return attrs
+
+    @staticmethod
+    def check_password(password):
+        try:
+            validate_password(password)
+        except Exception as e:
+            raise ValidationError({"password": f"parol mos emas {e}"})
+
+    def update(self, instance, validated_data):
+        if validated_data.get("password"):
+            instance.set_password(validated_data.get("password"))
+        if instance.auth_status == Auth_STATUS.EDIT_PASSWORD:
+            instance.auth_status = Auth_STATUS.REGISTER
+
+        instance.save()
+
+        return instance

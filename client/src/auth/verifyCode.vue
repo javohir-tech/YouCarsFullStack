@@ -144,11 +144,16 @@ const onFinish = async () => {
             }
         )
         message.success(data.message)
+
         localStorage.setItem("edit_password_token", data.data.tokens.code_edit_token)
+        localStorage.removeItem("verify_token")
+
         code.forEach((_, index) => {
             code[index] = ''
         })
+
         inputRefs.value[0]?.focus()
+        
         router.push("newpass")
     } catch (error) {
         if (error.response) {

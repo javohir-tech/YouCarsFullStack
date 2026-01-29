@@ -19,6 +19,7 @@ from .serializers import (
     LogOutSerializer,
     ForgetPasswordSerializer,
     CodeVerifySerializer,
+    NewPasswordSerializer,
 )
 
 # SIMPLE JWT
@@ -31,7 +32,11 @@ from .tokens import VerifyToken
 from .authentication import VerifyTokenAuthentication
 
 # permissions
-from .permissions import IsVerifyPermission, CodeVerifyPermission
+from .permissions import (
+    IsVerifyPermission,
+    CodeVerifyPermission,
+    EditPasswordPermission,
+)
 
 
 # ////////////////////////////////////////////////////////
@@ -101,8 +106,6 @@ class LoginView(APIView):
 # ////////////////////////////////////////////////////////
 # /////////////////     LOGOUT      //////////////////////
 # ////////////////////////////////////////////////////////
-
-
 class LogOutView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -138,11 +141,11 @@ class ForgetPasswordView(APIView):
                     "success": True,
                     "message": "We’ve sent a message to your email. Please check your inbox.",
                     "data": {
-                        "email" : user.email,
-                        "username" : user.username,
+                        "email": user.email,
+                        "username": user.username,
                         "tokens": {
                             "verify_token": str(token),
-                        }
+                        },
                     },
                 }
             )
@@ -176,7 +179,33 @@ class CodeVerifyView(APIView):
                     {
                         "success": True,
                         "message": "Code has been verified successfully.",
+                        "auth_status": user.auth_status,
                         "data": {"tokens": {"code_edit_token": str(token)}},
                     }
                 )
-            raise ValidationError({"code" : "Invalid verification code."})
+            raise ValidationError({"code": "Invalid verification code."})
+
+
+# ////////////////////////////////////////////////////////
+# ////////////////    NEW PASSWORD    ////////////////////
+# ///////////////////////////////////////////////////////
+class NewPasswordView(APIView):
+    permission_classes = [IsVerifyPermission, EditPasswordPermission]
+    authentication_classes = [VerifyTokenAuthentication]
+
+    def put(self, request):
+
+        serializer = NewPasswordSerializer(
+            instance=self.request.user, data=request.data
+        )
+
+        if serializer.is_valid(raise_exception=True):
+            
+            serializer.save()
+
+            return Response(
+                {
+                    "success": True,
+                    "message": "parol o'zgartrildi , login qilshingizni soraymiz",
+                }
+            )

@@ -152,7 +152,7 @@ const onFinish = async (values) => {
             password: values.password,
             confirm_password: values.confirmPassword
         })
-        console.log(data)
+        // console.log(data)
         const access_token = data.data.tokens.access_token
         const refresh_token = data.data.tokens.refresh_token
 
