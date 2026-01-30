@@ -60,9 +60,8 @@ class CarAdmin(admin.ModelAdmin):
         "transmission_type",
         "body", 
         "availability", 
-        "year",
-        "price"
     ]
+    search_fields = ["year", "price", "marka__marka", "car_model__name"]
     list_per_page = 20
     
 
