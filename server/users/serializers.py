@@ -312,12 +312,13 @@ class UpdatePasswordSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         username = instance.username
         password = validated_data.get("password")
+        new_password= validated_data.get("new_password")
         try:
             authenticate(username=username, password=password)
         except Exception as e:
             raise ValidationError({"password": f"authemticated hatosi {e}"})
 
-        instance.set_password(password)
+        instance.set_password(new_password)
 
         instance.save()
 

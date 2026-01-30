@@ -336,9 +336,10 @@ class UpdatePasswordView(APIView):
         )
 
         if serializer.is_valid(raise_exception=True):
-            print()
             new_pass =  serializer.save()
+            print("="*50)
             print(new_pass)
+            print("="*50)
             return Response(
                 {
                     "success" : True,  
