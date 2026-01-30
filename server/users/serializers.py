@@ -12,13 +12,16 @@ from django.core.exceptions import (
 )
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
+from django.contrib.auth.models import update_last_login
 
 # Rest Framework
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
 # Simple JWT
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import AccessToken , RefreshToken
 
 # shared
 from shared.utils import check_login_type, send_email
@@ -268,9 +271,9 @@ class UpdateUserSerializer(serializers.Serializer):
     def check_input_len(value):
         if value is None:
             return None
-        if 8 > len(value) or len(value) > 32:
+        if 6 > len(value) or len(value) > 32:
             raise ValidationError(
-                {"value": f"{value} must be between 8 and 32 characters."}
+                {"value": f"{value} must be between 6 and 32 characters."}
             )
 
     def update(self, instance, validated_data):
@@ -310,16 +313,45 @@ class UpdatePasswordSerializer(serializers.Serializer):
         return attrs
 
     def update(self, instance, validated_data):
-        username = instance.username
         password = validated_data.get("password")
-        new_password= validated_data.get("new_password")
-        try:
-            authenticate(username=username, password=password)
-        except Exception as e:
-            raise ValidationError({"password": f"authemticated hatosi {e}"})
+        new_password = validated_data.get("new_password")
+
+        if not instance.check_password(password):
+            raise ValidationError({"password": "Current password is incorrect"})
 
         instance.set_password(new_password)
 
         instance.save()
 
         return instance
+
+
+# ////////////////////////////////////////////////////////
+# ////////////////   GET USER         ////////////////////
+# ////////////////////////////////////////////////////////
+class GetUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "first_name", "last_name"]
+        
+        
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['is_admin'] = instance.is_staff
+        return data    
+
+# ////////////////////////////////////////////////////////
+# ////////////  REFRESH TOKEN         ////////////////////
+# ////////////////////////////////////////////////////////
+class LoginRefreshSerializer(TokenRefreshSerializer):
+    
+    def validate(self, attrs):
+        data =  super().validate(attrs)
+        access_token_instance = AccessToken(data['access'])
+        user_id= access_token_instance['user_id']
+        user  = get_object_or_404(User ,  id=user_id)
+        update_last_login(None , user)
+        data['refresh'] = attrs['refresh']
+        
+        return data

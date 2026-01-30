@@ -25,10 +25,13 @@ from .serializers import (
     EmailVerifySerializer,
     UpdateUserSerializer,
     UpdatePasswordSerializer,
+    GetUserSerializer,
+    LoginRefreshSerializer
 )
 
 # SIMPLE JWT
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 
 # VERIFY TOKEN
 from .tokens import VerifyToken, EmailEditToken
@@ -44,14 +47,34 @@ from .permissions import (
     EditEmailPermissions,
 )
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 # ////////////////////////////////////////////////////////
 # /////////////////     SingUP      //////////////////////
 # ////////////////////////////////////////////////////////
 class SingUpView(APIView):
-
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User registration",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "email": openapi.Schema(type=openapi.TYPE_STRING),
+                "password": openapi.Schema(type=openapi.TYPE_STRING),
+                "first_name": openapi.Schema(type=openapi.TYPE_STRING),
+                "last_name": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            required=["email", "password"],
+        ),
+        responses={
+            201: openapi.Response("User created successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def post(self, request):
         serializer = SingUpSarializer(data=request.data)
 
@@ -84,6 +107,7 @@ class SingUpView(APIView):
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(tags=["auth"])
     def post(self, request):
         serializer = LoginSerilazer(data=request.data)
 
@@ -115,6 +139,7 @@ class LoginView(APIView):
 class LogOutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["auth"])
     def post(self, request):
         serializer = LogOutSerializer(data=request.data)
 
@@ -134,6 +159,7 @@ class LogOutView(APIView):
 class ForgetPasswordView(APIView):
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(tags=["auth"])
     def post(self, request):
         serializer = ForgetPasswordSerializer(data=request.data)
 
@@ -164,6 +190,7 @@ class CodeVerifyView(APIView):
     permission_classes = [IsVerifyPermission, CodeVerifyPermission]
     authentication_classes = [VerifyTokenAuthentication]
 
+    @swagger_auto_schema(tags=["auth"])
     def post(self, request):
         serializer = CodeVerifySerializer(data=request.data)
 
@@ -200,6 +227,7 @@ class NewPasswordView(APIView):
     permission_classes = [IsVerifyPermission, EditPasswordPermission]
     authentication_classes = [VerifyTokenAuthentication]
 
+    @swagger_auto_schema(tags=["auth"])
     def put(self, request):
 
         serializer = NewPasswordSerializer(
@@ -225,6 +253,7 @@ class EditEmailView(APIView):
 
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["auth"])
     def post(self, request):
         serializer = EmailEditSerializer(data=request.data)
 
@@ -250,6 +279,7 @@ class EmailVerifyView(APIView):
     permission_classes = [EditEmailPermissions]
     authentication_classes = [EmailEditAuthentication]
 
+    @swagger_auto_schema(tags=["auth"])
     def post(self, request):
 
         serializer = EmailVerifySerializer(
@@ -303,6 +333,7 @@ class EmailVerifyView(APIView):
 class UpdateUserView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["auth"])
     def put(self, request):
 
         serializer = UpdateUserSerializer(instance=self.request.user, data=request.data)
@@ -312,6 +343,7 @@ class UpdateUserView(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(tags=["auth"])
     def patch(self, request):
         serializer = UpdateUserSerializer(
             instance=self.request.user, data=request.data, partial=True
@@ -329,6 +361,7 @@ class UpdateUserView(APIView):
 class UpdatePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(tags=["auth"])
     def put(self, request):
 
         serializer = UpdatePasswordSerializer(
@@ -336,13 +369,25 @@ class UpdatePasswordView(APIView):
         )
 
         if serializer.is_valid(raise_exception=True):
-            new_pass =  serializer.save()
-            print("="*50)
-            print(new_pass)
-            print("="*50)
+            new_pass = serializer.save()
             return Response(
-                {
-                    "success" : True,  
-                    "message" : "parol muvafaqiyatli ozgartirildi"
-                }
+                {"success": True, "message": "parol muvafaqiyatli ozgartirildi"}
             )
+
+
+# ////////////////////////////////////////////////////////
+# ////////////////   GET USER         ////////////////////
+# ////////////////////////////////////////////////////////
+class GetUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(tags=["auth"])
+    def get(self, request):
+        serializer = GetUserSerializer(instance=request.user)
+        return Response(serializer.data)
+
+# ////////////////////////////////////////////////////////
+# ////////////  REFRESH TOKEN         ////////////////////
+# ////////////////////////////////////////////////////////
+class LoginRefreshView(TokenRefreshView):
+    serializer_class = LoginRefreshSerializer

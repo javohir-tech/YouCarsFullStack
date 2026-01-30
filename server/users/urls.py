@@ -9,8 +9,12 @@ from .views import (
     EditEmailView,
     EmailVerifyView,
     UpdateUserView,
-    UpdatePasswordView
+    UpdatePasswordView,
+    GetUserView,
+    LoginRefreshView
 )
+
+# app_name = 'users'
 
 urlpatterns = [
     path("singup/", SingUpView.as_view()),
@@ -22,5 +26,7 @@ urlpatterns = [
     path("email/", EditEmailView.as_view()),
     path("email/verify/", EmailVerifyView.as_view()),
     path("user/update/", UpdateUserView.as_view()),
-    path("password/update/" , UpdatePasswordView.as_view())
+    path("password/update/", UpdatePasswordView.as_view()),
+    path("user/", GetUserView.as_view()),
+    path("refresh/" , LoginRefreshView.as_view())
 ]

@@ -61,6 +61,9 @@ export const useUserStore = defineStore('user', {
             this.email_edit_token = ""
             localStorage.removeItem("email_edit_token")
         },
+        add_access_token(access_token){
+            this.access_token = access_token
+        },
         clear() {
             this.username = ""
             this.email = ""

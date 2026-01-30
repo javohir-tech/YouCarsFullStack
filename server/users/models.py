@@ -53,6 +53,9 @@ class User(BaseModel, AbstractUser):
             current_email = self.email.lower().strip()
             self.email = current_email
 
+    def __str__(self):
+        return f"{self.username}"
+
     def save(self, *args, **kwargs):
         self.check_email()
         super().save(*args, **kwargs)
@@ -66,6 +69,9 @@ class UserConfirmation(BaseModel):
 
     def __str__(self):
         return self.code
+
+    def __str__(self):
+        return f"{self.user.__str__()} ni code"
 
 
 # Create your models here.
