@@ -26,7 +26,7 @@ from .serializers import (
     UpdateUserSerializer,
     UpdatePasswordSerializer,
     GetUserSerializer,
-    LoginRefreshSerializer
+    LoginRefreshSerializer,
 )
 
 # SIMPLE JWT
@@ -63,15 +63,15 @@ class SingUpView(APIView):
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
+                "username": openapi.Schema(type=openapi.TYPE_STRING),
                 "email": openapi.Schema(type=openapi.TYPE_STRING),
                 "password": openapi.Schema(type=openapi.TYPE_STRING),
-                "first_name": openapi.Schema(type=openapi.TYPE_STRING),
-                "last_name": openapi.Schema(type=openapi.TYPE_STRING),
+                "confirm_password": openapi.Schema(type=openapi.TYPE_STRING),
             },
-            required=["email", "password"],
+            required=["email", "username", "password", "confirm_password"],
         ),
         responses={
-            201: openapi.Response("User created successfully"),
+            200: openapi.Response("User created successfully"),
             400: openapi.Response("Bad request"),
         },
     )
@@ -107,7 +107,22 @@ class SingUpView(APIView):
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User Sing In with email or username",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "user_input": openapi.Schema(type=openapi.TYPE_STRING),
+                "password": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            required=["user_input", "password"],
+        ),
+        responses={
+            200: openapi.Response("User login successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def post(self, request):
         serializer = LoginSerilazer(data=request.data)
 
@@ -139,7 +154,21 @@ class LoginView(APIView):
 class LogOutView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User Logout",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "refresh": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            required=["refresh"],
+        ),
+        responses={
+            200: openapi.Response("User logout successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def post(self, request):
         serializer = LogOutSerializer(data=request.data)
 
@@ -159,7 +188,21 @@ class LogOutView(APIView):
 class ForgetPasswordView(APIView):
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="get verify code with email or username",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "user_input": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            required=["user_input"],
+        ),
+        responses={
+            200: openapi.Response("User verify code send successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def post(self, request):
         serializer = ForgetPasswordSerializer(data=request.data)
 
@@ -189,8 +232,21 @@ class ForgetPasswordView(APIView):
 class CodeVerifyView(APIView):
     permission_classes = [IsVerifyPermission, CodeVerifyPermission]
     authentication_classes = [VerifyTokenAuthentication]
-
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="check verify code",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "code": openapi.Schema(type=openapi.TYPE_NUMBER),
+            },
+            required=["code"],
+        ),
+        responses={
+            200: openapi.Response("checked code successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def post(self, request):
         serializer = CodeVerifySerializer(data=request.data)
 
@@ -226,8 +282,22 @@ class CodeVerifyView(APIView):
 class NewPasswordView(APIView):
     permission_classes = [IsVerifyPermission, EditPasswordPermission]
     authentication_classes = [VerifyTokenAuthentication]
-
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User set new password",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "password": openapi.Schema(type=openapi.TYPE_STRING),
+                "confirm_password" : openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            required=["password" , "confirm_password"],
+        ),
+        responses={
+            200: openapi.Response("User change new passwordd successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def put(self, request):
 
         serializer = NewPasswordSerializer(
@@ -252,8 +322,22 @@ class NewPasswordView(APIView):
 class EditEmailView(APIView):
 
     permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User change email address",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "email": openapi.Schema(type=openapi.TYPE_STRING),
+                "old_email": openapi.Schema(type=openapi.TYPE_STRING)
+            },
+            required=["email", "old_email"],
+        ),
+        responses={
+            200: openapi.Response("User send code successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def post(self, request):
         serializer = EmailEditSerializer(data=request.data)
 
@@ -278,8 +362,21 @@ class EditEmailView(APIView):
 class EmailVerifyView(APIView):
     permission_classes = [EditEmailPermissions]
     authentication_classes = [EmailEditAuthentication]
-
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User check verify code",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "code": openapi.Schema(type=openapi.TYPE_NUMBER)
+            },
+            required=["code"],
+        ),
+        responses={
+            200: openapi.Response("checked verify code successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def post(self, request):
 
         serializer = EmailVerifySerializer(
@@ -332,8 +429,24 @@ class EmailVerifyView(APIView):
 # ////////////////////////////////////////////////////////
 class UpdateUserView(APIView):
     permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User update",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "username": openapi.Schema(type=openapi.TYPE_STRING),
+                "first_name": openapi.Schema(type=openapi.TYPE_STRING),
+                "last_name": openapi.Schema(type=openapi.TYPE_STRING),
+                "photo": openapi.Schema(type=openapi.TYPE_FILE),
+            },
+            required=["first_name", "username", "last_name" , "photo"],
+        ),
+        responses={
+            201: openapi.Response("User update successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def put(self, request):
 
         serializer = UpdateUserSerializer(instance=self.request.user, data=request.data)
@@ -343,7 +456,24 @@ class UpdateUserView(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User update patch",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "username": openapi.Schema(type=openapi.TYPE_STRING),
+                "first_name": openapi.Schema(type=openapi.TYPE_STRING),
+                "last_name": openapi.Schema(type=openapi.TYPE_STRING),
+                "photo": openapi.Schema(type=openapi.TYPE_FILE),
+            },
+            required=[],
+        ),
+        responses={
+            201: openapi.Response("User update successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def patch(self, request):
         serializer = UpdateUserSerializer(
             instance=self.request.user, data=request.data, partial=True
@@ -360,8 +490,23 @@ class UpdateUserView(APIView):
 # ////////////////////////////////////////////////////////
 class UpdatePasswordView(APIView):
     permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="User update password",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "password": openapi.Schema(type=openapi.TYPE_STRING),
+                "new_password": openapi.Schema(type=openapi.TYPE_STRING),
+                "confirm_password": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+            required=["password", "new_password", "confirm_password"],
+        ),
+        responses={
+            201: openapi.Response("User update password successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def put(self, request):
 
         serializer = UpdatePasswordSerializer(
@@ -380,11 +525,18 @@ class UpdatePasswordView(APIView):
 # ////////////////////////////////////////////////////////
 class GetUserView(APIView):
     permission_classes = [IsAuthenticated]
-
-    @swagger_auto_schema(tags=["auth"])
+    @swagger_auto_schema(
+        tags=["auth"],
+        operation_description="get User",
+        responses={
+            200: openapi.Response("User get successfully"),
+            400: openapi.Response("Bad request"),
+        },
+    )
     def get(self, request):
         serializer = GetUserSerializer(instance=request.user)
         return Response(serializer.data)
+
 
 # ////////////////////////////////////////////////////////
 # ////////////  REFRESH TOKEN         ////////////////////

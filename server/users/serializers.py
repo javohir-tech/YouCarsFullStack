@@ -211,7 +211,7 @@ class EmailEditSerializer(serializers.Serializer):
 
     old_email = serializers.EmailField(required=True, write_only=True)
     email = serializers.EmailField(required=True, write_only=True)
-
+    
     def validate(self, data):
         old_emial = data.get("old_email")
 
@@ -275,6 +275,11 @@ class UpdateUserSerializer(serializers.Serializer):
             raise ValidationError(
                 {"value": f"{value} must be between 6 and 32 characters."}
             )
+            
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["message"] = "Successfully changed."
+        return data
 
     def update(self, instance, validated_data):
 
