@@ -48,7 +48,7 @@ class FuelAdmin(admin.ModelAdmin):
 
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    list_display = ["id", "author", "model", "marka", "body" , "availability"]
+    list_display = ["id", "author", "car_model", "marka", "body" , "availability"]
     list_filter = [
         "car_model",
         "marka",

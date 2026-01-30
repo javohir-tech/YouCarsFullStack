@@ -23,7 +23,16 @@ class Marka(BaseModel):
     )
 
     def __str__(self):
-        return self.name
+        return self.marka
+
+    def add_marka(self):
+        temp_marka = self.marka.lower().strip()
+        self.marka = temp_marka
+
+    def save(self, *args, **kwargs):
+        self.add_marka()
+        super().save(*args, **kwargs)
+
 
 # //////////////////////////////////////////////////////
 # //////////////    CAR MODEL  /////////////////////////
@@ -33,17 +42,19 @@ class CarModel(BaseModel):
     marka = models.ForeignKey(Marka, on_delete=models.CASCADE, related_name="models")
 
     def __str__(self):
-        return f"{self.marka.__str__()} {self.name} modeli"
+        return self.name
+
 
 # //////////////////////////////////////////////////////
 # ////////////////    CAR COLOR    /////////////////////
 # //////////////////////////////////////////////////////
 class Color(BaseModel):
     color = models.CharField(max_length=64, unique=True)
-    color_code = models.CharField(max_length=7 , unique=True)
+    color_code = models.CharField(max_length=7, unique=True)
 
     def __str__(self):
         return self.color
+
 
 # //////////////////////////////////////////////////////
 # //////////////// COUNTRY      ////////////////////////
@@ -62,6 +73,7 @@ class Country(BaseModel):
     def __str__(self):
         return self.country
 
+
 # //////////////////////////////////////////////////////
 # //////////////// FUEL        /////////////////////////
 # //////////////////////////////////////////////////////
@@ -70,6 +82,7 @@ class Fuel(BaseModel):
 
     def __str__(self):
         return self.name
+
 
 # //////////////////////////////////////////////////////
 # //////////////// CAR         /////////////////////////
@@ -115,10 +128,13 @@ class Car(BaseModel):
         ON_ORDER = "on_order", "Buyurtma bo'yicha"  # Под заказ
         SOLD = "sold", "Sotilgan"  # Продано (optsional)
         RESERVED = "reserved", "Band qilingan"  # Забронировано (optsional)
-        
+
     class STATUS_CHOICES(models.TextChoices):
-        DRAFT = "DF" , "Draft", 
-        PUBLISHED = "PD" , "Published"
+        DRAFT = (
+            "DF",
+            "Draft",
+        )
+        PUBLISHED = "PD", "Published"
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cars")
     marka = models.ForeignKey(Marka, on_delete=models.CASCADE, related_name="cars")
@@ -127,7 +143,7 @@ class Car(BaseModel):
     )
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="cars")
     color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="cars")
-    # benzinmi gazmi balo battarmi shu 
+    # benzinmi gazmi balo battarmi shu
     fuel = models.ForeignKey(Fuel, on_delete=models.CASCADE, related_name="cars")
     price = models.DecimalField(max_digits=12, decimal_places=2)
     year = models.PositiveSmallIntegerField()
@@ -149,13 +165,16 @@ class Car(BaseModel):
     )
     # bazada bor yoki yoqligi
     availability = models.CharField(max_length=10, choices=AVAILABILITY_CHOICES.choices)
-    status = models.CharField(max_length=2 , choices=STATUS_CHOICES.choices , default=STATUS_CHOICES.DRAFT)
+    status = models.CharField(
+        max_length=2, choices=STATUS_CHOICES.choices, default=STATUS_CHOICES.DRAFT
+    )
 
     def is_available(self):
         return self.availability == self.AVAILABILITY_CHOICES.IN_STOCK
-
+    
     def __str__(self):
-        return f"model: {self.car_model.__str__()} marka: {self.marka.__str__()} price:{self.price}"
+        return f"marka : {self.marka.__str__()} model:{self.car_model.__str__()} status:{self.status}"
+
 
 # //////////////////////////////////////////////////////
 # //////////////// CAR IMAGE     ///////////////////////
@@ -167,15 +186,17 @@ class CarImage(BaseModel):
             FileExtensionValidator(
                 allowed_extensions=["jpeg", "jpg", "png", "heic", "heif"]
             )
-        ], 
-        upload_to="cars/cars"
+        ],
+        upload_to="cars/cars",
     )
     is_main = models.BooleanField(default=False)
     order = models.PositiveSmallIntegerField(default=0)
-    
+
     class Meta:
-        ordering = ["-is_main" , "order"]
-        
+        ordering = ["-is_main", "order"]
+
     def __str__(self):
         return f"{self.car} - image {self.id}"
+
+
 # Create your models here.
