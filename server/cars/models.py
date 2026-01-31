@@ -176,10 +176,7 @@ class Car(BaseModel):
         RESERVED = "reserved", "Band qilingan"  # Забронировано (optsional)
 
     class STATUS_CHOICES(models.TextChoices):
-        DRAFT = (
-            "DF",
-            "Draft",
-        )
+        DRAFT = "DF", "Draft"
         PUBLISHED = "PD", "Published"
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cars")
@@ -209,6 +206,7 @@ class Car(BaseModel):
     doors_count = models.PositiveSmallIntegerField(choices=DOORS_COUNT.choices)
     description = models.TextField(max_length=1200)
     body = models.CharField(choices=BODY_CHOICES.choices)
+    #holati
     condition = models.CharField(
         max_length=10, choices=CONDITION_CHOICES.choices, default=CONDITION_CHOICES.GOOD
     )

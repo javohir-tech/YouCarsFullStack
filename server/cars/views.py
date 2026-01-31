@@ -19,6 +19,7 @@ from .serializers import (
     GetColorSerializer,
     GetCountriesSerializer,
     GetFuelSerializer,
+    AddCarSerializer,
 )
 
 
@@ -114,3 +115,22 @@ class GetFuelsView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = GetFuelSerializer
     queryset = Fuel.objects.all()
+
+
+# /////////////////////////////////////////////////////////
+# ////////////    ADD CAR      ////////////////////////////
+# /////////////////////////////////////////////////////////
+class AddCarView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = AddCarSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        print("=" * 50)
+        print("=" * 50)
+        print(serializer.validated_data)
+        print("=" * 50)
+        print("=" * 50)
+
+        return Response(serializer.data)
