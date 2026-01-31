@@ -9,6 +9,7 @@ from .views import (
     GetCountriesView,
     GetFuelsView,
     AddCarView,
+    UploadCarImageView
 )
 
 urlpatterns = [
@@ -19,4 +20,5 @@ urlpatterns = [
     path("countries/", GetCountriesView.as_view()),
     path("fuel/", GetFuelsView.as_view()),
     path("upload/", AddCarView.as_view()),
+    path("upload/image/" , UploadCarImageView.as_view())
 ]

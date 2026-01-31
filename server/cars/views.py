@@ -3,7 +3,7 @@ from django.shortcuts import render
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -21,6 +21,7 @@ from .serializers import (
     GetCountriesSerializer,
     GetFuelSerializer,
     AddCarSerializer,
+    CarImageUploadSerializer,
 )
 
 
@@ -126,7 +127,6 @@ class AddCarView(APIView):
 
     def post(self, request):
         serializer = AddCarSerializer(data=request.data, context={"request": request})
-        user = self.request.user
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {
@@ -134,5 +134,20 @@ class AddCarView(APIView):
             "message": "moshina muvvaqiyatli yaratildi",
             "data": serializer.data,
         }
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+# /////////////////////////////////////////////////////////
+# ////////////   UPLOAD CAR IMAGE      ////////////////////
+# /////////////////////////////////////////////////////////
+class UploadCarImageView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CarImageUploadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = {"success": True, "message": "rasmlar yuklandi", "data": serializer.data}
 
         return Response(data, status=status.HTTP_200_OK)
