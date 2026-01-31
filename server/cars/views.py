@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework import status
 
 # ///////////////////// MODELS //////////////////////////
 from .models import AvtoMobileType, Color, Country, Fuel, Car, CarImage
@@ -124,13 +125,14 @@ class AddCarView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = AddCarSerializer(data=request.data)
-
+        serializer = AddCarSerializer(data=request.data, context={"request": request})
+        user = self.request.user
         serializer.is_valid(raise_exception=True)
-        print("=" * 50)
-        print("=" * 50)
-        print(serializer.validated_data)
-        print("=" * 50)
-        print("=" * 50)
+        serializer.save()
+        data = {
+            "success": True,
+            "message": "moshina muvvaqiyatli yaratildi",
+            "data": serializer.data,
+        }
 
-        return Response(serializer.data)
+        return Response(data, status=status.HTTP_200_OK)

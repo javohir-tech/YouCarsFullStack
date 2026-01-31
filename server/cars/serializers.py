@@ -156,12 +156,13 @@ class GetFuelSerializer(serializers.ModelSerializer):
 # ////////////    ADD CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
 class AddCarSerializer(serializers.Serializer):
-    auto_type_id = serializers.UUIDField(write_only=True)
-    marka_id = serializers.UUIDField()
-    model_id = serializers.UUIDField()
-    country_id = serializers.UUIDField()
-    color_id = serializers.UUIDField()
-    fuel_id = serializers.UUIDField()
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
+    avto_type = serializers.UUIDField(write_only=True)
+    marka = serializers.UUIDField()
+    car_model = serializers.UUIDField()
+    country = serializers.UUIDField()
+    color = serializers.UUIDField()
+    fuel = serializers.UUIDField()
     price = serializers.DecimalField(max_digits=12, decimal_places=2)
     year = serializers.IntegerField()
     milage = serializers.IntegerField()
@@ -176,10 +177,16 @@ class AddCarSerializer(serializers.Serializer):
     availability = serializers.CharField(max_length=10)
     status = serializers.CharField(max_length=2)
 
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["car_model"] = CarModel.objects.filter(id = validated_data.pop("car_model")).first()
+        validated_data["author"] = user
+        return Car.objects.create(**validated_data)
+
     def validate(self, data):
-        auto_type_id = data.get("auto_type_id")
-        marka_id = data.get("marka_id")
-        model_id = data.get("model_id")
+        auto_type_id = data.get("avto_type")
+        marka_id = data.get("marka")
+        model_id = data.get("car_model")
 
         auto_type = AvtoTypeMarka.objects.filter(
             avto_type_id=auto_type_id, marka_id=marka_id
@@ -199,36 +206,45 @@ class AddCarSerializer(serializers.Serializer):
 
         return data
 
-    def validate_auto_type_id(self, value):
-        if not AvtoMobileType.objects.filter(id=value).exists():
+    def validate_avto_type(self, value):
+        avto_type = AvtoMobileType.objects.filter(id=value)
+        if not avto_type.exists():
             raise serializers.ValidationError("bunday transport turi topilmadi")
+        value = avto_type.first()
         return value
 
-    def validate_marka_id(self, value):
-        if not Marka.objects.filter(id=value).exists():
+    def validate_marka(self, value):
+        marka = Marka.objects.filter(id=value)
+        if not marka.exists():
             raise serializers.ValidationError("bunday marka topilmadi")
+        value = marka.first()
         return value
 
-    def validate_model_id(self, value):
+    def validate_car_model(self, value):
         if not CarModel.objects.filter(id=value).exists():
             raise serializers.ValidationError("bunday model topilmadi")
         return value
 
-    def validate_country_id(self, value):
-        if not Country.objects.filter(id=value).exists():
+    def validate_country(self, value):
+        country = Country.objects.filter(id=value)
+        if not country.exists():
             raise serializers.ValidationError("bunday davlat topilmadi")
+        value = country.first()
         return value
 
-    def validate_color_id(self, value):
-        if not Color.objects.filter(id=value).exists():
+    def validate_color(self, value):
+        color = Color.objects.filter(id=value)
+        if not color.exists():
             raise serializers.ValidationError("bunday rang topilmadi")
 
+        value = color.first()
         return value
 
-    def validate_fuel_id(self, value):
-        if not Fuel.objects.filter(id=value).exists():
+    def validate_fuel(self, value):
+        fuel = Fuel.objects.filter(id=value)
+        if not fuel.exists():
             raise serializers.ValidationError("bunday yoqilgi turi topilmadi")
-
+        value = fuel.first()
         return value
 
     def validate_price(self, value):

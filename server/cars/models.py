@@ -88,7 +88,7 @@ class CarModel(BaseModel):
 
     def save(self, *args, **kwargs):
         self.add_name()
-        super().save(*args, *kwargs)
+        super().save(*args, **kwargs)
 
 
 # //////////////////////////////////////////////////////
