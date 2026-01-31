@@ -3,7 +3,17 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 # ////////////////// MODELS //////////////////////////
-from .models import AvtoMobileType, AvtoTypeMarka, Marka, CarModel
+from .models import (
+    AvtoMobileType,
+    AvtoTypeMarka,
+    Marka,
+    CarModel,
+    Color,
+    Country,
+    Fuel,
+    Car,
+    CarImage,
+)
 
 
 # ///////////////////////////////////////////////////////
@@ -107,4 +117,33 @@ class CarModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CarModel
+        fields = ["id", "name"]
+
+
+# /////////////////////////////////////////////////////////
+# //////////// GET COLORS     /////////////////////////////
+# /////////////////////////////////////////////////////////
+class GetColorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Color
+        fields = ["id", "color", "color_code"]
+
+
+# /////////////////////////////////////////////////////////
+# //////////// GET COUNTRY     ////////////////////////////
+# /////////////////////////////////////////////////////////
+class GetCountriesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Country
+        fields = ["id", "country"]
+
+
+# /////////////////////////////////////////////////////////
+# //////////// GET FUEL        ////////////////////////////
+# /////////////////////////////////////////////////////////
+class GetFuelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fuel
         fields = ["id", "name"]

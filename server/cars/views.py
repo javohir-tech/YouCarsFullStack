@@ -7,7 +7,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
 # ///////////////////// MODELS //////////////////////////
-from .models import AvtoMobileType
+from .models import AvtoMobileType, Color, Country, Fuel, Car, CarImage
 
 # //////////// SERIALIZERS  /////////////////////////////
 from .serializers import (
@@ -16,6 +16,9 @@ from .serializers import (
     AvtoTypeMarkaSerializer,
     GetModelsWithMarkaSerializer,
     CarModelSerializer,
+    GetColorSerializer,
+    GetCountriesSerializer,
+    GetFuelSerializer,
 )
 
 
@@ -62,7 +65,7 @@ class GetMarkaWithTypeView(APIView):
 # /////////////////////////////////////////////////////////
 class GetModelsWithMarkaView(APIView):
     """
-     markaga oid modellarni olish
+    markaga oid modellarni olish
     """
 
     permission_classes = [IsAuthenticated]
@@ -86,3 +89,28 @@ class GetModelsWithMarkaView(APIView):
         )
 
 
+# /////////////////////////////////////////////////////////
+# //////////// GET COLORS     /////////////////////////////
+# /////////////////////////////////////////////////////////
+class GetColorsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Color.objects.all()
+    serializer_class = GetColorSerializer
+
+
+# /////////////////////////////////////////////////////////
+# //////////// GET COUNTRY     ////////////////////////////
+# /////////////////////////////////////////////////////////
+class GetCountriesView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = GetCountriesSerializer
+    queryset = Country.objects.all()
+
+
+# /////////////////////////////////////////////////////////
+# //////////// GET COUNTRY     ////////////////////////////
+# /////////////////////////////////////////////////////////
+class GetFuelsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = GetFuelSerializer
+    queryset = Fuel.objects.all()
