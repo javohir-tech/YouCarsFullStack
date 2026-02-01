@@ -19,7 +19,7 @@
       <div class="form-section">
         <a-select v-model:value="formData.marka" placeholder="Марка" size="large" show-search :loading="loadingBrands"
           :disabled="!selectedType" @change="handleMarkaChange" :filter-option="filterOption">
-          <a-select-option v-for="brand in brands" :key="brand.id" :value="brand.id">
+          <a-select-option v-for="brand in brands" :key="brand.id" :value="brand.id" :label="brand.marka">
             {{ brand.marka }}
           </a-select-option>
         </a-select>
@@ -29,7 +29,7 @@
       <div class="form-section" v-if="formData.marka">
         <a-select v-model:value="formData.car_model" placeholder="Модель" size="large" show-search
           :loading="loadingModels" @change="handleModelChange" :filter-option="filterOption">
-          <a-select-option v-for="model in models" :key="model.id" :value="model.id">
+          <a-select-option v-for="model in models" :key="model.id" :value="model.id" :label="model.name">
             {{ model.name }}
           </a-select-option>
         </a-select>
@@ -122,8 +122,6 @@
                   <a-select v-model:value="formData.transmission_type" placeholder="Автомат" size="large">
                     <a-select-option value="MT">Механика</a-select-option>
                     <a-select-option value="AT">Автомат</a-select-option>
-                    <a-select-option value="CV">Вариатор</a-select-option>
-                    <a-select-option value="RB">Робот</a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
@@ -147,10 +145,12 @@
                     <a-select-option value="sedan">Седан</a-select-option>
                     <a-select-option value="hatchback">Хэтчбек</a-select-option>
                     <a-select-option value="suv">Внедорожник</a-select-option>
-                    <a-select-option value="wagon">Универсал</a-select-option>
+                    <a-select-option value="crossover">Кроссовер</a-select-option>
                     <a-select-option value="coupe">Купе</a-select-option>
-                    <a-select-option value="minivan">Минивэн</a-select-option>
+                    <a-select-option value="convertible">Кабриолет</a-select-option>
+                    <a-select-option value="wagon">Универсал</a-select-option>
                     <a-select-option value="pickup">Пикап</a-select-option>
+                    <a-select-option value="minivan">Минивэн</a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
@@ -160,7 +160,10 @@
                 <a-form-item label="Состояние">
                   <a-select v-model:value="formData.condition" placeholder="С пробегом" size="large">
                     <a-select-option value="new">Новый</a-select-option>
-                    <a-select-option value="used">С пробегом</a-select-option>
+                    <a-select-option value="excellent">Отличное</a-select-option>
+                    <a-select-option value="good">Хорошее</a-select-option>
+                    <a-select-option value="fair">Среднее</a-select-option>
+                    <a-select-option value="poor">Плохое</a-select-option>
                     <a-select-option value="damaged">Битый</a-select-option>
                   </a-select>
                 </a-form-item>
@@ -268,6 +271,8 @@
 import { ref, reactive, computed, h, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import { CameraOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import { watch } from 'vue';
+import api from '@/utils/axios';
 
 // State
 const selectedType = ref('automobile');
@@ -290,7 +295,7 @@ const formData = reactive({
   body: null,
   condition: null,
   availability: 'in_stock',
-  status: 'AC' // Active status
+  status: 'DF'
 });
 
 const currency = ref('USD');
@@ -316,16 +321,15 @@ const uploadedImages = ref([]);
 const fileInput = ref(null);
 const createdCarId = ref(null);
 
-// API Functions (sizning API logikangiz uchun)
+// API Functions
 const carData = {
-  // Avto turlariga mos markalari olish
   async getBrandsByType(type) {
     try {
       const { data } = await api.post("cars/marka/", {
         avto_type: type
       })
       if (data.success) {
-        const markas = data.data.map((item, index) => {
+        const markas = data.data.map((item) => {
           return { id: item.id, marka: item.marka }
         })
         return markas
@@ -346,17 +350,14 @@ const carData = {
     }
   },
 
-  // Markaga mos modellar olish
   async getModelsByBrand(brandId) {
-
     try {
       const { data } = await api.post("cars/models/", {
         marka_id: brandId
       })
-      // console.log(data)
 
       if (data.success) {
-        const models = data.models.map((item, index) => {
+        const models = data.models.map((item) => {
           return { id: item.id, name: item.name }
         })
         return models
@@ -367,22 +368,18 @@ const carData = {
         if (errors.car_models) {
           message.warning(errors.car_models[0])
         }
-        console.log(error.response)
       } else {
         console.log(error)
       }
     }
   },
 
-  // Davlatlar ro'yxati
   async getCountries() {
     try {
       const { data } = await api.get("cars/countries/")
-
-      const countries = data.map((item, index) => {
+      const countries = data.map((item) => {
         return { id: item.id, country: item.country }
       })
-
       return countries
     } catch (error) {
       if (error.response) {
@@ -393,18 +390,16 @@ const carData = {
     }
   },
 
-  // Ranglar ro'yxati
   async getColors() {
     try {
       const { data } = await api.get("cars/colors/")
-
-      const colors = data.map((item, index) => {
-        return {id : item.id , color : item.color , code : item.color_code}
+      const colors = data.map((item) => {
+        return { id: item.id, color: item.color, code: item.color_code }
       })
       return colors
     } catch (error) {
       if (error.response) {
-        console.error.response
+        console.error(error.response)
       } else {
         console.log(error)
       }
@@ -413,87 +408,76 @@ const carData = {
 
   async getFuels() {
     try {
-      const {data} = api.get("cars/fuel/")
-
-      console.log(data)
+      const { data } = await api.get("cars/fuel/")
+      const fuels = data.map((item) => {
+        return { id: item.id, name: item.name }
+      })
+      return fuels
     } catch (error) {
-      if(error.response){
+      if (error.response) {
         console.log(error.response)
-      }else{
+      } else {
         console.log(error)
       }
     }
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          { id: '1', name: 'Бензин' },
-          { id: '2', name: 'Дизель' },
-          { id: '3', name: 'Газ' },
-          { id: '4', name: 'Электро' },
-          { id: '5', name: 'Гибрид' },
-        ]);
-      }, 300);
-    });
   },
 
-  // Xarakteristikalar yuborish
   async createCar(data) {
-    // const response = await fetch('/api/cars/', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(data)
-    // });
-    // return response.json();
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ id: 'car-123', ...data });
-      }, 1000);
-    });
+    try {
+      const response = await api.post("cars/upload/", { ...data })
+      return response.data.data.id
+    } catch (error) {
+      if (error.response) {
+        const errors = error.response.data
+        for (let item in errors) {
+          if (errors[item]) {
+            message.error(errors[item][0])
+            break
+          }
+        }
+        console.log(error.response)
+      } else {
+        console.log(error)
+      }
+      throw error; // ← Muhim: xatoni qayta tashlash
+    }
   },
 
-  // Rasm yuklash
-  async uploadImage(carId, file, onProgress) {
-    // const formData = new FormData();
-    // formData.append('car_id', carId);
-    // formData.append('image', file);
-
-    // const xhr = new XMLHttpRequest();
-    // xhr.upload.addEventListener('progress', (e) => {
-    //   if (e.lengthComputable) {
-    //     const percentComplete = (e.loaded / e.total) * 100;
-    //     onProgress(percentComplete);
-    //   }
-    // });
-
-    // return new Promise((resolve, reject) => {
-    //   xhr.onload = () => resolve(JSON.parse(xhr.response));
-    //   xhr.onerror = () => reject(xhr.statusText);
-    //   xhr.open('POST', '/api/car-images/');
-    //   xhr.send(formData);
-    // });
-
-    // Mock upload with progress
-    return new Promise((resolve) => {
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 10;
-        onProgress(progress);
-        if (progress >= 100) {
-          clearInterval(interval);
-          resolve({
-            id: Math.random().toString(36).substr(2, 9),
-            url: URL.createObjectURL(file)
-          });
+  // carData obyekti ichida
+  async uploadImage(carId, file, onProgress , isMain = false) {
+    const formData = new FormData();
+    formData.append('car', carId);
+    formData.append('image', file);
+    formData.append('is_main', isMain);
+    try {
+      const response = await api.post('cars/upload/image/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          onProgress(percentCompleted);
         }
-      }, 200);
-    });
+      });
+
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        console.error('Upload xatosi:', error.response.data);
+        throw new Error(error.response.data.message || 'Rasm yuklashda xatolik');
+      } else {
+        console.error('Network xatosi:', error);
+        throw new Error('Tarmoq xatosi');
+      }
+    }
   }
 };
 
 // Methods
 const filterOption = (input, option) => {
-  return option.children[0].children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  return option.label.toLowerCase().includes(input.toLowerCase());
 };
 
 const handleMarkaChange = async (brandId) => {
@@ -513,7 +497,6 @@ const handleMarkaChange = async (brandId) => {
 };
 
 const handleModelChange = async () => {
-  // Model tanlangandan keyin, boshqa ma'lumotlarni yuklash
   if (!countries.value.length) {
     loadingCountries.value = true;
     try {
@@ -539,7 +522,7 @@ const handleModelChange = async () => {
   if (!fuels.value.length) {
     loadingFuels.value = true;
     try {
-      fuels.value = await api.getFuels();
+      fuels.value = await carData.getFuels();
     } catch (error) {
       message.error('Yoqilg\'i turlarini yuklashda xatolik');
     } finally {
@@ -574,111 +557,93 @@ const handleFileSelect = (event) => {
     }
   });
 
-  // Reset input
   event.target.value = '';
 };
 
 const removeImage = (index) => {
+  URL.revokeObjectURL(uploadedImages.value[index].url); // Memory cleanup
   uploadedImages.value.splice(index, 1);
 };
 
 const uploadImages = async (carId) => {
-  const uploadPromises = uploadedImages.value
-    .filter(img => !img.uploaded)
-    .map(async (imageObj) => {
+  // Rasmlarni ketma-ket yuklash (reaktivlikni yaxshiroq saqlash uchun)
+  for (const imageObj of uploadedImages.value) {
+    if (!imageObj.uploaded) {
       imageObj.uploading = true;
       try {
-        const result = await api.uploadImage(
+        const result = await carData.uploadImage(
           carId,
           imageObj.file,
           (progress) => {
-            imageObj.progress = progress;
+            imageObj.progress = Math.round(progress);
           }
         );
         imageObj.uploaded = true;
         imageObj.uploading = false;
-        return result;
+        // console.log('Rasm yuklandi:', result);
       } catch (error) {
-        message.error('Rasmni yuklashda xatolik');
+        console.error('Rasm yuklashda xatolik:', error);
+        message.error(`Rasmni yuklashda xatolik: ${error.message}`);
         imageObj.uploading = false;
         throw error;
       }
-    });
-
-  await Promise.all(uploadPromises);
-};
-
-const validateForm = () => {
-  const errors = [];
-
-  if (!formData.marka) errors.push('Markani tanlang');
-  if (!formData.car_model) errors.push('Modelni tanlang');
-  if (!formData.year) errors.push('Yilni kiriting');
-  if (!formData.price || formData.price <= 0) errors.push('Narxni kiriting');
-  if (!formData.country) errors.push('Davlatni tanlang');
-  if (!formData.fuel) errors.push('Yoqilg\'i turini tanlang');
-  if (!formData.color) errors.push('Rangni tanlang');
-  if (!formData.body) errors.push('Kuzovni tanlang');
-  if (!formData.condition) errors.push('Holatni tanlang');
-  if (!formData.drive_type) errors.push('Privodini tanlang');
-  if (!formData.transmission_type) errors.push('KPP ni tanlang');
-  if (!formData.doors_count) errors.push('Eshiklar sonini tanlang');
-  if (!formData.description || formData.description.length < 10) {
-    errors.push('Kamida 10 ta belgidan iborat tavsif kiriting');
+    }
   }
-  if (uploadedImages.value.length === 0) {
-    errors.push('Kamida 1 ta rasm yuklang');
-  }
-
-  if (errors.length > 0) {
-    errors.forEach(err => message.error(err));
-    return false;
-  }
-
-  return true;
 };
 
 const handleSubmit = async () => {
-  if (!validateForm()) return;
+  // Validatsiya
+  if (!formData.marka || !formData.car_model) {
+    message.warning('Marka va modelni tanlang');
+    return;
+  }
+
+  if (uploadedImages.value.length === 0) {
+    message.warning('Kamida bitta rasm yuklang');
+    return;
+  }
 
   submitting.value = true;
 
   try {
-    // Get avto_type ID based on selected type
+    // Type mapping
     const typeMap = {
-      'automobile': 'auto-type-id-1',
-      'commercial': 'auto-type-id-2',
-      'motorcycle': 'auto-type-id-3'
+      'automobile': 'bf763424-691f-4a5d-a1e8-299983ef708e',
+      'commercial': 'f972a831-6bf5-4e20-9908-2617ec6a5417',
+      'motorcycle': '2e035902-ba42-487e-bae2-be723156c6c1'
     };
     formData.avto_type = typeMap[selectedType.value];
 
-    // Step 1: Create car with characteristics
-    const carData = { ...formData };
-    const createdCar = await api.createCar(carData);
-    createdCarId.value = createdCar.id;
+    // Step 1: Mashina yaratish
+    console.log('Mashina yaratilmoqda...', formData);
+    const carId = await carData.createCar({ ...formData }); // ← Bu allaqachon ID
 
+    if (!carId) {
+      throw new Error('Mashina ID olinmadi');
+    }
+
+    createdCarId.value = carId;
     message.success('Avtomobil ma\'lumotlari saqlandi');
 
-    // Step 2: Upload images
-    if (uploadedImages.value.length > 0) {
-      await uploadImages(createdCar.id);
-      message.success('Rasmlar yuklandi');
-    }
+    // Step 2: Rasmlarni yuklash
+    console.log('Rasmlar yuklanmoqda...', carId);
+    await uploadImages(carId);
+    message.success('Rasmlar yuklandi');
 
     message.success('E\'lon muvaffaqiyatli yaratildi!');
 
-    // Redirect or reset form
+    // Redirect yoki formni tozalash
     // router.push('/my-listings');
 
   } catch (error) {
+    console.error('Submit xatosi:', error);
     message.error('E\'lonni yaratishda xatolik yuz berdi');
-    console.error(error);
   } finally {
     submitting.value = false;
   }
 };
 
-// Load initial data for selected type
+// Load initial data
 const loadBrandsForType = async () => {
   const typeMap = {
     'automobile': 'CR',
@@ -697,8 +662,6 @@ const loadBrandsForType = async () => {
 };
 
 // Watch for type change
-import { watch } from 'vue';
-import api from '@/utils/axios';
 watch(selectedType, () => {
   formData.marka = null;
   formData.car_model = null;
