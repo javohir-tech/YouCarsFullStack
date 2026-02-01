@@ -14,10 +14,7 @@ from django.core.validators import FileExtensionValidator
 class AvtoMobileType(BaseModel):
     class AVTOMABIL_TYPE(models.TextChoices):
         CAR = "CR", "Car"
-        COMMERCIAL_TRANSPORT = (
-            "CT",
-            "Commercial transport",
-        )
+        COMMERCIAL_TRANSPORT = "CT", "Commercial transport"
         Motorcycles = "MO"
 
     name = models.CharField(
@@ -206,7 +203,7 @@ class Car(BaseModel):
     doors_count = models.PositiveSmallIntegerField(choices=DOORS_COUNT.choices)
     description = models.TextField(max_length=1200)
     body = models.CharField(choices=BODY_CHOICES.choices)
-    #holati
+    # holati
     condition = models.CharField(
         max_length=10, choices=CONDITION_CHOICES.choices, default=CONDITION_CHOICES.GOOD
     )

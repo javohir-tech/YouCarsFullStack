@@ -17,33 +17,18 @@
 
       <!-- Step 2: Brand Selection -->
       <div class="form-section">
-        <a-select
-          v-model:value="formData.marka"
-          placeholder="Марка"
-          size="large"
-          show-search
-          :loading="loadingBrands"
-          :disabled="!selectedType"
-          @change="handleBrandChange"
-          :filter-option="filterOption"
-        >
+        <a-select v-model:value="formData.marka" placeholder="Марка" size="large" show-search :loading="loadingBrands"
+          :disabled="!selectedType" @change="handleMarkaChange" :filter-option="filterOption">
           <a-select-option v-for="brand in brands" :key="brand.id" :value="brand.id">
-            {{ brand.name }}
+            {{ brand.marka }}
           </a-select-option>
         </a-select>
       </div>
 
       <!-- Step 3: Model Selection -->
       <div class="form-section" v-if="formData.marka">
-        <a-select
-          v-model:value="formData.car_model"
-          placeholder="Модель"
-          size="large"
-          show-search
-          :loading="loadingModels"
-          @change="handleModelChange"
-          :filter-option="filterOption"
-        >
+        <a-select v-model:value="formData.car_model" placeholder="Модель" size="large" show-search
+          :loading="loadingModels" @change="handleModelChange" :filter-option="filterOption">
           <a-select-option v-for="model in models" :key="model.id" :value="model.id">
             {{ model.name }}
           </a-select-option>
@@ -52,38 +37,26 @@
 
       <!-- Main Form (Shows after model is selected) -->
       <div v-if="formData.car_model" class="main-form">
-        
+
         <!-- Characteristics Section -->
         <div class="characteristics-section">
           <h2>Характеристики</h2>
-          
+
           <a-form layout="vertical" :model="formData">
             <a-row :gutter="16">
               <!-- Year -->
               <a-col :span="12">
                 <a-form-item label="Год выпуска">
-                  <a-input-number
-                    v-model:value="formData.year"
-                    :min="1951"
-                    :max="currentYear"
-                    placeholder="2024"
-                    style="width: 100%"
-                    size="large"
-                  />
+                  <a-input-number v-model:value="formData.year" :min="1951" :max="currentYear" placeholder="2024"
+                    style="width: 100%" size="large" />
                 </a-form-item>
               </a-col>
 
               <!-- Price -->
               <a-col :span="12">
                 <a-form-item label="Пробег">
-                  <a-input-number
-                    v-model:value="formData.milage"
-                    :min="0"
-                    :max="2000000"
-                    placeholder="16 000"
-                    style="width: 100%"
-                    size="large"
-                  >
+                  <a-input-number v-model:value="formData.milage" :min="0" :max="2000000" placeholder="16 000"
+                    style="width: 100%" size="large">
                     <template #addonAfter>км</template>
                   </a-input-number>
                 </a-form-item>
@@ -92,16 +65,10 @@
               <!-- Country -->
               <a-col :span="12">
                 <a-form-item label="Страна">
-                  <a-select
-                    v-model:value="formData.country"
-                    placeholder="США"
-                    size="large"
-                    show-search
-                    :loading="loadingCountries"
-                    :filter-option="filterOption"
-                  >
+                  <a-select v-model:value="formData.country" placeholder="США" size="large" show-search
+                    :loading="loadingCountries" :filter-option="filterOption">
                     <a-select-option v-for="country in countries" :key="country.id" :value="country.id">
-                      {{ country.name }}
+                      {{ country.country }}
                     </a-select-option>
                   </a-select>
                 </a-form-item>
@@ -110,12 +77,7 @@
               <!-- Fuel -->
               <a-col :span="12">
                 <a-form-item label="Топливо">
-                  <a-select
-                    v-model:value="formData.fuel"
-                    placeholder="Бензин"
-                    size="large"
-                    :loading="loadingFuels"
-                  >
+                  <a-select v-model:value="formData.fuel" placeholder="Бензин" size="large" :loading="loadingFuels">
                     <a-select-option v-for="fuel in fuels" :key="fuel.id" :value="fuel.id">
                       {{ fuel.name }}
                     </a-select-option>
@@ -126,15 +88,8 @@
               <!-- Displacement -->
               <a-col :span="12">
                 <a-form-item label="Объем">
-                  <a-input-number
-                    v-model:value="formData.displacement"
-                    :min="0"
-                    :max="9.9"
-                    :step="0.1"
-                    placeholder="1.8"
-                    style="width: 100%"
-                    size="large"
-                  >
+                  <a-input-number v-model:value="formData.displacement" :min="0" :max="9.9" :step="0.1"
+                    placeholder="1.8" style="width: 100%" size="large">
                     <template #addonAfter>л</template>
                   </a-input-number>
                 </a-form-item>
@@ -143,14 +98,8 @@
               <!-- Power -->
               <a-col :span="12">
                 <a-form-item label="Мощность">
-                  <a-input-number
-                    v-model:value="formData.power"
-                    :min="0"
-                    :max="2000"
-                    placeholder="153"
-                    style="width: 100%"
-                    size="large"
-                  >
+                  <a-input-number v-model:value="formData.power" :min="0" :max="2000" placeholder="153"
+                    style="width: 100%" size="large">
                     <template #addonAfter>л.с</template>
                   </a-input-number>
                 </a-form-item>
@@ -159,11 +108,7 @@
               <!-- Transmission -->
               <a-col :span="12">
                 <a-form-item label="Привод">
-                  <a-select
-                    v-model:value="formData.drive_type"
-                    placeholder="Передний"
-                    size="large"
-                  >
+                  <a-select v-model:value="formData.drive_type" placeholder="Передний" size="large">
                     <a-select-option value="FWD">Передний</a-select-option>
                     <a-select-option value="RWD">Задний</a-select-option>
                     <a-select-option value="AWD">Полный</a-select-option>
@@ -174,11 +119,7 @@
               <!-- КПП -->
               <a-col :span="12">
                 <a-form-item label="КПП">
-                  <a-select
-                    v-model:value="formData.transmission_type"
-                    placeholder="Автомат"
-                    size="large"
-                  >
+                  <a-select v-model:value="formData.transmission_type" placeholder="Автомат" size="large">
                     <a-select-option value="MT">Механика</a-select-option>
                     <a-select-option value="AT">Автомат</a-select-option>
                     <a-select-option value="CV">Вариатор</a-select-option>
@@ -190,11 +131,7 @@
               <!-- Doors Count -->
               <a-col :span="12">
                 <a-form-item label="Количество дверей">
-                  <a-select
-                    v-model:value="formData.doors_count"
-                    placeholder="5"
-                    size="large"
-                  >
+                  <a-select v-model:value="formData.doors_count" placeholder="5" size="large">
                     <a-select-option :value="2">2</a-select-option>
                     <a-select-option :value="3">3</a-select-option>
                     <a-select-option :value="4">4</a-select-option>
@@ -206,11 +143,7 @@
               <!-- Body Type -->
               <a-col :span="12">
                 <a-form-item label="Кузов">
-                  <a-select
-                    v-model:value="formData.body"
-                    placeholder="Седан"
-                    size="large"
-                  >
+                  <a-select v-model:value="formData.body" placeholder="Седан" size="large">
                     <a-select-option value="sedan">Седан</a-select-option>
                     <a-select-option value="hatchback">Хэтчбек</a-select-option>
                     <a-select-option value="suv">Внедорожник</a-select-option>
@@ -225,11 +158,7 @@
               <!-- Condition -->
               <a-col :span="12">
                 <a-form-item label="Состояние">
-                  <a-select
-                    v-model:value="formData.condition"
-                    placeholder="С пробегом"
-                    size="large"
-                  >
+                  <a-select v-model:value="formData.condition" placeholder="С пробегом" size="large">
                     <a-select-option value="new">Новый</a-select-option>
                     <a-select-option value="used">С пробегом</a-select-option>
                     <a-select-option value="damaged">Битый</a-select-option>
@@ -240,25 +169,18 @@
               <!-- Color -->
               <a-col :span="12">
                 <a-form-item label="Цвет">
-                  <a-select
-                    v-model:value="formData.color"
-                    placeholder="Белый"
-                    size="large"
-                    :loading="loadingColors"
-                  >
+                  <a-select v-model:value="formData.color" placeholder="Белый" size="large" :loading="loadingColors">
                     <a-select-option v-for="color in colors" :key="color.id" :value="color.id">
                       <div style="display: flex; align-items: center; gap: 8px;">
-                        <span 
-                          :style="{
-                            display: 'inline-block',
-                            width: '16px',
-                            height: '16px',
-                            borderRadius: '50%',
-                            backgroundColor: color.code || '#000',
-                            border: '1px solid #d9d9d9'
-                          }"
-                        ></span>
-                        {{ color.name }}
+                        <span :style="{
+                          display: 'inline-block',
+                          width: '16px',
+                          height: '16px',
+                          borderRadius: '50%',
+                          backgroundColor: color.code || '#000',
+                          border: '1px solid #d9d9d9'
+                        }"></span>
+                        {{ color.color }}
                       </div>
                     </a-select-option>
                   </a-select>
@@ -280,65 +202,38 @@
         <div class="photos-section">
           <h2>Фото</h2>
           <p class="section-subtitle">Загрузите фото вашего автомобиля четко с разных ракурсов</p>
-          
+
           <div class="upload-container">
             <div class="uploaded-images">
-              <div 
-                v-for="(image, index) in uploadedImages" 
-                :key="index"
-                class="image-item"
-              >
+              <div v-for="(image, index) in uploadedImages" :key="index" class="image-item">
                 <img :src="image.url" :alt="`Car photo ${index + 1}`" />
                 <div class="image-overlay">
-                  <a-button 
-                    type="text" 
-                    danger 
-                    @click="removeImage(index)"
-                    :icon="h(DeleteOutlined)"
-                  />
+                  <a-button type="text" danger @click="removeImage(index)" :icon="h(DeleteOutlined)" />
                 </div>
-                <a-progress 
-                  v-if="image.uploading"
-                  :percent="image.progress"
-                  :show-info="false"
-                  style="position: absolute; bottom: 0; left: 0; right: 0;"
-                />
+                <a-progress v-if="image.uploading" :percent="image.progress" :show-info="false"
+                  style="position: absolute; bottom: 0; left: 0; right: 0;" />
               </div>
 
               <!-- Upload Button -->
-              <div 
-                v-if="uploadedImages.length < 6"
-                class="upload-button"
-                @click="triggerFileInput"
-              >
+              <div v-if="uploadedImages.length < 6" class="upload-button" @click="triggerFileInput">
                 <CameraOutlined style="font-size: 32px; color: #1890ff;" />
                 <p>Выберите или перетащите фото</p>
               </div>
             </div>
-            <input 
-              ref="fileInput"
-              type="file"
-              accept="image/*"
-              multiple
-              style="display: none;"
-              @change="handleFileSelect"
-            />
+            <input ref="fileInput" type="file" accept="image/*" multiple style="display: none;"
+              @change="handleFileSelect" />
           </div>
         </div>
 
         <!-- Description Section -->
         <div class="description-section">
           <h2>Описание</h2>
-          <p class="section-subtitle">Не указывайте ссылки на источники, цены, контакты и не предлагайте другие услуги! Объявление не пройдет модерацию</p>
-          
+          <p class="section-subtitle">Не указывайте ссылки на источники, цены, контакты и не предлагайте другие услуги!
+            Объявление не пройдет модерацию</p>
+
           <a-form-item>
-            <a-textarea
-              v-model:value="formData.description"
-              placeholder="Четко опишите вашу авто"
-              :rows="6"
-              :maxlength="1200"
-              show-count
-            />
+            <a-textarea v-model:value="formData.description" placeholder="Четко опишите вашу авто" :rows="6"
+              :maxlength="1200" show-count />
           </a-form-item>
         </div>
 
@@ -346,14 +241,8 @@
         <div class="price-section">
           <h2>Цена</h2>
           <a-form-item>
-            <a-input-number
-              v-model:value="formData.price"
-              :min="0"
-              :max="999999999"
-              placeholder="1 850 000"
-              size="large"
-              style="width: 100%"
-            >
+            <a-input-number v-model:value="formData.price" :min="0" :max="999999999" placeholder="1 850 000"
+              size="large" style="width: 100%">
               <template #addonAfter>
                 <a-select v-model:value="currency" style="width: 60px">
                   <a-select-option value="USD">$</a-select-option>
@@ -366,13 +255,7 @@
 
         <!-- Submit Button -->
         <div class="submit-section">
-          <a-button 
-            type="primary" 
-            size="large" 
-            block
-            :loading="submitting"
-            @click="handleSubmit"
-          >
+          <a-button type="primary" size="large" block :loading="submitting" @click="handleSubmit">
             Опубликовать объявления
           </a-button>
         </div>
@@ -434,85 +317,112 @@ const fileInput = ref(null);
 const createdCarId = ref(null);
 
 // API Functions (sizning API logikangiz uchun)
-const api = {
+const carData = {
   // Avto turlariga mos markalari olish
-  async getBrandsByType(typeId) {
-    // Bu yerda sizning API chaqiruvingiz
-    // Example:
-    // const response = await fetch(`/api/brands/?avto_type=${typeId}`);
-    // return response.json();
-    
-    // Mock data for demonstration
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          { id: '1', name: 'Hyundai' },
-          { id: '2', name: 'Toyota' },
-          { id: '3', name: 'BMW' },
-          { id: '4', name: 'Mercedes-Benz' },
-        ]);
-      }, 500);
-    });
+  async getBrandsByType(type) {
+    try {
+      const { data } = await api.post("cars/marka/", {
+        avto_type: type
+      })
+      if (data.success) {
+        const markas = data.data.map((item, index) => {
+          return { id: item.id, marka: item.marka }
+        })
+        return markas
+      }
+    } catch (error) {
+      if (error.response) {
+        const errors = error.response.data
+        if (errors.type) {
+          message.error(errors.type[0])
+        } else if (errors.marka) {
+          message.error(errors.marka[0])
+        } else {
+          console.log(error.response)
+        }
+      } else {
+        console.log(error)
+      }
+    }
   },
 
   // Markaga mos modellar olish
   async getModelsByBrand(brandId) {
-    // Bu yerda sizning API chaqiruvingiz
-    // Example:
-    // const response = await fetch(`/api/models/?marka=${brandId}`);
-    // return response.json();
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          { id: '1', name: 'Sonata' },
-          { id: '2', name: 'Elantra' },
-          { id: '3', name: 'Tucson' },
-        ]);
-      }, 500);
-    });
+
+    try {
+      const { data } = await api.post("cars/models/", {
+        marka_id: brandId
+      })
+      // console.log(data)
+
+      if (data.success) {
+        const models = data.models.map((item, index) => {
+          return { id: item.id, name: item.name }
+        })
+        return models
+      }
+    } catch (error) {
+      if (error.response) {
+        const errors = error.response.data
+        if (errors.car_models) {
+          message.warning(errors.car_models[0])
+        }
+        console.log(error.response)
+      } else {
+        console.log(error)
+      }
+    }
   },
 
   // Davlatlar ro'yxati
   async getCountries() {
-    // const response = await fetch('/api/countries/');
-    // return response.json();
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          { id: '1', name: 'США' },
-          { id: '2', name: 'Корея' },
-          { id: '3', name: 'Германия' },
-          { id: '4', name: 'Япония' },
-        ]);
-      }, 300);
-    });
+    try {
+      const { data } = await api.get("cars/countries/")
+
+      const countries = data.map((item, index) => {
+        return { id: item.id, country: item.country }
+      })
+
+      return countries
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response)
+      } else {
+        console.log(error)
+      }
+    }
   },
 
   // Ranglar ro'yxati
   async getColors() {
-    // const response = await fetch('/api/colors/');
-    // return response.json();
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          { id: '1', name: 'Белый', code: '#FFFFFF' },
-          { id: '2', name: 'Черный', code: '#000000' },
-          { id: '3', name: 'Серый', code: '#808080' },
-          { id: '4', name: 'Красный', code: '#FF0000' },
-          { id: '5', name: 'Синий', code: '#0000FF' },
-        ]);
-      }, 300);
-    });
+    try {
+      const { data } = await api.get("cars/colors/")
+
+      const colors = data.map((item, index) => {
+        return {id : item.id , color : item.color , code : item.color_code}
+      })
+      return colors
+    } catch (error) {
+      if (error.response) {
+        console.error.response
+      } else {
+        console.log(error)
+      }
+    }
   },
 
-  // Yoqilg'i turlari
   async getFuels() {
-    // const response = await fetch('/api/fuels/');
-    // return response.json();
-    
+    try {
+      const {data} = api.get("cars/fuel/")
+
+      console.log(data)
+    } catch (error) {
+      if(error.response){
+        console.log(error.response)
+      }else{
+        console.log(error)
+      }
+    }
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve([
@@ -534,7 +444,7 @@ const api = {
     //   body: JSON.stringify(data)
     // });
     // return response.json();
-    
+
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ id: 'car-123', ...data });
@@ -547,7 +457,7 @@ const api = {
     // const formData = new FormData();
     // formData.append('car_id', carId);
     // formData.append('image', file);
-    
+
     // const xhr = new XMLHttpRequest();
     // xhr.upload.addEventListener('progress', (e) => {
     //   if (e.lengthComputable) {
@@ -555,7 +465,7 @@ const api = {
     //     onProgress(percentComplete);
     //   }
     // });
-    
+
     // return new Promise((resolve, reject) => {
     //   xhr.onload = () => resolve(JSON.parse(xhr.response));
     //   xhr.onerror = () => reject(xhr.statusText);
@@ -571,7 +481,7 @@ const api = {
         onProgress(progress);
         if (progress >= 100) {
           clearInterval(interval);
-          resolve({ 
+          resolve({
             id: Math.random().toString(36).substr(2, 9),
             url: URL.createObjectURL(file)
           });
@@ -586,14 +496,14 @@ const filterOption = (input, option) => {
   return option.children[0].children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
-const handleBrandChange = async (brandId) => {
+const handleMarkaChange = async (brandId) => {
   formData.car_model = null;
   models.value = [];
-  
+
   if (brandId) {
     loadingModels.value = true;
     try {
-      models.value = await api.getModelsByBrand(brandId);
+      models.value = await carData.getModelsByBrand(brandId);
     } catch (error) {
       message.error('Modellarni yuklashda xatolik');
     } finally {
@@ -607,7 +517,7 @@ const handleModelChange = async () => {
   if (!countries.value.length) {
     loadingCountries.value = true;
     try {
-      countries.value = await api.getCountries();
+      countries.value = await carData.getCountries();
     } catch (error) {
       message.error('Davlatlarni yuklashda xatolik');
     } finally {
@@ -618,7 +528,7 @@ const handleModelChange = async () => {
   if (!colors.value.length) {
     loadingColors.value = true;
     try {
-      colors.value = await api.getColors();
+      colors.value = await carData.getColors();
     } catch (error) {
       message.error('Ranglarni yuklashda xatolik');
     } finally {
@@ -645,7 +555,7 @@ const triggerFileInput = () => {
 const handleFileSelect = (event) => {
   const files = Array.from(event.target.files);
   const remainingSlots = 6 - uploadedImages.value.length;
-  
+
   if (files.length > remainingSlots) {
     message.warning(`Faqat ${remainingSlots} ta rasm qo'shishingiz mumkin`);
     return;
@@ -679,7 +589,7 @@ const uploadImages = async (carId) => {
       imageObj.uploading = true;
       try {
         const result = await api.uploadImage(
-          carId, 
+          carId,
           imageObj.file,
           (progress) => {
             imageObj.progress = progress;
@@ -756,10 +666,10 @@ const handleSubmit = async () => {
     }
 
     message.success('E\'lon muvaffaqiyatli yaratildi!');
-    
+
     // Redirect or reset form
     // router.push('/my-listings');
-    
+
   } catch (error) {
     message.error('E\'lonni yaratishda xatolik yuz berdi');
     console.error(error);
@@ -771,14 +681,14 @@ const handleSubmit = async () => {
 // Load initial data for selected type
 const loadBrandsForType = async () => {
   const typeMap = {
-    'automobile': 'auto-type-id-1',
-    'commercial': 'auto-type-id-2',
-    'motorcycle': 'auto-type-id-3'
+    'automobile': 'CR',
+    'commercial': 'CT',
+    'motorcycle': 'MO'
   };
 
   loadingBrands.value = true;
   try {
-    brands.value = await api.getBrandsByType(typeMap[selectedType.value]);
+    brands.value = await carData.getBrandsByType(typeMap[selectedType.value]);
   } catch (error) {
     message.error('Markalarni yuklashda xatolik');
   } finally {
@@ -788,6 +698,7 @@ const loadBrandsForType = async () => {
 
 // Watch for type change
 import { watch } from 'vue';
+import api from '@/utils/axios';
 watch(selectedType, () => {
   formData.marka = null;
   formData.car_model = null;
