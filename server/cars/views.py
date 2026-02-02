@@ -3,7 +3,7 @@ from django.shortcuts import render
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
@@ -23,6 +23,9 @@ from .serializers import (
     GetFuelSerializer,
     AddCarSerializer,
     CarImageUploadSerializer,
+    GetCarsSerializer,
+    GetCarSerializer,
+    GetCarImagesSerializer,
 )
 
 
@@ -140,26 +143,12 @@ class AddCarView(APIView):
 
 
 # /////////////////////////////////////////////////////////
-# ////////////    UPDATE CAR      /////////////////////////
-# /////////////////////////////////////////////////////////
-# class UpdateCarView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request, uuid):
-#         car = get_object_or_404(Car, id=uuid)
-
-#         serializer = AddCarSerializer(
-#             car, data=request.data, context={"request": request}
-#         )
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-        
-#         return Response(serializer.data)
-
-# /////////////////////////////////////////////////////////
 # ////////////   UPLOAD CAR IMAGE      ////////////////////
 # /////////////////////////////////////////////////////////
 class UploadCarImageView(APIView):
+    """
+        moshina rasmlarini joylash 
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -169,3 +158,40 @@ class UploadCarImageView(APIView):
         data = {"success": True, "message": "rasmlar yuklandi", "data": serializer.data}
 
         return Response(data, status=status.HTTP_200_OK)
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       GET CAR           ////////////////////
+# /////////////////////////////////////////////////////////
+class GetCarByIDView(APIView):
+    """
+    id boyicha faqat bitta moshina malumotlarini olish
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        car = get_object_or_404(Car, id=pk)
+        carSerializer = GetCarSerializer(car)
+        images = CarImage.objects.filter(car=car)
+        images_data = GetCarImagesSerializer(images, many=True)
+        car_data = carSerializer.data.copy()
+        car_data["images"] = images_data.data
+        data = {
+            "success": True,
+            "message": "yuklandi",
+            "data": car_data,
+        }
+        return Response(data)
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       GET ALL CARS         /////////////////
+# /////////////////////////////////////////////////////////
+class GetAllCarsView(ListAPIView):
+    """
+    Hamma moshinalarni olish uchun
+    """
+    permission_classes = [AllowAny]
+    serializer_class = GetCarsSerializer
+    queryset = Car.objects.all()
