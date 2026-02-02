@@ -194,4 +194,4 @@ class GetAllCarsView(ListAPIView):
     """
     permission_classes = [AllowAny]
     serializer_class = GetCarsSerializer
-    queryset = Car.objects.all()
+    queryset = Car.objects.filter(status = Car.STATUS_CHOICES.PUBLISHED)

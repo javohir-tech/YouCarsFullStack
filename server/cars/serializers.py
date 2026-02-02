@@ -159,6 +159,10 @@ class GetFuelSerializer(serializers.ModelSerializer):
 # ////////////    ADD CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
 class AddCarSerializer(serializers.Serializer):
+    """
+    MOSHINAlarni qoshish
+    """
+
     author = serializers.CharField(read_only=True)
     avto_type = serializers.UUIDField(write_only=True)
     marka = serializers.UUIDField()
@@ -375,6 +379,10 @@ class AddCarSerializer(serializers.Serializer):
 # ////////////   UPLOAD CAR IMAGE      ////////////////////
 # /////////////////////////////////////////////////////////
 class CarImageUploadSerializer(serializers.Serializer):
+    """
+    Rasmlarni qoshish
+    """
+
     car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all())
     image = serializers.ImageField(
         validators=[
@@ -402,9 +410,26 @@ class CarImageUploadSerializer(serializers.Serializer):
 
 
 # /////////////////////////////////////////////////////////
+# ////////////       GET CAR Images        //////////////////
+# /////////////////////////////////////////////////////////
+class GetCarImagesSerializer(serializers.ModelSerializer):
+    """
+    rasmlarni olish
+    """
+
+    class Meta:
+        model = CarImage
+        fields = ["image", "is_main", "order"]
+
+
+# /////////////////////////////////////////////////////////
 # ////////////       GET CAR        ///////////////////////
 # /////////////////////////////////////////////////////////
 class GetCarSerializer(serializers.ModelSerializer):
+    """
+    Moshinani olish
+    """
+
     author = serializers.StringRelatedField()
     marka = serializers.StringRelatedField()
     avto_type = serializers.StringRelatedField()
@@ -412,17 +437,11 @@ class GetCarSerializer(serializers.ModelSerializer):
     country = serializers.StringRelatedField()
     color = serializers.StringRelatedField()
     fuel = serializers.StringRelatedField()
+   
 
     class Meta:
         model = Car
         fields = "__all__"
-
-
-class GetCarImagesSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CarImage
-        fields = ["image", "is_main", "order"]
 
 
 # /////////////////////////////////////////////////////////
@@ -433,10 +452,12 @@ class GetCarsSerializer(serializers.ModelSerializer):
     car_model = serializers.StringRelatedField()
     country = serializers.StringRelatedField()
     fuel = serializers.StringRelatedField()
+    images = GetCarImagesSerializer(many=True)
 
     class Meta:
         model = Car
         fields = [
+            "id",
             "marka",
             "car_model",
             "year",
@@ -444,8 +465,10 @@ class GetCarsSerializer(serializers.ModelSerializer):
             "milage",
             "transmission_type",
             "displacement",
-            "power" , 
-            "fuel" , 
-            "drive_type", 
-            "country"
+            "power",
+            "fuel",
+            "drive_type",
+            "country",
+            "status",
+            "images",
         ]
