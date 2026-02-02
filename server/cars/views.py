@@ -28,6 +28,9 @@ from .serializers import (
     GetCarImagesSerializer,
 )
 
+# ///////////// PAGINATORS ////////////////////
+from shared.custom_pagination import CustomPagination
+
 
 # ///////////////////////////////////////////////////////
 # ////////////// GET ATVTO TYPE        //////////////////
@@ -195,3 +198,4 @@ class GetAllCarsView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = GetCarsSerializer
     queryset = Car.objects.filter(status = Car.STATUS_CHOICES.PUBLISHED)
+    pagination_class = CustomPagination
