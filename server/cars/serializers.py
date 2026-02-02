@@ -448,6 +448,9 @@ class GetCarSerializer(serializers.ModelSerializer):
 # ////////////       GET ALL CARS        //////////////////
 # /////////////////////////////////////////////////////////
 class GetCarsSerializer(serializers.ModelSerializer):
+    """
+        hamma moshinlarni olish
+    """
     marka = serializers.StringRelatedField()
     car_model = serializers.StringRelatedField()
     country = serializers.StringRelatedField()
