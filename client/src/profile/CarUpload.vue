@@ -868,7 +868,6 @@ const handleSubmit = async () => {
     formData.avto_type = typeMap[selectedType.value];
 
     // Step 1: Create car
-    console.log('Creating car...', formData);
     const carId = await carData.createCar({ ...formData });
 
     if (!carId) {

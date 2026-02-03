@@ -79,7 +79,7 @@
                                             Тариф
                                         </p>
                                     </router-link>
-                                    <router-link to="profile" class="profile_route">
+                                    <router-link to="/profile" class="profile_route">
                                         <ToolOutlined class="router_icon" />
                                         <p>
                                             Настройки аккаунта
