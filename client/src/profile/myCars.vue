@@ -1,11 +1,11 @@
 <template>
     <div class="my_cars">
-        <div v-for="item in cars_data" class="my_car" :key="item.id">
+        <div v-if="!loading" v-for="item in cars_data" class="my_car" :key="item.id">
 
             <a-row :gutter="[16, 24]">
                 <a-col class="gutter-row" :span="14">
                     <div class="car_left">
-                        <div class="car_image">
+                        <div class="car_image" v-if="item.images.length > 0">
                             <img :src="item.images[0].image" alt="car_image">
                         </div>
                         <div class="car_info">
@@ -37,8 +37,21 @@
                                 <p>{{ item.messages || 'Нет новых сообщений' }}</p>
                             </a-flex>
                         </div>
-
-                        <EllipsisOutlined class="car_menu" />
+                        <a-dropdown placement="bottomLeft">
+                            <a class="ant-dropdown-link" @click.prevent>
+                              <EllipsisOutlined class="car_menu" />
+                            </a>
+                            <template #overlay>
+                                <a-menu>
+                                    <a-menu-item>
+                                        <a href="javascript:;">Редактировать</a>
+                                    </a-menu-item>
+                                    <a-menu-item>
+                                        <a href="javascript:;">Снять с публикации</a>
+                                    </a-menu-item>
+                                </a-menu>
+                            </template>
+                        </a-dropdown>
                     </div>
                 </a-col>
             </a-row>
@@ -60,7 +73,7 @@
 
 <script setup>
 import api from '@/utils/axios'
-import { EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { DownOutlined, EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { onMounted, ref } from 'vue'
 
 // ─── Data ────────────────────────────────────
@@ -72,7 +85,8 @@ const cars_data = ref([])
 const getUserDraftCars = async () => {
     loading.value = true
     try {
-        const { data } = await api.get('/cars/user/cars/draft/')
+        const { data } = await api.get('/cars/user/cars/published/')
+        console.log(data)
         cars_data.value = data.result
     } catch (err) {
         error.value = true

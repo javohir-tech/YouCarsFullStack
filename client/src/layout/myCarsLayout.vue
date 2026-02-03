@@ -1,7 +1,7 @@
 <template>
     <h1 class="my_cars_header">Мои объявления</h1>
-    <router-link to="/profile/mycars">My Cars</router-link> |
-    <router-link to="/profile/mycars/my_cars_arxiv"> my_cars_warehouse</router-link>
+    <router-link to="/profile/mycars">Активные</router-link> |
+    <router-link to="/profile/mycars/my_cars_arxiv">Архив</router-link>
     <div>
         <router-view />
     </div>

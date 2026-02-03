@@ -58,7 +58,7 @@
                                     <div class="profile_route">
                                         <LayoutOutlined class="router_icon" />
                                         <a-dropdown>
-                                            <a class="ant-dropdown-link" @click.prevent>
+                                            <a class="ant-dropdown-link" style="width: 100%;" @click.prevent>
                                                 Разместить объявление
                                                 <DownOutlined />
                                             </a>
@@ -170,7 +170,7 @@ const cancel = () => {
 }
 
 .profile_container {
-    padding-top: 20px;
+    padding: 20px 0px;
 }
 
 .profile_layout_box {

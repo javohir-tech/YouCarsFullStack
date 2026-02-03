@@ -1,6 +1,6 @@
 <template>
     <div class="my_cars">
-        <div v-for="item in cars_data" class="my_car" :key="item.id">
+        <div v-if="!loading" v-for="item in cars_data" class="my_car" :key="item.id">
 
             <a-row :gutter="[16, 24]">
                 <a-col class="gutter-row" :span="14">

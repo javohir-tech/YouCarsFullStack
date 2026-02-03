@@ -215,3 +215,14 @@ class GetUserCarsFDraftView(ListAPIView):
         return Car.objects.filter(
             author=self.request.user, status=Car.STATUS_CHOICES.DRAFT
         )
+
+
+class GetUserCarsPublished(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = GetCarsSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        return Car.objects.filter(
+            author=self.request.user, status=Car.STATUS_CHOICES.PUBLISHED
+        )

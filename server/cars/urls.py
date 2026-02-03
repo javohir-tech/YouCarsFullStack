@@ -13,6 +13,7 @@ from .views import (
     GetAllCarsView,
     GetCarByIDView,
     GetUserCarsFDraftView,
+    GetUserCarsPublished,
 )
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
     path("car/<uuid:pk>/", GetCarByIDView.as_view()),
     path("cars/", GetAllCarsView.as_view()),
     path("user/cars/draft/", GetUserCarsFDraftView.as_view()),
+    path("user/cars/published/", GetUserCarsPublished.as_view()),
 ]
