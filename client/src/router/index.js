@@ -7,6 +7,7 @@ import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
 import { CarUpload, EmailVeriy, profile } from '@/profile'
+import ProfileLayout from '@/layout/profileLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,19 +50,26 @@ const router = createRouter({
         ///////// PROFILE ///////////
         {
           path: "profile",
-          component: profile,
-          meta: { requiresAuth: true }
+          component: ProfileLayout,
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: "",
+              component: profile,
+              meta: { requiresAuth: true }
+            },
+            {
+              path: "email_verify",
+              component: EmailVeriy,
+              meta: { emailV: true }
+            },
+            {
+              path: "upload",
+              component: CarUpload,
+              meta: { requiresAuth: true }
+            }
+          ]
         },
-        {
-          path: "email_verify",
-          component: EmailVeriy,
-          meta: { emailV: true }
-        },
-        {
-          path: "upload",
-          component: CarUpload,
-          meta: { requiresAuth: true }
-        }
       ]
     }
   ],

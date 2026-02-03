@@ -37,7 +37,7 @@
 
                     <!-- Back Link -->
                     <div class="login-link">
-                        <router-link to="profile" class="edit-link">Назад</router-link>
+                        <router-link to="/profile" class="edit-link">Назад</router-link>
                     </div>
                 </a-form>
             </div>

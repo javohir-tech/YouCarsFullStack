@@ -1,10 +1,13 @@
 <template>
     <div class="container">
+
+
+
         <div style="margin: 30px 0px">
 
             <div>
                 <h1>Upload</h1>
-                <router-link to="upload">
+                <router-link to="profile/upload">
                     <a-button>
                         upload
                     </a-button>
@@ -57,6 +60,7 @@ import { message } from 'ant-design-vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/useUserStore';
+import { Row } from 'ant-design-vue/es/grid';
 
 const userStore = useUserStore()
 const email = ref(userStore.email)
@@ -131,7 +135,7 @@ const handleEmailRetriew = async () => {
             }
         )
         message.success(data.message)
-        router.push("email_verify")
+        router.push("profile/email_verify")
         userStore.add_email_edit_token(data.data.token.email_edit_token)
         userStore.add_new_email(email.value)
         console.log(data)
