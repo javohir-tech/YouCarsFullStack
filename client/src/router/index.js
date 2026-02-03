@@ -57,19 +57,19 @@ const router = createRouter({
               path: "",
               component: profile,
               meta: { requiresAuth: true }
-            },
-            {
-              path: "email_verify",
-              component: EmailVeriy,
-              meta: { emailV: true }
-            },
-            {
-              path: "upload",
-              component: CarUpload,
-              meta: { requiresAuth: true }
             }
           ]
         },
+        {
+          path: "email_verify",
+          component: EmailVeriy,
+          meta: { emailV: true }
+        },
+        {
+          path: "upload",
+          component: CarUpload,
+          meta: { requiresAuth: true }
+        }
       ]
     }
   ],

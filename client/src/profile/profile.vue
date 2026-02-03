@@ -1,13 +1,10 @@
 <template>
     <div class="container">
-
-
-
-        <div style="margin: 30px 0px">
+        <div>
 
             <div>
                 <h1>Upload</h1>
-                <router-link to="profile/upload">
+                <router-link to="upload">
                     <a-button>
                         upload
                     </a-button>
@@ -15,11 +12,6 @@
             </div>
 
             <h1>Profile</h1>
-
-            <div style="margin-bottom: 20px;">
-                <p>Logout</p>
-                <a-button :loading="loading" @click="handleLogOut" type="primary">logout</a-button>
-            </div>
 
             <form @submit.prevent="handleEmailRetriew">
                 <p>Edit Email</p>
@@ -50,6 +42,164 @@
                     <a-button type="primary" html-type="submit">Saqlash</a-button>
                 </div>
             </form>
+            <div>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+                <p>salom</p>
+            </div>
+                <p>salom</p>
         </div>
     </div>
 </template>
@@ -60,7 +210,6 @@ import { message } from 'ant-design-vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/useUserStore';
-import { Row } from 'ant-design-vue/es/grid';
 
 const userStore = useUserStore()
 const email = ref(userStore.email)
@@ -103,29 +252,6 @@ const handleUpdateUser = async () => {
     }
 }
 
-const handleLogOut = async () => {
-    loading.value = true
-    try {
-
-        const refresh_token = localStorage.getItem('refresh_token')
-
-        const { data } = await api.post('auth/logout/', {
-            refresh: refresh_token
-        })
-
-        if (data.success) {
-            localStorage.clear()
-            userStore.clear()
-            message.success(data.message)
-            router.push("/")
-        }
-    } catch (error) {
-        console.log(error)
-    } finally {
-        loading.value = false
-    }
-}
-
 const handleEmailRetriew = async () => {
     try {
         const { data } = await api.post("auth/email/",
@@ -135,7 +261,7 @@ const handleEmailRetriew = async () => {
             }
         )
         message.success(data.message)
-        router.push("profile/email_verify")
+        router.push("email_verify")
         userStore.add_email_edit_token(data.data.token.email_edit_token)
         userStore.add_new_email(email.value)
         console.log(data)
