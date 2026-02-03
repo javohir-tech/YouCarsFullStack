@@ -6,8 +6,9 @@ import { Home } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
-import { CarUpload, EmailVeriy, profile } from '@/profile'
+import { CarUpload, EmailVeriy, myCars, myCarsWarehouse, profile } from '@/profile'
 import ProfileLayout from '@/layout/profileLayout.vue'
+import MyCarsLayout from '@/layout/myCarsLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,24 @@ const router = createRouter({
               path: "",
               component: profile,
               meta: { requiresAuth: true }
+            },
+            ////////////// MY CARS /////////////////
+            {
+              path: "mycars",
+              component: MyCarsLayout,
+              meta: { requiresAuth: true },
+              children: [
+                {
+                  path: "",
+                  component: myCars,
+                  meta: { requiresAuth: true },
+                },
+                {
+                  path: "my_cars_arxiv",
+                  component: myCarsWarehouse,
+                  meta: { requiresAuth: true },
+                }
+              ]
             }
           ]
         },

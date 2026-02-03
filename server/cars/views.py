@@ -150,8 +150,9 @@ class AddCarView(APIView):
 # /////////////////////////////////////////////////////////
 class UploadCarImageView(APIView):
     """
-        moshina rasmlarini joylash 
+    moshina rasmlarini joylash
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -195,7 +196,22 @@ class GetAllCarsView(ListAPIView):
     """
     Hamma moshinalarni olish uchun
     """
+
     permission_classes = [AllowAny]
     serializer_class = GetCarsSerializer
-    queryset = Car.objects.filter(status = Car.STATUS_CHOICES.PUBLISHED)
+    queryset = Car.objects.filter(status=Car.STATUS_CHOICES.PUBLISHED)
     pagination_class = CustomPagination
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       GET MY CARS          /////////////////
+# /////////////////////////////////////////////////////////
+class GetUserCarsFDraftView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = GetCarsSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        return Car.objects.filter(
+            author=self.request.user, status=Car.STATUS_CHOICES.DRAFT
+        )

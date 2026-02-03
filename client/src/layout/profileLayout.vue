@@ -65,7 +65,7 @@
                                             <template #overlay>
                                                 <a-menu>
                                                     <a-menu-item>
-                                                        <router-link to="/">
+                                                        <router-link to="/profile/mycars">
                                                             Мои объвления
                                                         </router-link>
                                                     </a-menu-item>

@@ -12,6 +12,7 @@ from .views import (
     UploadCarImageView,
     GetAllCarsView,
     GetCarByIDView,
+    GetUserCarsFDraftView,
 )
 
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path("upload/image/", UploadCarImageView.as_view()),
     path("car/<uuid:pk>/", GetCarByIDView.as_view()),
     path("cars/", GetAllCarsView.as_view()),
+    path("user/cars/draft/", GetUserCarsFDraftView.as_view()),
 ]

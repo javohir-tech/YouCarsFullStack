@@ -456,11 +456,12 @@ class GetCarsSerializer(serializers.ModelSerializer):
     country = serializers.StringRelatedField()
     fuel = serializers.StringRelatedField()
     images = GetCarImagesSerializer(many=True)
-
+    author = serializers.StringRelatedField()
     class Meta:
         model = Car
         fields = [
             "id",
+            "author",
             "marka",
             "car_model",
             "year",
