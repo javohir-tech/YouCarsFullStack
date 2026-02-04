@@ -52,7 +52,7 @@
               <a-col :span="12">
                 <a-form-item label="Год выпуска" :validate-status="validationErrors.year ? 'error' : ''"
                   :help="validationErrors.year">
-                  <a-input-number v-model:value="formData.year" :min="1951" :max="currentYear" placeholder="2024"
+                  <a-input-number v-model:value="formData.year" placeholder="2024"
                     style="width: 100%" size="large" @blur="validateField('year')" />
                 </a-form-item>
               </a-col>
@@ -61,7 +61,7 @@
               <a-col :span="12">
                 <a-form-item label="Пробег" :validate-status="validationErrors.milage ? 'error' : ''"
                   :help="validationErrors.milage">
-                  <a-input-number v-model:value="formData.milage" :min="0" :max="2000000" placeholder="16 000"
+                  <a-input-number v-model:value="formData.milage" placeholder="16 000"
                     style="width: 100%" size="large" @blur="validateField('milage')">
                     <template #addonAfter>км</template>
                   </a-input-number>
@@ -98,7 +98,7 @@
               <a-col :span="12">
                 <a-form-item label="Объем" :validate-status="validationErrors.displacement ? 'error' : ''"
                   :help="validationErrors.displacement">
-                  <a-input-number v-model:value="formData.displacement" :min="0" :max="9.9" :step="0.1"
+                  <a-input-number v-model:value="formData.displacement" :step="0.1"
                     placeholder="1.8" style="width: 100%" size="large" @blur="validateField('displacement')">
                     <template #addonAfter>л</template>
                   </a-input-number>
@@ -109,7 +109,7 @@
               <a-col :span="12">
                 <a-form-item label="Мощность" :validate-status="validationErrors.power ? 'error' : ''"
                   :help="validationErrors.power">
-                  <a-input-number v-model:value="formData.power" :min="0" :max="2000" placeholder="153"
+                  <a-input-number v-model:value="formData.power" placeholder="153"
                     style="width: 100%" size="large" @blur="validateField('power')">
                     <template #addonAfter>л.с</template>
                   </a-input-number>
@@ -269,7 +269,7 @@
         <div class="price-section">
           <h2>Цена</h2>
           <a-form-item :validate-status="validationErrors.price ? 'error' : ''" :help="validationErrors.price">
-            <a-input-number v-model:value="formData.price" :min="0" :max="999999999" placeholder="1 850 000"
+            <a-input-number v-model:value="formData.price" placeholder="1 850 000"
               size="large" style="width: 100%" @blur="validateField('price')">
               <template #addonAfter>
                 <a-select v-model:value="currency" style="width: 60px">
@@ -604,7 +604,7 @@ const carData = {
 
   async getCountries() {
     try {
-      const { data } = await api.get("cars/countries/")
+      const { data } = await api.get("/cars/countries/")
       const countries = data.map((item) => {
         return { id: item.id, country: item.country }
       })
@@ -652,7 +652,7 @@ const carData = {
 
   async createCar(data) {
     try {
-      const response = await api.post("cars/upload/", { ...data })
+      const response = await api.post("/cars/car/upload/", { ...data })
       return response.data.data.id
     } catch (error) {
       if (error.response) {
@@ -677,7 +677,7 @@ const carData = {
     formData.append('image', file);
     formData.append('is_main', isMain);
     try {
-      const response = await api.post('cars/upload/image/', formData, {
+       const response = await api.post('/cars/car/image/upload/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -688,7 +688,6 @@ const carData = {
           onProgress(percentCompleted);
         }
       });
-
       return response.data;
     } catch (error) {
       if (error.response) {

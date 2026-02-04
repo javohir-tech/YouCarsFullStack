@@ -3,7 +3,12 @@ from django.shortcuts import render
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    DestroyAPIView,
+)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
@@ -129,7 +134,7 @@ class GetFuelsView(ListAPIView):
 # /////////////////////////////////////////////////////////
 # ////////////    ADD CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
-class AddCarView(APIView):
+class CarView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -139,40 +144,50 @@ class AddCarView(APIView):
         data = {
             "success": True,
             "message": "moshina muvvaqiyatli yaratildi",
-            "data": serializer.data,
+            "data": {"id": serializer.data.get("id")},
         }
 
         return Response(data, status=status.HTTP_200_OK)
 
-
-# /////////////////////////////////////////////////////////
-# ////////////   UPLOAD CAR IMAGE      ////////////////////
-# /////////////////////////////////////////////////////////
-class UploadCarImageView(APIView):
-    """
-    moshina rasmlarini joylash
-    """
-
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        serializer = CarImageUploadSerializer(data=request.data)
+    def put(self, request, pk):
+        car = get_object_or_404(Car, id=pk)
+        serializer = AddCarSerializer(car, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        data = {"success": True, "message": "rasmlar yuklandi", "data": serializer.data}
 
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "success": True,
+                "message": "o'zgartirildi",
+                "data": serializer.data,
+            }
+        )
 
+    def patch(self, request, pk):
+        car = get_object_or_404(Car, id=pk)
+        serializer = AddCarSerializer(car, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-# /////////////////////////////////////////////////////////
-# ////////////       GET CAR           ////////////////////
-# /////////////////////////////////////////////////////////
-class GetCarByIDView(APIView):
-    """
-    id boyicha faqat bitta moshina malumotlarini olish
-    """
+        return Response(
+            {
+                "success": True,
+                "message": "patch ishladi",
+                "data": serializer.data,
+            }
+        )
 
-    permission_classes = [AllowAny]
+    def delete(self, request, pk):
+        car = get_object_or_404(Car, id=pk)
+        car.delete()
+
+        return Response(
+            {
+                "success": True,
+                "message": "ochirildi",
+            },
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
     def get(self, request, pk):
         car = get_object_or_404(Car, id=pk)
@@ -187,6 +202,42 @@ class GetCarByIDView(APIView):
             "data": car_data,
         }
         return Response(data)
+
+
+# /////////////////////////////////////////////////////////
+# //////////// UPLOAD and CHANGE CAR IMAGE/////////////////
+# /////////////////////////////////////////////////////////
+class UploadCarImageView(APIView):
+    """
+    moshina rasmlarini joylash
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CarImageUploadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = {
+            "success": True,
+            "message": "rasmlar yuklandi",
+            "data": serializer.data,
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        car_image = get_object_or_404(CarImage, car_id=pk)
+        serializer = CarImageUploadSerializer(car_image, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {
+                "success": True,
+                "message": "ozgardi",
+                "data": serializer.data,
+            }
+        )
 
 
 # /////////////////////////////////////////////////////////

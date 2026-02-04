@@ -5,7 +5,7 @@
             <a-row :gutter="[16, 24]">
                 <a-col class="gutter-row" :span="14">
                     <div class="car_left">
-                        <div class="car_image">
+                        <div class="car_image" v-if="item.images.length > 0">
                             <img :src="item.images[0].image" alt="car_image">
                         </div>
                         <div class="car_info">

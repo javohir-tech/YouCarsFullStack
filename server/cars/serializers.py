@@ -211,9 +211,9 @@ class AddCarSerializer(serializers.Serializer):
         return data
 
     def validate(self, data):
-        auto_type_id = data.get("avto_type")
-        marka_id = data.get("marka")
-        model_id = data.get("car_model")
+        auto_type_id = data.get("avto_type" , None)
+        marka_id = data.get("marka" , None)
+        model_id = data.get("car_model" , None)
 
         auto_type = AvtoTypeMarka.objects.filter(
             avto_type_id=auto_type_id, marka_id=marka_id
@@ -407,6 +407,13 @@ class CarImageUploadSerializer(serializers.Serializer):
         if car_image.exists():
             validated_data["order"] = car_image.last().order + 1
         return CarImage.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        for attr , value in validated_data.items():
+            setattr(instance , attr , value)
+            
+        instance.save()
+        return instance
 
 
 # /////////////////////////////////////////////////////////
