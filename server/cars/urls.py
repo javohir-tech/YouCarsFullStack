@@ -9,7 +9,7 @@ from .views import (
     GetCountriesView,
     GetFuelsView,
     CarView,
-    UploadCarImageView,
+    CarImageView,
     GetAllCarsView,
     GetUserCarsFDraftView,
     GetUserCarsPublished,
@@ -28,9 +28,8 @@ urlpatterns = [
     # get put patch delete
     path("car/<uuid:pk>/", CarView.as_view()),
     
-    path("car/image/upload/", UploadCarImageView.as_view()),
-    
-    # path("image/change/<uuid:pk>/", UploadCarImageView.as_view()),
+    path("car/image/upload/", CarImageView.as_view()),
+    path("car/image/<uuid:pk>/", CarImageView.as_view()),
     
     path("cars/", GetAllCarsView.as_view()),
     path("user/cars/draft/", GetUserCarsFDraftView.as_view()),

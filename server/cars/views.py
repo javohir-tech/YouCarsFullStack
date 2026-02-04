@@ -207,7 +207,7 @@ class CarView(APIView):
 # /////////////////////////////////////////////////////////
 # //////////// UPLOAD and CHANGE CAR IMAGE/////////////////
 # /////////////////////////////////////////////////////////
-class UploadCarImageView(APIView):
+class CarImageView(APIView):
     """
     moshina rasmlarini joylash
     """
@@ -226,16 +226,13 @@ class UploadCarImageView(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
-    def put(self, request, pk):
-        car_image = get_object_or_404(CarImage, car_id=pk)
-        serializer = CarImageUploadSerializer(car_image, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+    def delete(self, request, pk):
+        car_image = get_object_or_404(CarImage, id=pk)
+        car_image.delete()
         return Response(
             {
                 "success": True,
-                "message": "ozgardi",
-                "data": serializer.data,
+                "message": "ochirildi",
             }
         )
 

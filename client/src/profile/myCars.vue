@@ -39,12 +39,14 @@
                         </div>
                         <a-dropdown placement="bottomLeft">
                             <a class="ant-dropdown-link" @click.prevent>
-                              <EllipsisOutlined class="car_menu" />
+                                <EllipsisOutlined class="car_menu" />
                             </a>
                             <template #overlay>
                                 <a-menu>
                                     <a-menu-item>
-                                        <a href="javascript:;">Редактировать</a>
+                                        <router-link :to="`/update/${item.id}`">
+                                            Редактировать
+                                        </router-link>
                                     </a-menu-item>
                                     <a-menu-item>
                                         <a href="javascript:;">Снять с публикации</a>
@@ -72,6 +74,7 @@
 </template>
 
 <script setup>
+import router from '@/router'
 import api from '@/utils/axios'
 import { DownOutlined, EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { onMounted, ref } from 'vue'

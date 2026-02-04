@@ -371,99 +371,99 @@ const createdCarId = ref(null);
 const validationRules = {
   marka: {
     required: true,
-    message: 'Please select a car brand'
+    message: 'Пожалуйста, выберите марку автомобиля'
   },
   car_model: {
     required: true,
-    message: 'Please select a car model'
+    message: 'Пожалуйста, выберите модель автомобиля'
   },
   year: {
     required: true,
-    message: 'Please enter the year',
+    message: 'Пожалуйста, укажите год',
     validate: (value) => {
-      if (!value) return 'Year is required';
-      if (value < 1951) return 'Year cannot be less than 1951';
-      if (value > currentYear) return `Year cannot be greater than ${currentYear}`;
+      if (!value) return 'Год обязателен';
+      if (value < 1951) return 'Год не может быть меньше 1951';
+      if (value > currentYear) return `Год не может быть больше ${currentYear}`;
       return '';
     }
   },
   milage: {
     required: true,
-    message: 'Please enter the mileage',
+    message: 'Пожалуйста, укажите пробег',
     validate: (value) => {
-      if (value === null || value === undefined) return 'Mileage is required';
-      if (value < 0) return 'Mileage cannot be negative';
-      if (value > 2000000) return 'Mileage cannot exceed 2,000,000 km';
+      if (value === null || value === undefined) return 'Пробег обязателен';
+      if (value < 0) return 'Пробег не может быть отрицательным';
+      if (value > 2000000) return 'Пробег не может превышать 2 000 000 км';
       return '';
     }
   },
   country: {
     required: true,
-    message: 'Please select a country'
+    message: 'Пожалуйста, выберите страну'
   },
   fuel: {
     required: true,
-    message: 'Please select fuel type'
+    message: 'Пожалуйста, выберите тип топлива'
   },
   displacement: {
     required: true,
-    message: 'Please enter engine displacement',
+    message: 'Пожалуйста, укажите объем двигателя',
     validate: (value) => {
-      if (value === null || value === undefined) return 'Engine displacement is required';
-      if (value < 0) return 'Displacement cannot be negative';
-      if (value > 9.9) return 'Displacement cannot exceed 9.9 L';
-      if (value === 0) return 'Displacement must be greater than 0';
+      if (value === null || value === undefined) return 'Объем двигателя обязателен';
+      if (value < 0) return 'Объем не может быть отрицательным';
+      if (value > 9.9) return 'Объем не может превышать 9.9 л';
+      if (value === 0) return 'Объем должен быть больше 0';
       return '';
     }
   },
   power: {
     required: true,
-    message: 'Please enter power',
+    message: 'Пожалуйста, укажите мощность',
     validate: (value) => {
-      if (value === null || value === undefined) return 'Power is required';
-      if (value < 0) return 'Power cannot be negative';
-      if (value > 2000) return 'Power cannot exceed 2000 HP';
-      if (value === 0) return 'Power must be greater than 0';
+      if (value === null || value === undefined) return 'Мощность обязательна';
+      if (value < 0) return 'Мощность не может быть отрицательной';
+      if (value > 2000) return 'Мощность не может превышать 2000 л.с.';
+      if (value === 0) return 'Мощность должна быть больше 0';
       return '';
     }
   },
   drive_type: {
     required: true,
-    message: 'Please select drive type'
+    message: 'Пожалуйста, выберите тип привода'
   },
   transmission_type: {
     required: true,
-    message: 'Please select transmission type'
+    message: 'Пожалуйста, выберите тип коробки передач'
   },
   doors_count: {
     required: true,
-    message: 'Please select number of doors'
+    message: 'Пожалуйста, выберите количество дверей'
   },
   body: {
     required: true,
-    message: 'Please select body type'
+    message: 'Пожалуйста, выберите тип кузова'
   },
   condition: {
     required: true,
-    message: 'Please select vehicle condition'
+    message: 'Пожалуйста, выберите состояние автомобиля'
   },
   color: {
     required: true,
-    message: 'Please select a color'
+    message: 'Пожалуйста, выберите цвет'
   },
   description: {
     required: true,
-    message: 'Please add a description',
+    message: 'Пожалуйста, добавьте описание',
     validate: (value) => {
-      if (!value || value.trim().length === 0) return 'Description is required';
-      if (value.trim().length < 10) return 'Description must be at least 10 characters';
-      if (value.length > 1200) return 'Description cannot exceed 1200 characters';
-      // Check for forbidden patterns
+      if (!value || value.trim().length === 0) return 'Описание обязательно';
+      if (value.trim().length < 10) return 'Описание должно содержать не менее 10 символов';
+      if (value.length > 1200) return 'Описание не может превышать 1200 символов';
+      // Проверка на запрещенные шаблоны
       const forbiddenPatterns = [
-        /https?:\/\//i, // URLs
-        /www\./i, // www links
-        /\+\d{1,3}[\s-]?\d/i, // Phone numbers
-        /@[a-zA-Z0-9]/i, // Email/social handles
+        /https?:\/\//i, // URL-адреса
+        /www\./i, // www ссылки
+        /\+\d{1,3}[\s-]?\d/i, // Номера телефонов
+        /@[a-zA-Z0-9]/i, // Email/социальные сети
         /telegram/i,
         /whatsapp/i,
         /viber/i
@@ -471,7 +471,7 @@ const validationRules = {
       
       for (const pattern of forbiddenPatterns) {
         if (pattern.test(value)) {
-          return 'Description must not contain links, contacts, or messenger references';
+          return 'Описание не должно содержать ссылки, контакты или упоминания мессенджеров';
         }
       }
       
@@ -480,20 +480,20 @@ const validationRules = {
   },
   price: {
     required: true,
-    message: 'Please enter the price',
+    message: 'Пожалуйста, укажите цену',
     validate: (value) => {
-      if (value === null || value === undefined) return 'Price is required';
-      if (value <= 0) return 'Price must be greater than 0';
-      if (value > 999999999) return 'Price is too high';
+      if (value === null || value === undefined) return 'Цена обязательна';
+      if (value <= 0) return 'Цена должна быть больше 0';
+      if (value > 999999999) return 'Цена слишком высокая';
       return '';
     }
   },
   images: {
     required: true,
-    message: 'Upload at least 1 photo',
+    message: 'Загрузите минимум 1 фото',
     validate: (images) => {
-      if (!images || images.length === 0) return 'Upload at least 1 photo';
-      if (images.length > 6) return 'Maximum 6 photos allowed';
+      if (!images || images.length === 0) return 'Загрузите минимум 1 фото';
+      if (images.length > 6) return 'Максимум 6 фотографий';
       return '';
     }
   }

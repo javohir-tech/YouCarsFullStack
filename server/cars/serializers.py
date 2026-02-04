@@ -426,7 +426,7 @@ class GetCarImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CarImage
-        fields = ["image", "is_main", "order"]
+        fields = ["id","image", "is_main", "order"]
 
 
 # /////////////////////////////////////////////////////////
