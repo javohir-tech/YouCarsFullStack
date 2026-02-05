@@ -10,10 +10,10 @@
                         </div>
                         <div class="car_info">
                             <p class="car_name">
-                                {{ item.marka }} {{ item.car_model }}, {{ item.year }}
+                                {{ capitalizeWords(item.marka) }} {{ capitalizeWords(item.car_model) }}, {{ item.year }}
                             </p>
                             <p class="car_price">{{ item.price }}$</p>
-                            <p class="car_country">{{ item.country }}</p>
+                            <p class="car_country">{{ capitalizeWords(item.country) }}</p>
                         </div>
                     </div>
                 </a-col>
@@ -22,7 +22,7 @@
                         <div class="car_status">
                             <a-flex class="car_view" gap="10" align="center">
                                 <EyeOutlined class="car_info_icon" />
-                                <p>{{ item.views || 0 }}</p>
+                                <p>{{ item.views }}</p>
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
                                 <UserOutlined class="car_info_icon" />
@@ -30,7 +30,7 @@
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
                                 <HeartOutlined class="car_info_icon heart_icon" />
-                                <p>{{ item.likes || 0 }}</p>
+                                <p>{{ item.likes_count }}</p>
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
                                 <MessageOutlined class="car_info_icon" />
@@ -49,7 +49,7 @@
                                         </router-link>
                                     </a-menu-item>
                                     <a-menu-item>
-                                        <a href="javascript:;">Снять с публикации</a>
+                                        <a @click="handleKeepDeactive(item.id)">Снять с публикации</a>
                                     </a-menu-item>
                                 </a-menu>
                             </template>
@@ -63,33 +63,33 @@
             <a-spin />
         </div>
 
-        <div class="error" v-if="error" style="height: 200px;">
+        <div class="error" v-if="error" style="height: 400px;">
             <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
         </div>
 
-        <div class="empty" v-if="cars_data.length === 0 && !loading">
+        <div class="empty" v-if="cars_data.length === 0 && !loading && !error">
             <a-empty />
         </div>
     </div>
 </template>
 
 <script setup>
-import router from '@/router'
 import api from '@/utils/axios'
-import { DownOutlined, EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 import { onMounted, ref } from 'vue'
 
 // ─── Data ────────────────────────────────────
 const error = ref(false)
 const loading = ref(false)
 const cars_data = ref([])
+const keepLoading = ref(false)
 
 // ─── Fetch cars ──────────────────────────────
 const getUserDraftCars = async () => {
     loading.value = true
     try {
         const { data } = await api.get('/cars/user/cars/published/')
-        console.log(data)
         cars_data.value = data.result
     } catch (err) {
         error.value = true
@@ -104,25 +104,26 @@ onMounted(() => {
 })
 
 
-// ─── Оставить активным ───────────────────────
-// ← o'z API chaqirigingiz yozing
-const handleKeepDeactive = async () => {
+
+const handleKeepDeactive = async (carId) => {
     keepLoading.value = true
     try {
-        // await api.patch(`/cars/${selectedCar.value.id}/`, { status: 'active' })
-
-        // Lokal status "active" qilib qo'yildi
-        const car = cars_data.value.find(c => c.id === selectedCar.value.id)
-        if (car) {
-            car.status = 'active'
-        }
-
-        closeModal()
+        const response = await api.patch(`/cars/car/${carId}/`, {
+            status: "DF"
+        })
+        cars_data.value = cars_data.value.filter(c => c.id !== carId)
+        message.success(response.data.message)
     } catch (err) {
         console.log(err.response || err)
     } finally {
         keepLoading.value = false
     }
+}
+
+
+function capitalizeWords(text) {
+    if (!text) return text
+    return text.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
 }
 </script>
 

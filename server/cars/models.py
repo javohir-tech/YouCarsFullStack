@@ -67,12 +67,11 @@ class AvtoTypeMarka(BaseModel):
 
     def __str__(self):
         return f"{self.avto_type.__str__()} and {self.marka.__str__()}"
-    
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['avto_type' , 'marka'],
-                name='avto_type and marka unique'
+                fields=["avto_type", "marka"], name="avto_type and marka unique"
             )
         ]
 
@@ -94,7 +93,6 @@ class CarModel(BaseModel):
     def save(self, *args, **kwargs):
         self.add_name()
         super().save(*args, **kwargs)
-        
 
 
 # //////////////////////////////////////////////////////
@@ -221,6 +219,7 @@ class Car(BaseModel):
     status = models.CharField(
         max_length=2, choices=STATUS_CHOICES.choices, default=STATUS_CHOICES.DRAFT
     )
+    views = models.PositiveIntegerField(default=0)
 
     def is_available(self):
         return self.availability == self.AVAILABILITY_CHOICES.IN_STOCK
@@ -250,23 +249,45 @@ class CarImage(BaseModel):
 
     def __str__(self):
         return f"{self.car} - image {self.id}"
-    
-    
+
+
 # //////////////////////////////////////////////////////
 # //////////////// LIKE MODEL    ///////////////////////
 # //////////////////////////////////////////////////////
 class Like(BaseModel):
-    author = models.ForeignKey(User , on_delete=models.CASCADE , related_name="likes")
-    car = models.ForeignKey(Car , on_delete=models.CASCADE , related_name='likes')
-    
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name="likes")
+
     def __str__(self):
-        return f"{self.author.__str__()} and {self.car.__str__}"
-    
-    class Meta :
-        constraints  = [
+        return f"{self.author.__str__()} and {self.car.__str__()}"
+
+    class Meta:
+        constraints = [
             models.UniqueConstraint(
-                fields=["author" , "car",],
-                name="unique_like_per_user_and_car"
+                fields=[
+                    "author",
+                    "car",
+                ],
+                name="unique_like_per_user_and_car",
             )
         ]
+
+
+class DeletionStatistics(models.Model):
+    sold_on_youcar = models.IntegerField(default=0, verbose_name="YouCar da sotilgan")
+    sold_elsewhere = models.IntegerField(default=0, verbose_name="Boshqa joyda sotilgan")
+    other_reason = models.IntegerField(default=0, verbose_name="Boshqa sabab")
+    
+    @classmethod
+    def increment_reason(cls, reason):
+        stats, created = cls.objects.get_or_create(id=1)
         
+        if reason == 1:
+            stats.sold_on_youcar += 1
+        elif reason == 2:
+            stats.sold_elsewhere += 1
+        elif reason == 3:
+            stats.other_reason += 1
+        
+        stats.save()
+        return stats

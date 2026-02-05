@@ -11,6 +11,8 @@ from .models import (
     CarImage,
     AvtoMobileType,
     AvtoTypeMarka,
+    DeletionStatistics,
+    Like, 
 )
 
 
@@ -92,6 +94,18 @@ class CarAdmin(admin.ModelAdmin):
 class CarImageAdmin(admin.ModelAdmin):
     list_display = ["car", "image", "is_main", "order"]
     list_filter = ["car", "is_main"]
+    list_per_page = 20
+
+
+@admin.register(DeletionStatistics)
+class DeletionStatistics(admin.ModelAdmin):
+    list_display = ["sold_on_youcar", "sold_elsewhere", "other_reason"]
+    
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ['author' , "car"]
+    list_filter = ['author' , 'car']
+    search_fields = ['author' , 'car']
     list_per_page = 20
 
 

@@ -24,7 +24,6 @@
                                 :class="item.status === 'published' ? 'status_active' : 'status_sold'">
                                 {{ item.status === 'active' ? 'Активен' : 'Продал на YouCar' }}
                             </p>
-
                             <a-flex class="car_view" gap="10" align="center">
                                 <EyeOutlined class="car_info_icon" />
                                 <p>{{ item.views || 0 }}</p>
@@ -35,7 +34,7 @@
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
                                 <HeartOutlined class="car_info_icon heart_icon" />
-                                <p>{{ item.likes || 0 }}</p>
+                                <p>{{ item.likes_count }}</p>
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
                                 <MessageOutlined class="car_info_icon" />
@@ -53,11 +52,11 @@
             <a-spin />
         </div>
 
-        <div class="error" v-if="error" style="height: 200px;">
+        <div class="error" v-if="error" style="height: 400px;">
             <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
         </div>
 
-        <div class="empty" v-if="cars_data.length === 0 && !loading">
+        <div class="empty" v-if="cars_data.length === 0 && !loading && !error">
             <a-empty />
         </div>
         <!-- ============ MODAL ============ -->
@@ -102,6 +101,7 @@
 <script setup>
 import api from '@/utils/axios'
 import { EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 import { onMounted, ref } from 'vue'
 
 // ─── Data ────────────────────────────────────
@@ -118,9 +118,9 @@ const keepLoading = ref(false)
 
 // ─── Delete reasons ──────────────────────────
 const deleteReasons = [
-    { value: 'youcar', label: 'Продал на YouCar' },
-    { value: 'other_sell', label: 'Продал где-то еще' },
-    { value: 'other', label: 'Другая причина' },
+    { value: 1, label: 'Продал на YouCar' },
+    { value: 2, label: 'Продал где-то еще' },
+    { value: 3, label: 'Другая причина' },
 ]
 
 // ─── Fetch cars ──────────────────────────────
@@ -161,10 +161,12 @@ const handleDelete = async () => {
 
     deleteLoading.value = true
     try {
-        // await api.delete(`/cars/${selectedCar.value.id}/`, {
-        //     data: { reason: selectedReason.value }
-        // })
         console.log(selectedReason.value)
+        console.log(selectedCar.value.id)
+        const response = await api.delete(`/cars/car/${selectedCar.value.id}/`, {
+            data: { reason: selectedReason.value }
+        })
+        message.success(response.data.message)
         cars_data.value = cars_data.value.filter(c => c.id !== selectedCar.value.id)
         closeModal()
     } catch (err) {
@@ -179,14 +181,11 @@ const handleDelete = async () => {
 const handleKeepActive = async () => {
     keepLoading.value = true
     try {
-        // await api.patch(`/cars/${selectedCar.value.id}/`, { status: 'active' })
-
-        // Lokal status "active" qilib qo'yildi
-        const car = cars_data.value.find(c => c.id === selectedCar.value.id)
-        if (car) {
-            car.status = 'active'
-        }
-
+        const response = await api.patch(`/cars/car/${selectedCar.value.id}/`, {
+            status: "PD"
+        })
+        message.success(response.data.message)
+        cars_data.value = cars_data.value.filter(item => item.id !== selectedCar.value.id)
         closeModal()
     } catch (err) {
         console.log(err.response || err)

@@ -3,18 +3,23 @@ from django.shortcuts import render
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.generics import (
-    ListAPIView,
-    CreateAPIView,
-    RetrieveAPIView,
-    DestroyAPIView,
-)
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
+from rest_framework.exceptions import ValidationError
 
 # ///////////////////// MODELS //////////////////////////
-from .models import AvtoMobileType, Color, Country, Fuel, Car, CarImage
+from .models import (
+    AvtoMobileType,
+    Color,
+    Country,
+    Fuel,
+    Car,
+    CarImage,
+    Like,
+    DeletionStatistics,
+)
 
 # //////////// SERIALIZERS  /////////////////////////////
 from .serializers import (
@@ -26,10 +31,11 @@ from .serializers import (
     GetColorSerializer,
     GetCountriesSerializer,
     GetFuelSerializer,
-    AddCarSerializer,
+    CarSerializer,
     CarImageUploadSerializer,
     GetCarsSerializer,
     GetCarSerializer,
+    CarDeletionSerializer,
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -137,7 +143,7 @@ class CarView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = AddCarSerializer(data=request.data, context={"request": request})
+        serializer = CarSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {
@@ -150,7 +156,7 @@ class CarView(APIView):
 
     def put(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        serializer = AddCarSerializer(car, data=request.data)
+        serializer = CarSerializer(car, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -164,7 +170,7 @@ class CarView(APIView):
 
     def patch(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        serializer = AddCarSerializer(car, data=request.data, partial=True)
+        serializer = CarSerializer(car, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -172,12 +178,17 @@ class CarView(APIView):
             {
                 "success": True,
                 "message": "patch ishladi",
-                "data": serializer.data,
             }
         )
 
     def delete(self, request, pk):
         car = get_object_or_404(Car, id=pk)
+        deletion_serializer = CarDeletionSerializer(data=request.data)
+        deletion_serializer.is_valid(raise_exception=True)
+        reason = deletion_serializer.validated_data["reason"]
+
+        DeletionStatistics.increment_reason(reason)
+
         car.delete()
 
         return Response(
@@ -185,12 +196,14 @@ class CarView(APIView):
                 "success": True,
                 "message": "ochirildi",
             },
-            status=status.HTTP_204_NO_CONTENT,
+            status=status.HTTP_200_OK,
         )
 
     def get(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        carSerializer = GetCarSerializer(car , context={'request': request})
+        car.views = car.views + 1
+        car.save()
+        carSerializer = GetCarSerializer(car, context={"request": request})
         data = {
             "success": True,
             "message": "yuklandi",
@@ -207,7 +220,7 @@ class CarImageView(APIView):
     moshina rasmlarini joylash
     """
 
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = CarImageUploadSerializer(data=request.data)
@@ -269,3 +282,36 @@ class GetUserCarsPublished(ListAPIView):
         return Car.objects.filter(
             author=self.request.user, status=Car.STATUS_CHOICES.PUBLISHED
         ).order_by("-created_time")
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       LIKE AND DISLIKE     /////////////////
+# /////////////////////////////////////////////////////////
+class LikeAndDislikeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        car = get_object_or_404(Car, id=pk)
+        if not Like.objects.filter(author=request.user, car=car).exists():
+            Like.objects.create(author=request.user, car=car)
+            return Response({"success": True, "message": "like bosildi"})
+        else:
+            raise ValidationError({"like": "like bosilgan"})
+
+    def delete(self, request, pk):
+        car = get_object_or_404(Car, id=pk)
+        car_like = get_object_or_404(Like, author=request.user, car=car)
+        car_like.delete()
+        return Response({"success": True, "message": "dislike"})
+
+
+class MeLikedCarGet(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = GetCarsSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        user_liked_ids = Like.objects.filter(author=self.request.user).values_list(
+            "car_id", flat=True
+        )
+        return Car.objects.filter(id__in=user_liked_ids)

@@ -19,7 +19,7 @@ from .models import (
     Fuel,
     Car,
     CarImage,
-    Like
+    Like,
 )
 
 
@@ -159,9 +159,9 @@ class GetFuelSerializer(serializers.ModelSerializer):
 # /////////////////////////////////////////////////////////
 # ////////////    ADD CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
-class AddCarSerializer(serializers.Serializer):
+class CarSerializer(serializers.Serializer):
     """
-    MOSHINAlarni qoshish
+    MOSHINAlarni qoshish olish ochirish ozgartirish
     """
 
     author = serializers.CharField(read_only=True)
@@ -212,25 +212,26 @@ class AddCarSerializer(serializers.Serializer):
         return data
 
     def validate(self, data):
-        auto_type = data.get("avto_type", None)
-        marka = data.get("marka", None)
-        car_model = data.get("car_model", None)
+        if "avto_type" in data or "marka" in data or "car_model" in data :
+            auto_type = data.get("avto_type", None)
+            marka = data.get("marka", None)
+            car_model = data.get("car_model", None)
 
-        auto_type = AvtoTypeMarka.objects.filter(
-            avto_type__name=auto_type, marka__marka=marka
-        )
-
-        if not auto_type.exists():
-            raise serializers.ValidationError(
-                "this car brand does not exist in this vehicle type"
+            auto_type = AvtoTypeMarka.objects.filter(
+                avto_type__name=auto_type, marka__marka=marka
             )
 
-        car_model = CarModel.objects.filter(name=car_model, marka__marka=marka)
+            if not auto_type.exists():
+                raise serializers.ValidationError(
+                    "this car brand does not exist in this vehicle type"
+                )
 
-        if not car_model.exists():
-            raise serializers.ValidationError(
-                "this type of car does not exist in this brand"
-            )
+            car_model = CarModel.objects.filter(name=car_model, marka__marka=marka)
+
+            if not car_model.exists():
+                raise serializers.ValidationError(
+                    "this type of car does not exist in this brand"
+                )
 
         return data
 
@@ -448,6 +449,7 @@ class GetCarSerializer(serializers.ModelSerializer):
     """
     Moshinani olish
     """
+
     author = serializers.StringRelatedField()
     marka = serializers.StringRelatedField()
     avto_type = serializers.StringRelatedField()
@@ -458,7 +460,6 @@ class GetCarSerializer(serializers.ModelSerializer):
     images = GetCarImagesSerializer(many=True)
     car_likes_count = serializers.SerializerMethodField("get_car_likes_count")
     me_liked = serializers.SerializerMethodField()
-
     class Meta:
         model = Car
         fields = [
@@ -487,18 +488,19 @@ class GetCarSerializer(serializers.ModelSerializer):
             "updated_time",
             "car_likes_count",
             "me_liked",
+            "views",
             "images",
         ]
-        
-    def get_car_likes_count(self , obj):
+
+    def get_car_likes_count(self, obj):
         return obj.likes.count()
-    
-    def get_me_liked(self , obj):
-        request = self.context.get("request")    
-        if request and request.user.is_authenticated :
-            return Like.objects.filter(author = request.user , car = obj).exists()
+
+    def get_me_liked(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return Like.objects.filter(author=request.user, car=obj).exists()
         return False
-    
+
 
 # /////////////////////////////////////////////////////////
 # ////////////       GET ALL CARS        //////////////////
@@ -514,6 +516,8 @@ class GetCarsSerializer(serializers.ModelSerializer):
     fuel = serializers.StringRelatedField()
     images = GetCarImagesSerializer(many=True)
     author = serializers.StringRelatedField()
+    likes_count = serializers.SerializerMethodField()
+    me_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Car
@@ -533,4 +537,25 @@ class GetCarsSerializer(serializers.ModelSerializer):
             "country",
             "status",
             "images",
+            "likes_count",
+            "views",
+            "me_liked",
         ]
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+
+    def get_me_liked(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return Like.objects.filter(car=obj, author=request.user).exists()
+        return False
+    
+class CarDeletionSerializer(serializers.Serializer):
+    reason = serializers.IntegerField()
+    
+    def validate_reason(self , value):
+        if not value in [1, 2, 3]:
+            raise serializers.ValidationError("Noto'g'ri sabab kodi")
+        return value
+
