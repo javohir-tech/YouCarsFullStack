@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 ///////////// MAIN LAYUOT ////////////
 import mainLayout from '@/layout/mainLayout.vue'
 ///////////////// VIEWS ////////////////
-import { Home } from '@/views'
+import { CarDetail, Home } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
@@ -17,6 +17,16 @@ const router = createRouter({
       path: "/",
       component: mainLayout,
       children: [
+        ///// Views ///////
+        {
+          path: "",
+          component: Home,
+          name: "Home"
+        },
+        {
+          path: "cars/detail/:id",
+          component: CarDetail
+        },
         ////// AUTH /////
         {
           path: "singup",
@@ -42,11 +52,6 @@ const router = createRouter({
           path: "newpass",
           component: newPassword,
           meta: { newpass: true }
-        },
-        {
-          path: "",
-          component: Home,
-          name: "Home"
         },
         ///////// PROFILE ///////////
         {
@@ -93,7 +98,7 @@ const router = createRouter({
           path: "update/:id",
           component: CarUpload,
           meta: { requiresAuth: true }
-        }
+        },
       ]
     }
   ],

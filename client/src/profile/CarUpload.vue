@@ -1,311 +1,315 @@
 <template>
-  <div class="error" v-if="error">
-    <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
-  </div>
 
-  <div class="loading" v-if="isLoading">
-    <a-spin />
-  </div>
 
-  <div v-else class="add-car-page">
-    <div class="container">
-      <div class="page-header">
-        <h1>{{ route.params.id ? "Редактировать объявление" : "Разместите объявление" }}</h1>
-        <p>{{
-          route.params.id ?
-            "Укажите данные об автомобиле для редактирования объявления"
-            :
-            "Укажите данные об автомобиле для размещения объявления"
-        }}
-        </p>
-      </div>
+  <div class="add-car-page">
+    <div class="error" v-if="errors">
+      <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
+    </div>
+    <a-spin :spinning="isLoading" tip="Loading...">
 
-      <!-- Step 1: Vehicle Type Selection -->
-      <div class="type-tabs">
-        <a-radio-group v-model:value="selectedType" button-style="solid" size="large">
-          <a-radio-button value="automobile">Автомобили</a-radio-button>
-          <a-radio-button value="commercial">Коммерческий транспорт</a-radio-button>
-          <a-radio-button value="motorcycle">Мотоциклы</a-radio-button>
-        </a-radio-group>
-      </div>
+      <div v-if="!errors" class="container">
+        <div class="page-header">
+          <h1>{{ route.params.id ? "Редактировать объявление" : "Разместите объявление" }}</h1>
+          <p>{{
+            route.params.id ?
+              "Укажите данные об автомобиле для редактирования объявления"
+              :
+              "Укажите данные об автомобиле для размещения объявления"
+          }}
+          </p>
+        </div>
 
-      <!-- Step 2: Brand Selection -->
-      <div class="form-section">
-        <a-select v-model:value="formData.marka" placeholder="Марка" size="large" show-search :loading="loadingBrands"
-          :disabled="!selectedType" @change="handleMarkaChange" :filter-option="filterOption"
-          :status="validationErrors.marka ? 'error' : ''">
-          <a-select-option v-for="brand in brands" :key="brand.id" :value="brand.marka" :label="brand.marka">
-            {{ brand.marka }}
-          </a-select-option>
-        </a-select>
-        <div v-if="validationErrors.marka" class="error-message">{{ validationErrors.marka }}</div>
-      </div>
+        <!-- Step 1: Vehicle Type Selection -->
+        <div class="type-tabs">
+          <a-radio-group v-model:value="selectedType" button-style="solid" size="large">
+            <a-radio-button value="automobile">Автомобили</a-radio-button>
+            <a-radio-button value="commercial">Коммерческий транспорт</a-radio-button>
+            <a-radio-button value="motorcycle">Мотоциклы</a-radio-button>
+          </a-radio-group>
+        </div>
 
-      <!-- Step 3: Model Selection -->
-      <div class="form-section" v-if="formData.marka">
-        <a-select v-model:value="formData.car_model" placeholder="Модель" size="large" show-search
-          :loading="loadingModels" @change="handleModelChange" :filter-option="filterOption"
-          :status="validationErrors.car_model ? 'error' : ''">
-          <a-select-option v-for="model in models" :key="model.id" :value="model.name" :label="model.name">
-            {{ model.name }}
-          </a-select-option>
-        </a-select>
-        <div v-if="validationErrors.car_model" class="error-message">{{ validationErrors.car_model }}</div>
-      </div>
+        <!-- Step 2: Brand Selection -->
+        <div class="form-section">
+          <a-select v-model:value="formData.marka" placeholder="Марка" size="large" show-search :loading="loadingBrands"
+            :disabled="!selectedType" @change="handleMarkaChange" :filter-option="filterOption"
+            :status="validationErrors.marka ? 'error' : ''">
+            <a-select-option v-for="brand in brands" :key="brand.id" :value="brand.marka" :label="brand.marka">
+              {{ brand.marka }}
+            </a-select-option>
+          </a-select>
+          <div v-if="validationErrors.marka" class="error-message">{{ validationErrors.marka }}</div>
+        </div>
 
-      <!-- Main Form (Shows after model is selected) -->
-      <div v-if="formData.car_model" class="main-form">
+        <!-- Step 3: Model Selection -->
+        <div class="form-section" v-if="formData.marka">
+          <a-select v-model:value="formData.car_model" placeholder="Модель" size="large" show-search
+            :loading="loadingModels" @change="handleModelChange" :filter-option="filterOption"
+            :status="validationErrors.car_model ? 'error' : ''">
+            <a-select-option v-for="model in models" :key="model.id" :value="model.name" :label="model.name">
+              {{ model.name }}
+            </a-select-option>
+          </a-select>
+          <div v-if="validationErrors.car_model" class="error-message">{{ validationErrors.car_model }}</div>
+        </div>
 
-        <!-- Characteristics Section -->
-        <div class="characteristics-section">
-          <h2>Характеристики</h2>
+        <!-- Main Form (Shows after model is selected) -->
+        <div v-if="formData.car_model" class="main-form">
 
-          <a-form layout="vertical" :model="formData">
-            <a-row :gutter="16">
-              <!-- Year -->
-              <a-col :span="12">
-                <a-form-item label="Год выпуска" :validate-status="validationErrors.year ? 'error' : ''"
-                  :help="validationErrors.year">
-                  <a-input-number v-model:value="formData.year" placeholder="2024" style="width: 100%" size="large"
-                    @blur="validateField('year')" />
-                </a-form-item>
-              </a-col>
+          <!-- Characteristics Section -->
+          <div class="characteristics-section">
+            <h2>Характеристики</h2>
 
-              <!-- Mileage -->
-              <a-col :span="12">
-                <a-form-item label="Пробег" :validate-status="validationErrors.milage ? 'error' : ''"
-                  :help="validationErrors.milage">
-                  <a-input-number v-model:value="formData.milage" placeholder="16 000" style="width: 100%" size="large"
-                    @blur="validateField('milage')">
-                    <template #addonAfter>км</template>
-                  </a-input-number>
-                </a-form-item>
-              </a-col>
+            <a-form layout="vertical" :model="formData">
+              <a-row :gutter="16">
+                <!-- Year -->
+                <a-col :span="12">
+                  <a-form-item label="Год выпуска" :validate-status="validationErrors.year ? 'error' : ''"
+                    :help="validationErrors.year">
+                    <a-input-number v-model:value="formData.year" placeholder="2024" style="width: 100%" size="large"
+                      @blur="validateField('year')" />
+                  </a-form-item>
+                </a-col>
 
-              <!-- Country -->
-              <a-col :span="12">
-                <a-form-item label="Страна" :validate-status="validationErrors.country ? 'error' : ''"
-                  :help="validationErrors.country">
-                  <a-select v-model:value="formData.country" placeholder="США" size="large" show-search
-                    :loading="loadingCountries" :filter-option="filterOption" @change="validateField('country')">
-                    <!-- <a-select-option v-for="country in countries" :key="country.id" :value="country.country">
+                <!-- Mileage -->
+                <a-col :span="12">
+                  <a-form-item label="Пробег" :validate-status="validationErrors.milage ? 'error' : ''"
+                    :help="validationErrors.milage">
+                    <a-input-number v-model:value="formData.milage" placeholder="16 000" style="width: 100%"
+                      size="large" @blur="validateField('milage')">
+                      <template #addonAfter>км</template>
+                    </a-input-number>
+                  </a-form-item>
+                </a-col>
+
+                <!-- Country -->
+                <a-col :span="12">
+                  <a-form-item label="Страна" :validate-status="validationErrors.country ? 'error' : ''"
+                    :help="validationErrors.country">
+                    <a-select v-model:value="formData.country" placeholder="США" size="large" show-search
+                      :loading="loadingCountries" :filter-option="filterOption" @change="validateField('country')">
+                      <!-- <a-select-option v-for="country in countries" :key="country.id" :value="country.country">
                       {{ country.country }}
                     </a-select-option> -->
-                    <a-select-option v-for="country in countries" :key="country.id" :value="country.country"
-                      :label="country.country"></a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                      <a-select-option v-for="country in countries" :key="country.id" :value="country.country"
+                        :label="country.country"></a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Fuel -->
-              <a-col :span="12">
-                <a-form-item label="Топливо" :validate-status="validationErrors.fuel ? 'error' : ''"
-                  :help="validationErrors.fuel">
-                  <a-select v-model:value="formData.fuel" placeholder="Бензин" size="large" :loading="loadingFuels"
-                    @change="validateField('fuel')">
-                    <a-select-option v-for="fuel in fuels" :key="fuel.id" :value="fuel.name">
-                      {{ fuel.name }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                <!-- Fuel -->
+                <a-col :span="12">
+                  <a-form-item label="Топливо" :validate-status="validationErrors.fuel ? 'error' : ''"
+                    :help="validationErrors.fuel">
+                    <a-select v-model:value="formData.fuel" placeholder="Бензин" size="large" :loading="loadingFuels"
+                      @change="validateField('fuel')">
+                      <a-select-option v-for="fuel in fuels" :key="fuel.id" :value="fuel.name">
+                        {{ fuel.name }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Displacement -->
-              <a-col :span="12">
-                <a-form-item label="Объем" :validate-status="validationErrors.displacement ? 'error' : ''"
-                  :help="validationErrors.displacement">
-                  <a-input-number v-model:value="formData.displacement" :step="0.1" placeholder="1.8"
-                    style="width: 100%" size="large" @blur="validateField('displacement')">
-                    <template #addonAfter>л</template>
-                  </a-input-number>
-                </a-form-item>
-              </a-col>
+                <!-- Displacement -->
+                <a-col :span="12">
+                  <a-form-item label="Объем" :validate-status="validationErrors.displacement ? 'error' : ''"
+                    :help="validationErrors.displacement">
+                    <a-input-number v-model:value="formData.displacement" :step="0.1" placeholder="1.8"
+                      style="width: 100%" size="large" @blur="validateField('displacement')">
+                      <template #addonAfter>л</template>
+                    </a-input-number>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Power -->
-              <a-col :span="12">
-                <a-form-item label="Мощность" :validate-status="validationErrors.power ? 'error' : ''"
-                  :help="validationErrors.power">
-                  <a-input-number v-model:value="formData.power" placeholder="153" style="width: 100%" size="large"
-                    @blur="validateField('power')">
-                    <template #addonAfter>л.с</template>
-                  </a-input-number>
-                </a-form-item>
-              </a-col>
+                <!-- Power -->
+                <a-col :span="12">
+                  <a-form-item label="Мощность" :validate-status="validationErrors.power ? 'error' : ''"
+                    :help="validationErrors.power">
+                    <a-input-number v-model:value="formData.power" placeholder="153" style="width: 100%" size="large"
+                      @blur="validateField('power')">
+                      <template #addonAfter>л.с</template>
+                    </a-input-number>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Drive Type -->
-              <a-col :span="12">
-                <a-form-item label="Привод" :validate-status="validationErrors.drive_type ? 'error' : ''"
-                  :help="validationErrors.drive_type">
-                  <a-select v-model:value="formData.drive_type" placeholder="Передний" size="large"
-                    @change="validateField('drive_type')">
-                    <a-select-option value="FWD">Передний</a-select-option>
-                    <a-select-option value="RWD">Задний</a-select-option>
-                    <a-select-option value="AWD">Полный</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                <!-- Drive Type -->
+                <a-col :span="12">
+                  <a-form-item label="Привод" :validate-status="validationErrors.drive_type ? 'error' : ''"
+                    :help="validationErrors.drive_type">
+                    <a-select v-model:value="formData.drive_type" placeholder="Передний" size="large"
+                      @change="validateField('drive_type')">
+                      <a-select-option value="FWD">Передний</a-select-option>
+                      <a-select-option value="RWD">Задний</a-select-option>
+                      <a-select-option value="AWD">Полный</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Transmission -->
-              <a-col :span="12">
-                <a-form-item label="КПП" :validate-status="validationErrors.transmission_type ? 'error' : ''"
-                  :help="validationErrors.transmission_type">
-                  <a-select v-model:value="formData.transmission_type" placeholder="Автомат" size="large"
-                    @change="validateField('transmission_type')">
-                    <a-select-option value="MT">Механика</a-select-option>
-                    <a-select-option value="AT">Автомат</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                <!-- Transmission -->
+                <a-col :span="12">
+                  <a-form-item label="КПП" :validate-status="validationErrors.transmission_type ? 'error' : ''"
+                    :help="validationErrors.transmission_type">
+                    <a-select v-model:value="formData.transmission_type" placeholder="Автомат" size="large"
+                      @change="validateField('transmission_type')">
+                      <a-select-option value="MT">Механика</a-select-option>
+                      <a-select-option value="AT">Автомат</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Doors Count -->
-              <a-col :span="12">
-                <a-form-item label="Количество дверей" :validate-status="validationErrors.doors_count ? 'error' : ''"
-                  :help="validationErrors.doors_count">
-                  <a-select v-model:value="formData.doors_count" placeholder="5" size="large"
-                    @change="validateField('doors_count')">
-                    <a-select-option :value="2">2</a-select-option>
-                    <a-select-option :value="3">3</a-select-option>
-                    <a-select-option :value="4">4</a-select-option>
-                    <a-select-option :value="5">5</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                <!-- Doors Count -->
+                <a-col :span="12">
+                  <a-form-item label="Количество дверей" :validate-status="validationErrors.doors_count ? 'error' : ''"
+                    :help="validationErrors.doors_count">
+                    <a-select v-model:value="formData.doors_count" placeholder="5" size="large"
+                      @change="validateField('doors_count')">
+                      <a-select-option :value="2">2</a-select-option>
+                      <a-select-option :value="3">3</a-select-option>
+                      <a-select-option :value="4">4</a-select-option>
+                      <a-select-option :value="5">5</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Body Type -->
-              <a-col :span="12">
-                <a-form-item label="Кузов" :validate-status="validationErrors.body ? 'error' : ''"
-                  :help="validationErrors.body">
-                  <a-select v-model:value="formData.body" placeholder="Седан" size="large"
-                    @change="validateField('body')">
-                    <a-select-option value="sedan">Седан</a-select-option>
-                    <a-select-option value="hatchback">Хэтчбек</a-select-option>
-                    <a-select-option value="suv">Внедорожник</a-select-option>
-                    <a-select-option value="crossover">Кроссовер</a-select-option>
-                    <a-select-option value="coupe">Купе</a-select-option>
-                    <a-select-option value="convertible">Кабриолет</a-select-option>
-                    <a-select-option value="wagon">Универсал</a-select-option>
-                    <a-select-option value="pickup">Пикап</a-select-option>
-                    <a-select-option value="minivan">Минивэн</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                <!-- Body Type -->
+                <a-col :span="12">
+                  <a-form-item label="Кузов" :validate-status="validationErrors.body ? 'error' : ''"
+                    :help="validationErrors.body">
+                    <a-select v-model:value="formData.body" placeholder="Седан" size="large"
+                      @change="validateField('body')">
+                      <a-select-option value="sedan">Седан</a-select-option>
+                      <a-select-option value="hatchback">Хэтчбек</a-select-option>
+                      <a-select-option value="suv">Внедорожник</a-select-option>
+                      <a-select-option value="crossover">Кроссовер</a-select-option>
+                      <a-select-option value="coupe">Купе</a-select-option>
+                      <a-select-option value="convertible">Кабриолет</a-select-option>
+                      <a-select-option value="wagon">Универсал</a-select-option>
+                      <a-select-option value="pickup">Пикап</a-select-option>
+                      <a-select-option value="minivan">Минивэн</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Condition -->
-              <a-col :span="12">
-                <a-form-item label="Состояние" :validate-status="validationErrors.condition ? 'error' : ''"
-                  :help="validationErrors.condition">
-                  <a-select v-model:value="formData.condition" placeholder="С пробегом" size="large"
-                    @change="validateField('condition')">
-                    <a-select-option value="new">Новый</a-select-option>
-                    <a-select-option value="excellent">Отличное</a-select-option>
-                    <a-select-option value="good">Хорошее</a-select-option>
-                    <a-select-option value="fair">Среднее</a-select-option>
-                    <a-select-option value="poor">Плохое</a-select-option>
-                    <a-select-option value="damaged">Битый</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
+                <!-- Condition -->
+                <a-col :span="12">
+                  <a-form-item label="Состояние" :validate-status="validationErrors.condition ? 'error' : ''"
+                    :help="validationErrors.condition">
+                    <a-select v-model:value="formData.condition" placeholder="С пробегом" size="large"
+                      @change="validateField('condition')">
+                      <a-select-option value="new">Новый</a-select-option>
+                      <a-select-option value="excellent">Отличное</a-select-option>
+                      <a-select-option value="good">Хорошее</a-select-option>
+                      <a-select-option value="fair">Среднее</a-select-option>
+                      <a-select-option value="poor">Плохое</a-select-option>
+                      <a-select-option value="damaged">Битый</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
 
-              <!-- Color -->
-              <a-col :span="12">
-                <a-form-item label="Цвет" :validate-status="validationErrors.color ? 'error' : ''"
-                  :help="validationErrors.color">
-                  <a-select v-model:value="formData.color" placeholder="Белый" size="large" :loading="loadingColors"
-                    @change="validateField('color')">
-                    <a-select-option v-for="color in colors" :key="color.id" :value="color.color">
-                      <div style="display: flex; align-items: center; gap: 8px;">
-                        <span :style="{
-                          display: 'inline-block',
-                          width: '16px',
-                          height: '16px',
-                          borderRadius: '50%',
-                          backgroundColor: color.code || '#000',
-                          border: '1px solid #d9d9d9'
-                        }"></span>
-                        {{ color.color }}
-                      </div>
-                    </a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-            </a-row>
+                <!-- Color -->
+                <a-col :span="12">
+                  <a-form-item label="Цвет" :validate-status="validationErrors.color ? 'error' : ''"
+                    :help="validationErrors.color">
+                    <a-select v-model:value="formData.color" placeholder="Белый" size="large" :loading="loadingColors"
+                      @change="validateField('color')">
+                      <a-select-option v-for="color in colors" :key="color.id" :value="color.color">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span :style="{
+                            display: 'inline-block',
+                            width: '16px',
+                            height: '16px',
+                            borderRadius: '50%',
+                            backgroundColor: color.code || '#000',
+                            border: '1px solid #d9d9d9'
+                          }"></span>
+                          {{ color.color }}
+                        </div>
+                      </a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+              </a-row>
 
-            <!-- Availability Radio -->
-            <a-form-item>
-              <a-radio-group v-model:value="formData.availability">
-                <a-radio value="in_stock">В наличии</a-radio>
-                <a-radio value="on_order">Под заказ</a-radio>
-              </a-radio-group>
-            </a-form-item>
-          </a-form>
-        </div>
+              <!-- Availability Radio -->
+              <a-form-item>
+                <a-radio-group v-model:value="formData.availability">
+                  <a-radio value="in_stock">В наличии</a-radio>
+                  <a-radio value="on_order">Под заказ</a-radio>
+                </a-radio-group>
+              </a-form-item>
+            </a-form>
+          </div>
 
-        <!-- Photos Section -->
-        <div class="photos-section">
-          <h2>Фото</h2>
-          <p class="section-subtitle">Загрузите фото вашего автомобиля четко с разных ракурсов</p>
+          <!-- Photos Section -->
+          <div class="photos-section">
+            <h2>Фото</h2>
+            <p class="section-subtitle">Загрузите фото вашего автомобиля четко с разных ракурсов</p>
 
-          <div class="upload-container">
-            <div class="uploaded-images">
-              <div v-for="(image, index) in uploadedImages" :key="index" class="image-item">
-                <img :src="image.url" :alt="`Car photo ${index + 1}`" />
-                <div class="image-overlay">
-                  <a-button type="text" danger @click="removeImage(index, image.id)" :icon="h(DeleteOutlined)" />
+            <div class="upload-container">
+              <div class="uploaded-images">
+                <div v-for="(image, index) in uploadedImages" :key="index" class="image-item">
+                  <a-spin class="image_loading" v-if="imageLoading" />
+                  <img :src="image.url" v-show="!imageLoading" @load="onLoad" @error="onError"
+                    :alt="`Car photo ${index + 1}`" />
+                  <div class="image-overlay">
+                    <a-button type="text" danger @click="removeImage(index, image.id)" :icon="h(DeleteOutlined)" />
+                  </div>
+                  <a-progress v-if="image.uploading" :percent="image.progress" :show-info="false"
+                    style="position: absolute; bottom: 0; left: 0; right: 0;" />
                 </div>
-                <a-progress v-if="image.uploading" :percent="image.progress" :show-info="false"
-                  style="position: absolute; bottom: 0; left: 0; right: 0;" />
-              </div>
 
-              <!-- Upload Button -->
-              <div v-if="uploadedImages.length < 6" class="upload-button" @click="triggerFileInput">
-                <CameraOutlined style="font-size: 32px; color: #1890ff;" />
-                <p>Выберите или перетащите фото</p>
+                <!-- Upload Button -->
+                <div v-if="uploadedImages.length < 6" class="upload-button" @click="triggerFileInput">
+                  <CameraOutlined style="font-size: 32px; color: #1890ff;" />
+                  <p>Выберите или перетащите фото</p>
+                </div>
               </div>
+              <div v-if="validationErrors.images" class="error-message">{{ validationErrors.images }}</div>
+              <input ref="fileInput" type="file" accept="image/*" multiple style="display: none;"
+                @change="handleFileSelect" />
             </div>
-            <div v-if="validationErrors.images" class="error-message">{{ validationErrors.images }}</div>
-            <input ref="fileInput" type="file" accept="image/*" multiple style="display: none;"
-              @change="handleFileSelect" />
+          </div>
+
+          <!-- Description Section -->
+          <div class="description-section">
+            <h2>Описание</h2>
+            <p class="section-subtitle">Не указывайте ссылки на источники, цены, контакты и не предлагайте другие
+              услуги!
+              Объявление не пройдет модерацию</p>
+
+            <a-form-item :validate-status="validationErrors.description ? 'error' : ''"
+              :help="validationErrors.description">
+              <a-textarea v-model:value="formData.description" placeholder="Четко опишите вашу авто" :rows="6"
+                :maxlength="1200" show-count @blur="validateField('description')" />
+            </a-form-item>
+          </div>
+
+          <!-- Price Section -->
+          <div class="price-section">
+            <h2>Цена</h2>
+            <a-form-item :validate-status="validationErrors.price ? 'error' : ''" :help="validationErrors.price">
+              <a-input-number v-model:value="formData.price" placeholder="1 850 000" size="large" style="width: 100%"
+                @blur="validateField('price')">
+                <template #addonAfter>
+                  <a-select v-model:value="currency" style="width: 60px">
+                    <a-select-option value="USD">$</a-select-option>
+                    <a-select-option value="UZS">сўм</a-select-option>
+                  </a-select>
+                </template>
+              </a-input-number>
+            </a-form-item>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="submit-section">
+            <a-button type="primary" size="large" block :loading="submitting" @click="handleSubmit">
+              {{ route.params.id ? 'Сохранить изменения'
+                : 'Опубликовать объявление' }}
+            </a-button>
           </div>
         </div>
-
-        <!-- Description Section -->
-        <div class="description-section">
-          <h2>Описание</h2>
-          <p class="section-subtitle">Не указывайте ссылки на источники, цены, контакты и не предлагайте другие услуги!
-            Объявление не пройдет модерацию</p>
-
-          <a-form-item :validate-status="validationErrors.description ? 'error' : ''"
-            :help="validationErrors.description">
-            <a-textarea v-model:value="formData.description" placeholder="Четко опишите вашу авто" :rows="6"
-              :maxlength="1200" show-count @blur="validateField('description')" />
-          </a-form-item>
-        </div>
-
-        <!-- Price Section -->
-        <div class="price-section">
-          <h2>Цена</h2>
-          <a-form-item :validate-status="validationErrors.price ? 'error' : ''" :help="validationErrors.price">
-            <a-input-number v-model:value="formData.price" placeholder="1 850 000" size="large" style="width: 100%"
-              @blur="validateField('price')">
-              <template #addonAfter>
-                <a-select v-model:value="currency" style="width: 60px">
-                  <a-select-option value="USD">$</a-select-option>
-                  <a-select-option value="UZS">сўм</a-select-option>
-                </a-select>
-              </template>
-            </a-input-number>
-          </a-form-item>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="submit-section">
-          <a-button type="primary" size="large" block :loading="submitting" @click="handleSubmit">
-            {{ route.params.id ? 'Сохранить изменения'
-              : 'Опубликовать объявление' }}
-          </a-button>
-        </div>
       </div>
-    </div>
+
+    </a-spin>
   </div>
 </template>
 
@@ -315,7 +319,7 @@ import { message } from 'ant-design-vue';
 import { CameraOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { watch } from 'vue';
 import api from '@/utils/axios';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 // State
 const selectedType = ref('automobile');
@@ -365,6 +369,7 @@ const validationErrors = reactive({
 const currency = ref('USD');
 const currentYear = new Date().getFullYear();
 const route = useRoute()
+const router = useRouter()
 // Loading states
 const isLoading = ref(false)
 const loadingBrands = ref(false);
@@ -373,9 +378,10 @@ const loadingCountries = ref(false);
 const loadingColors = ref(false);
 const loadingFuels = ref(false);
 const submitting = ref(false);
+const imageLoading = ref(true)
 
 // errors
-const error = ref(false)
+const errors = ref(false)
 
 // Data lists
 const brands = ref([]);
@@ -746,6 +752,15 @@ const carData = {
 };
 
 // Methods
+
+const onLoad = () => {
+  imageLoading.value = false
+}
+
+const onError = () => {
+  imageLoading.value = false
+}
+
 const filterOption = (input, option) => {
   const label = option.label || option.children || '';
   return String(label).toLowerCase().includes(input.toLowerCase());
@@ -947,9 +962,8 @@ const handleSubmit = async () => {
       message.success('Объявление успешно опубликовано!')
     }
 
-    // Redirect or reset form
-    // router.push('/my-listings');
-
+    
+    router.push(`/cars/detail/${carId}`)
   } catch (error) {
     console.error('Submit error:', error);
     message.error('Error creating listing');
@@ -1026,6 +1040,7 @@ const getDataCar = async () => {
     } else {
       console.log(error)
     }
+    errors.value = true
   } finally {
     isLoading.value = false
   }
@@ -1050,6 +1065,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
 .add-car-page {
   min-height: 100vh;
   background: #f5f5f5;

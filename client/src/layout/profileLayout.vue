@@ -69,6 +69,11 @@
                                                             Мои объвления
                                                         </router-link>
                                                     </a-menu-item>
+                                                    <a-menu-item>
+                                                        <router-link to="/upload">
+                                                            Добавить авто
+                                                        </router-link>
+                                                    </a-menu-item>
                                                 </a-menu>
                                             </template>
                                         </a-dropdown>
