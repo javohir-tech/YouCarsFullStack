@@ -6,7 +6,7 @@ import { Home } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
-import { CarUpdate, CarUpload, EmailVeriy, myCars, myCarsWarehouse, profile } from '@/profile'
+import { CarUpload, EmailVeriy, myCars, myCarsWarehouse, profile } from '@/profile'
 import ProfileLayout from '@/layout/profileLayout.vue'
 import MyCarsLayout from '@/layout/myCarsLayout.vue'
 
@@ -91,7 +91,7 @@ const router = createRouter({
         },
         {
           path: "update/:id",
-          component: CarUpdate,
+          component: CarUpload,
           meta: { requiresAuth: true }
         }
       ]

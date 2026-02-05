@@ -191,15 +191,11 @@ class CarView(APIView):
 
     def get(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        carSerializer = GetCarSerializer(car)
-        images = CarImage.objects.filter(car=car)
-        images_data = GetCarImagesSerializer(images, many=True)
-        car_data = carSerializer.data.copy()
-        car_data["images"] = images_data.data
+        carSerializer = GetCarSerializer(car ,  context={'request': request})
         data = {
             "success": True,
             "message": "yuklandi",
-            "data": car_data,
+            "data": carSerializer.data,
         }
         return Response(data)
 
@@ -262,7 +258,7 @@ class GetUserCarsFDraftView(ListAPIView):
     def get_queryset(self):
         return Car.objects.filter(
             author=self.request.user, status=Car.STATUS_CHOICES.DRAFT
-        )
+        ).order_by("-created_time")
 
 
 class GetUserCarsPublished(ListAPIView):
@@ -273,4 +269,4 @@ class GetUserCarsPublished(ListAPIView):
     def get_queryset(self):
         return Car.objects.filter(
             author=self.request.user, status=Car.STATUS_CHOICES.PUBLISHED
-        )
+        ).order_by("-created_time")

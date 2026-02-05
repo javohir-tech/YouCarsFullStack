@@ -1,9 +1,23 @@
 <template>
-  <div class="add-car-page">
+  <div class="error" v-if="error">
+    <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
+  </div>
+
+  <div class="loading" v-if="isLoading">
+    <a-spin />
+  </div>
+
+  <div v-else class="add-car-page">
     <div class="container">
       <div class="page-header">
-        <h1>Разместите объявление</h1>
-        <p>Укажите данные об автомобиле для размещения объявления</p>
+        <h1>{{ route.params.id ? "Редактировать объявление" : "Разместите объявление" }}</h1>
+        <p>{{
+          route.params.id ?
+            "Укажите данные об автомобиле для редактирования объявления"
+            :
+            "Укажите данные об автомобиле для размещения объявления"
+        }}
+        </p>
       </div>
 
       <!-- Step 1: Vehicle Type Selection -->
@@ -20,7 +34,7 @@
         <a-select v-model:value="formData.marka" placeholder="Марка" size="large" show-search :loading="loadingBrands"
           :disabled="!selectedType" @change="handleMarkaChange" :filter-option="filterOption"
           :status="validationErrors.marka ? 'error' : ''">
-          <a-select-option v-for="brand in brands" :key="brand.id" :value="brand.id" :label="brand.marka">
+          <a-select-option v-for="brand in brands" :key="brand.id" :value="brand.marka" :label="brand.marka">
             {{ brand.marka }}
           </a-select-option>
         </a-select>
@@ -32,7 +46,7 @@
         <a-select v-model:value="formData.car_model" placeholder="Модель" size="large" show-search
           :loading="loadingModels" @change="handleModelChange" :filter-option="filterOption"
           :status="validationErrors.car_model ? 'error' : ''">
-          <a-select-option v-for="model in models" :key="model.id" :value="model.id" :label="model.name">
+          <a-select-option v-for="model in models" :key="model.id" :value="model.name" :label="model.name">
             {{ model.name }}
           </a-select-option>
         </a-select>
@@ -52,8 +66,8 @@
               <a-col :span="12">
                 <a-form-item label="Год выпуска" :validate-status="validationErrors.year ? 'error' : ''"
                   :help="validationErrors.year">
-                  <a-input-number v-model:value="formData.year" placeholder="2024"
-                    style="width: 100%" size="large" @blur="validateField('year')" />
+                  <a-input-number v-model:value="formData.year" placeholder="2024" style="width: 100%" size="large"
+                    @blur="validateField('year')" />
                 </a-form-item>
               </a-col>
 
@@ -61,8 +75,8 @@
               <a-col :span="12">
                 <a-form-item label="Пробег" :validate-status="validationErrors.milage ? 'error' : ''"
                   :help="validationErrors.milage">
-                  <a-input-number v-model:value="formData.milage" placeholder="16 000"
-                    style="width: 100%" size="large" @blur="validateField('milage')">
+                  <a-input-number v-model:value="formData.milage" placeholder="16 000" style="width: 100%" size="large"
+                    @blur="validateField('milage')">
                     <template #addonAfter>км</template>
                   </a-input-number>
                 </a-form-item>
@@ -74,9 +88,11 @@
                   :help="validationErrors.country">
                   <a-select v-model:value="formData.country" placeholder="США" size="large" show-search
                     :loading="loadingCountries" :filter-option="filterOption" @change="validateField('country')">
-                    <a-select-option v-for="country in countries" :key="country.id" :value="country.id">
+                    <!-- <a-select-option v-for="country in countries" :key="country.id" :value="country.country">
                       {{ country.country }}
-                    </a-select-option>
+                    </a-select-option> -->
+                    <a-select-option v-for="country in countries" :key="country.id" :value="country.country"
+                      :label="country.country"></a-select-option>
                   </a-select>
                 </a-form-item>
               </a-col>
@@ -87,7 +103,7 @@
                   :help="validationErrors.fuel">
                   <a-select v-model:value="formData.fuel" placeholder="Бензин" size="large" :loading="loadingFuels"
                     @change="validateField('fuel')">
-                    <a-select-option v-for="fuel in fuels" :key="fuel.id" :value="fuel.id">
+                    <a-select-option v-for="fuel in fuels" :key="fuel.id" :value="fuel.name">
                       {{ fuel.name }}
                     </a-select-option>
                   </a-select>
@@ -98,8 +114,8 @@
               <a-col :span="12">
                 <a-form-item label="Объем" :validate-status="validationErrors.displacement ? 'error' : ''"
                   :help="validationErrors.displacement">
-                  <a-input-number v-model:value="formData.displacement" :step="0.1"
-                    placeholder="1.8" style="width: 100%" size="large" @blur="validateField('displacement')">
+                  <a-input-number v-model:value="formData.displacement" :step="0.1" placeholder="1.8"
+                    style="width: 100%" size="large" @blur="validateField('displacement')">
                     <template #addonAfter>л</template>
                   </a-input-number>
                 </a-form-item>
@@ -109,8 +125,8 @@
               <a-col :span="12">
                 <a-form-item label="Мощность" :validate-status="validationErrors.power ? 'error' : ''"
                   :help="validationErrors.power">
-                  <a-input-number v-model:value="formData.power" placeholder="153"
-                    style="width: 100%" size="large" @blur="validateField('power')">
+                  <a-input-number v-model:value="formData.power" placeholder="153" style="width: 100%" size="large"
+                    @blur="validateField('power')">
                     <template #addonAfter>л.с</template>
                   </a-input-number>
                 </a-form-item>
@@ -196,7 +212,7 @@
                   :help="validationErrors.color">
                   <a-select v-model:value="formData.color" placeholder="Белый" size="large" :loading="loadingColors"
                     @change="validateField('color')">
-                    <a-select-option v-for="color in colors" :key="color.id" :value="color.id">
+                    <a-select-option v-for="color in colors" :key="color.id" :value="color.color">
                       <div style="display: flex; align-items: center; gap: 8px;">
                         <span :style="{
                           display: 'inline-block',
@@ -234,7 +250,7 @@
               <div v-for="(image, index) in uploadedImages" :key="index" class="image-item">
                 <img :src="image.url" :alt="`Car photo ${index + 1}`" />
                 <div class="image-overlay">
-                  <a-button type="text" danger @click="removeImage(index)" :icon="h(DeleteOutlined)" />
+                  <a-button type="text" danger @click="removeImage(index, image.id)" :icon="h(DeleteOutlined)" />
                 </div>
                 <a-progress v-if="image.uploading" :percent="image.progress" :show-info="false"
                   style="position: absolute; bottom: 0; left: 0; right: 0;" />
@@ -269,8 +285,8 @@
         <div class="price-section">
           <h2>Цена</h2>
           <a-form-item :validate-status="validationErrors.price ? 'error' : ''" :help="validationErrors.price">
-            <a-input-number v-model:value="formData.price" placeholder="1 850 000"
-              size="large" style="width: 100%" @blur="validateField('price')">
+            <a-input-number v-model:value="formData.price" placeholder="1 850 000" size="large" style="width: 100%"
+              @blur="validateField('price')">
               <template #addonAfter>
                 <a-select v-model:value="currency" style="width: 60px">
                   <a-select-option value="USD">$</a-select-option>
@@ -284,7 +300,8 @@
         <!-- Submit Button -->
         <div class="submit-section">
           <a-button type="primary" size="large" block :loading="submitting" @click="handleSubmit">
-            Опубликовать объявления
+            {{ route.params.id ? 'Сохранить изменения'
+              : 'Опубликовать объявление' }}
           </a-button>
         </div>
       </div>
@@ -298,6 +315,7 @@ import { message } from 'ant-design-vue';
 import { CameraOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { watch } from 'vue';
 import api from '@/utils/axios';
+import { useRoute } from 'vue-router';
 
 // State
 const selectedType = ref('automobile');
@@ -320,7 +338,7 @@ const formData = reactive({
   body: null,
   condition: null,
   availability: 'in_stock',
-  status: 'DF'
+  status: 'PD'
 });
 
 // Validation errors
@@ -346,14 +364,18 @@ const validationErrors = reactive({
 
 const currency = ref('USD');
 const currentYear = new Date().getFullYear();
-
+const route = useRoute()
 // Loading states
+const isLoading = ref(false)
 const loadingBrands = ref(false);
 const loadingModels = ref(false);
 const loadingCountries = ref(false);
 const loadingColors = ref(false);
 const loadingFuels = ref(false);
 const submitting = ref(false);
+
+// errors
+const error = ref(false)
 
 // Data lists
 const brands = ref([]);
@@ -468,13 +490,13 @@ const validationRules = {
         /whatsapp/i,
         /viber/i
       ];
-      
+
       for (const pattern of forbiddenPatterns) {
         if (pattern.test(value)) {
           return 'Описание не должно содержать ссылки, контакты или упоминания мессенджеров';
         }
       }
-      
+
       return '';
     }
   },
@@ -505,7 +527,7 @@ const validateField = (fieldName) => {
   if (!rule) return true;
 
   let value = formData[fieldName];
-  
+
   // For images validation
   if (fieldName === 'images') {
     value = uploadedImages.value;
@@ -532,7 +554,7 @@ const validateField = (fieldName) => {
 // Validate all fields
 const validateForm = () => {
   let isValid = true;
-  
+
   // Clear all errors first
   Object.keys(validationErrors).forEach(key => {
     validationErrors[key] = '';
@@ -578,10 +600,10 @@ const carData = {
     }
   },
 
-  async getModelsByBrand(brandId) {
+  async getModelsByBrand(brand) {
     try {
       const { data } = await api.post("cars/models/", {
-        marka_id: brandId
+        marka: brand
       })
 
       if (data.success) {
@@ -671,13 +693,35 @@ const carData = {
     }
   },
 
+  async changeCar(data) {
+    try {
+      const response = await api.put(`/cars/car/${route.params.id}/`, { ...data })
+      console.log(response)
+      return response.data.data.id
+    } catch (error) {
+      if (error.response) {
+        const errors = error.response.data
+        for (let item in errors) {
+          if (errors[item]) {
+            message.error(errors[item][0])
+            break
+          }
+        }
+        console.log(error.response)
+      } else {
+        console.log(error)
+      }
+      throw error;
+    }
+  },
+
   async uploadImage(carId, file, onProgress, isMain = false) {
     const formData = new FormData();
     formData.append('car', carId);
     formData.append('image', file);
     formData.append('is_main', isMain);
     try {
-       const response = await api.post('/cars/car/image/upload/', formData, {
+      const response = await api.post('/cars/car/image/upload/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -703,18 +747,19 @@ const carData = {
 
 // Methods
 const filterOption = (input, option) => {
-  return option.label.toLowerCase().includes(input.toLowerCase());
+  const label = option.label || option.children || '';
+  return String(label).toLowerCase().includes(input.toLowerCase());
 };
 
-const handleMarkaChange = async (brandId) => {
+const handleMarkaChange = async (brand) => {
   formData.car_model = null;
   models.value = [];
   validateField('marka');
 
-  if (brandId) {
+  if (brand) {
     loadingModels.value = true;
     try {
-      models.value = await carData.getModelsByBrand(brandId);
+      models.value = await carData.getModelsByBrand(brand);
     } catch (error) {
       message.error('Error loading models');
     } finally {
@@ -725,7 +770,7 @@ const handleMarkaChange = async (brandId) => {
 
 const handleModelChange = async () => {
   validateField('car_model');
-  
+
   if (!countries.value.length) {
     loadingCountries.value = true;
     try {
@@ -806,11 +851,24 @@ const handleFileSelect = (event) => {
   event.target.value = '';
 };
 
-const removeImage = (index) => {
+const removeImage = async (index, image_id) => {
   URL.revokeObjectURL(uploadedImages.value[index].url);
   uploadedImages.value.splice(index, 1);
-  
-  // Validate images after removal
+
+  console.log(image_id)
+  if (image_id) {
+    try {
+      const response = await api.delete(`/cars/car/image/${image_id}/`)
+      message.success(response.data.message)
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response)
+      } else {
+        console.log(error)
+      }
+    }
+  }
+
   validateField('images');
 };
 
@@ -841,7 +899,7 @@ const uploadImages = async (carId) => {
 const handleSubmit = async () => {
   // Validate entire form
   const isValid = validateForm();
-  
+
   if (!isValid) {
     message.error('Please fill in all required fields');
     // Scroll to first error
@@ -860,14 +918,18 @@ const handleSubmit = async () => {
   try {
     // Type mapping
     const typeMap = {
-      'automobile': 'bf763424-691f-4a5d-a1e8-299983ef708e',
-      'commercial': 'f972a831-6bf5-4e20-9908-2617ec6a5417',
-      'motorcycle': '2e035902-ba42-487e-bae2-be723156c6c1'
+      'automobile': 'CR',
+      'commercial': 'CT',
+      'motorcycle': 'MO'
     };
     formData.avto_type = typeMap[selectedType.value];
 
-    // Step 1: Create car
-    const carId = await carData.createCar({ ...formData });
+    let carId = null
+    if (route.params.id) {
+      carId = await carData.changeCar({ ...formData });
+    } else {
+      carId = await carData.createCar({ ...formData });
+    }
 
     if (!carId) {
       throw new Error('Car ID not received');
@@ -879,7 +941,11 @@ const handleSubmit = async () => {
     // console.log('Uploading images...', carId);
     await uploadImages(carId);
 
-    message.success('Listing created successfully!');
+    if (route.params.id) {
+      message.success('Изменения успешно сохранены!')
+    } else {
+      message.success('Объявление успешно опубликовано!')
+    }
 
     // Redirect or reset form
     // router.push('/my-listings');
@@ -910,8 +976,64 @@ const loadBrandsForType = async () => {
   }
 };
 
+const getDataCar = async () => {
+  if (!route.params.id) return
+  isLoading.value = true
+  try {
+    const response = await api.get(`/cars/car/${route.params.id}`)
+    const data = response.data.data
+    formData.avto_type = data.avto_type
+
+    const typeMap = {
+      'CR': 'automobile',
+      'CT': 'commercial',
+      'MO': 'motorcycle',
+    };
+
+    selectedType.value = typeMap[data.avto_type]
+    formData.marka = data.marka
+    formData.year = data.year
+    formData.milage = data.milage
+    formData.country = data.country
+    formData.displacement = data.displacement
+    formData.power = data.power
+    formData.drive_type = data.drive_type
+    formData.transmission_type = data.transmission_type
+    formData.doors_count = data.doors_count
+    formData.body = data.body
+    formData.condition = data.condition
+    formData.fuel = data.fuel
+    formData.color = data.color
+    formData.availability = data.availability
+    formData.description = data.description
+    formData.price = data.price
+    uploadedImages.value = data.images.map((item) => {
+      return {
+        file: null,
+        id: item.id,
+        url: item.image,
+        uploading: false,
+        progress: 0,
+        uploaded: true
+      }
+    })
+    await handleMarkaChange(data.marka)
+    formData.car_model = data.car_model
+    await handleModelChange()
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response)
+    } else {
+      console.log(error)
+    }
+  } finally {
+    isLoading.value = false
+  }
+}
+
 // Watch for type change
 watch(selectedType, () => {
+  if (isLoading.value) return true
   formData.marka = null;
   formData.car_model = null;
   models.value = [];
@@ -923,6 +1045,7 @@ watch(selectedType, () => {
 // Initialize
 onMounted(() => {
   loadBrandsForType();
+  getDataCar()
 });
 </script>
 

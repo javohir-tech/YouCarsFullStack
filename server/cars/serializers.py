@@ -94,12 +94,12 @@ class GetModelsWithMarkaSerializer(serializers.Serializer):
     markaga oid modellarni olish
     """
 
-    marka_id = serializers.UUIDField(write_only=True)
+    marka = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        marka_id = data.get("marka_id")
+        marka = data.get("marka")
 
-        marka = Marka.objects.filter(id=marka_id)
+        marka = Marka.objects.filter(marka=marka)
 
         if not marka.exists():
             raise ValidationError({"marka": "bunday marka topilmadi"})
@@ -164,12 +164,12 @@ class AddCarSerializer(serializers.Serializer):
     """
 
     author = serializers.CharField(read_only=True)
-    avto_type = serializers.UUIDField(write_only=True)
-    marka = serializers.UUIDField()
-    car_model = serializers.UUIDField()
-    country = serializers.UUIDField()
-    color = serializers.UUIDField()
-    fuel = serializers.UUIDField()
+    avto_type = serializers.CharField(write_only=True)
+    marka = serializers.CharField()
+    car_model = serializers.CharField()
+    country = serializers.CharField()
+    color = serializers.CharField()
+    fuel = serializers.CharField()
     price = serializers.DecimalField(max_digits=12, decimal_places=2)
     year = serializers.IntegerField()
     milage = serializers.IntegerField()
@@ -187,7 +187,7 @@ class AddCarSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["car_model"] = CarModel.objects.get(
-            id=validated_data.pop("car_model")
+            name=validated_data.pop("car_model")
         )
         validated_data["author"] = user
         return Car.objects.create(**validated_data)
@@ -195,7 +195,7 @@ class AddCarSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         if "car_model" in validated_data:
             instance.car_model = CarModel.objects.get(
-                id=validated_data.pop("car_model")
+                name=validated_data.pop("car_model")
             )
 
         for attr, value in validated_data.items():
@@ -211,12 +211,12 @@ class AddCarSerializer(serializers.Serializer):
         return data
 
     def validate(self, data):
-        auto_type_id = data.get("avto_type" , None)
-        marka_id = data.get("marka" , None)
-        model_id = data.get("car_model" , None)
+        auto_type = data.get("avto_type", None)
+        marka = data.get("marka", None)
+        car_model = data.get("car_model", None)
 
         auto_type = AvtoTypeMarka.objects.filter(
-            avto_type_id=auto_type_id, marka_id=marka_id
+            avto_type__name=auto_type, marka__marka=marka
         )
 
         if not auto_type.exists():
@@ -224,7 +224,7 @@ class AddCarSerializer(serializers.Serializer):
                 "this car brand does not exist in this vehicle type"
             )
 
-        car_model = CarModel.objects.filter(id=model_id, marka_id=marka_id)
+        car_model = CarModel.objects.filter(name=car_model, marka__marka=marka)
 
         if not car_model.exists():
             raise serializers.ValidationError(
@@ -234,33 +234,33 @@ class AddCarSerializer(serializers.Serializer):
         return data
 
     def validate_avto_type(self, value):
-        avto_type = AvtoMobileType.objects.filter(id=value)
+        avto_type = AvtoMobileType.objects.filter(name=value)
         if not avto_type.exists():
             raise serializers.ValidationError("such vehicle type not found")
         value = avto_type.first()
         return value
 
     def validate_marka(self, value):
-        marka = Marka.objects.filter(id=value)
+        marka = Marka.objects.filter(marka=value)
         if not marka.exists():
             raise serializers.ValidationError("such brand not found")
         value = marka.first()
         return value
 
     def validate_car_model(self, value):
-        if not CarModel.objects.filter(id=value).exists():
+        if not CarModel.objects.filter(name=value).exists():
             raise serializers.ValidationError("such model not found")
         return value
 
     def validate_country(self, value):
-        country = Country.objects.filter(id=value)
+        country = Country.objects.filter(country=value)
         if not country.exists():
             raise serializers.ValidationError("such country not found")
         value = country.first()
         return value
 
     def validate_color(self, value):
-        color = Color.objects.filter(id=value)
+        color = Color.objects.filter(color=value)
         if not color.exists():
             raise serializers.ValidationError("such color not found")
 
@@ -268,7 +268,7 @@ class AddCarSerializer(serializers.Serializer):
         return value
 
     def validate_fuel(self, value):
-        fuel = Fuel.objects.filter(id=value)
+        fuel = Fuel.objects.filter(name=value)
         if not fuel.exists():
             raise serializers.ValidationError("such fuel type not found")
         value = fuel.first()
@@ -407,11 +407,11 @@ class CarImageUploadSerializer(serializers.Serializer):
         if car_image.exists():
             validated_data["order"] = car_image.last().order + 1
         return CarImage.objects.create(**validated_data)
-    
+
     def update(self, instance, validated_data):
-        for attr , value in validated_data.items():
-            setattr(instance , attr , value)
-            
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
         instance.save()
         return instance
 
@@ -424,9 +424,20 @@ class GetCarImagesSerializer(serializers.ModelSerializer):
     rasmlarni olish
     """
 
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = CarImage
-        fields = ["id","image", "is_main", "order"]
+        fields = ["id", "image", "is_main", "order"]
+
+    def get_image(self, obj):
+        """To'liq url qaytarish"""
+        request = self.context.get("request")
+        if obj.image and hasattr(obj.image, "url"):
+            if request is not None:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
 
 
 # /////////////////////////////////////////////////////////
@@ -444,11 +455,36 @@ class GetCarSerializer(serializers.ModelSerializer):
     country = serializers.StringRelatedField()
     color = serializers.StringRelatedField()
     fuel = serializers.StringRelatedField()
-   
+    images = GetCarImagesSerializer(many=True)
 
     class Meta:
         model = Car
-        fields = "__all__"
+        fields = [
+            "id",
+            "author",
+            "marka",
+            "avto_type",
+            "car_model",
+            "country",
+            "color",
+            "fuel",
+            "price",
+            "year",
+            "milage",
+            "displacement",
+            "power",
+            "drive_type",
+            "transmission_type",
+            "doors_count",
+            "description",
+            "body",
+            "condition",
+            "availability",
+            "status",
+            "created_time",
+            "updated_time",
+            "images",
+        ]
 
 
 # /////////////////////////////////////////////////////////
@@ -456,14 +492,16 @@ class GetCarSerializer(serializers.ModelSerializer):
 # /////////////////////////////////////////////////////////
 class GetCarsSerializer(serializers.ModelSerializer):
     """
-        hamma moshinlarni olish
+    hamma moshinlarni olish
     """
+
     marka = serializers.StringRelatedField()
     car_model = serializers.StringRelatedField()
     country = serializers.StringRelatedField()
     fuel = serializers.StringRelatedField()
     images = GetCarImagesSerializer(many=True)
     author = serializers.StringRelatedField()
+
     class Meta:
         model = Car
         fields = [
