@@ -19,6 +19,7 @@ from .models import (
     Fuel,
     Car,
     CarImage,
+    Like
 )
 
 
@@ -447,7 +448,6 @@ class GetCarSerializer(serializers.ModelSerializer):
     """
     Moshinani olish
     """
-
     author = serializers.StringRelatedField()
     marka = serializers.StringRelatedField()
     avto_type = serializers.StringRelatedField()
@@ -456,6 +456,8 @@ class GetCarSerializer(serializers.ModelSerializer):
     color = serializers.StringRelatedField()
     fuel = serializers.StringRelatedField()
     images = GetCarImagesSerializer(many=True)
+    car_likes_count = serializers.SerializerMethodField("get_car_likes_count")
+    me_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Car
@@ -483,9 +485,20 @@ class GetCarSerializer(serializers.ModelSerializer):
             "status",
             "created_time",
             "updated_time",
+            "car_likes_count",
+            "me_liked",
             "images",
         ]
-
+        
+    def get_car_likes_count(self , obj):
+        return obj.likes.count()
+    
+    def get_me_liked(self , obj):
+        request = self.context.get("request")    
+        if request and request.user.is_authenticated :
+            return Like.objects.filter(author = request.user , car = obj).exists()
+        return False
+    
 
 # /////////////////////////////////////////////////////////
 # ////////////       GET ALL CARS        //////////////////

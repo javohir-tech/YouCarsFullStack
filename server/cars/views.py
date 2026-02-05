@@ -30,7 +30,6 @@ from .serializers import (
     CarImageUploadSerializer,
     GetCarsSerializer,
     GetCarSerializer,
-    GetCarImagesSerializer,
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -132,7 +131,7 @@ class GetFuelsView(ListAPIView):
 
 
 # /////////////////////////////////////////////////////////
-# ////////////    ADD CAR      ////////////////////////////
+# ////////////        CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
 class CarView(APIView):
     permission_classes = [IsAuthenticated]
@@ -191,7 +190,7 @@ class CarView(APIView):
 
     def get(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        carSerializer = GetCarSerializer(car ,  context={'request': request})
+        carSerializer = GetCarSerializer(car , context={'request': request})
         data = {
             "success": True,
             "message": "yuklandi",
@@ -208,7 +207,7 @@ class CarImageView(APIView):
     moshina rasmlarini joylash
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]  
 
     def post(self, request):
         serializer = CarImageUploadSerializer(data=request.data)
