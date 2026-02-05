@@ -5,7 +5,7 @@
     <div class="error" v-if="errors">
       <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
     </div>
-    <a-spin :spinning="isLoading" tip="Loading...">
+    <a-spin :spinning="isLoading" tip="Loading..." size="large">
 
       <div v-if="!errors" class="container">
         <div class="page-header">

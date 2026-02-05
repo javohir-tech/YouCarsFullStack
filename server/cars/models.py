@@ -67,6 +67,14 @@ class AvtoTypeMarka(BaseModel):
 
     def __str__(self):
         return f"{self.avto_type.__str__()} and {self.marka.__str__()}"
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['avto_type' , 'marka'],
+                name='avto_type and marka unique'
+            )
+        ]
 
 
 # //////////////////////////////////////////////////////
@@ -86,6 +94,7 @@ class CarModel(BaseModel):
     def save(self, *args, **kwargs):
         self.add_name()
         super().save(*args, **kwargs)
+        
 
 
 # //////////////////////////////////////////////////////
@@ -241,6 +250,23 @@ class CarImage(BaseModel):
 
     def __str__(self):
         return f"{self.car} - image {self.id}"
-
-
-# Create your models here.
+    
+    
+# //////////////////////////////////////////////////////
+# //////////////// LIKE MODEL    ///////////////////////
+# //////////////////////////////////////////////////////
+class Like(BaseModel):
+    author = models.ForeignKey(User , on_delete=models.CASCADE , related_name="likes")
+    car = models.ForeignKey(Car , on_delete=models.CASCADE , related_name='likes')
+    
+    def __str__(self):
+        return f"{self.author.__str__()} and {self.car.__str__}"
+    
+    class Meta :
+        constraints  = [
+            models.UniqueConstraint(
+                fields=["author" , "car",],
+                name="unique_like_per_user_and_car"
+            )
+        ]
+        
