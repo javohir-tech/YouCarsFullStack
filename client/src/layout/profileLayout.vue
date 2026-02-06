@@ -31,7 +31,7 @@
                                     <a-flex justify="space-between" align="center">
                                         <p>E-mail</p>
                                         <p>
-                                            <a href="#">Khamzat.arslanaliyev@mail.ru</a>
+                                            <a href="#">{{ userStore.email }}</a>
                                         </p>
                                     </a-flex>
                                     <a-flex justify="space-between" align="center">
