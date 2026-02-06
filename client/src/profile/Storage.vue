@@ -14,7 +14,7 @@
         <div v-if="getError" class="error">
             <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
         </div>
-        <div  v-if="!loading && !getError && cars.length > 0" class="storage_cars">
+        <div v-if="!loading && !getError && cars.length > 0" class="storage_cars">
             <a-row :gutter="[16, 24]">
                 <a-col v-for="car in cars" :key="car.id" class="gutter-row" :xl="8" :md="12" :sm="24" :xs="24">
                     <CarCard :id="car.id" :model="car.car_model" :like="car.me_liked" :images="car.images"
@@ -23,6 +23,8 @@
                         :drive_type="car.drive_type" :country="car.country" @dislike="handleDislike" />
                 </a-col>
             </a-row>
+            <a-pagination v-if="total" class="pagination" v-model:current="current" :total="total"
+                show-less-items />
         </div>
     </div>
 </template>
@@ -36,12 +38,16 @@ import { onMounted, ref } from 'vue';
 const cars = ref([])
 const loading = ref(false)
 const getError = ref(false)
+const current = ref(2);
+const total = ref(0);
+
 
 const getMeLikedcars = async () => {
     loading.value = true
     try {
         const { data } = await api.get("/cars/cars/meliked/")
         cars.value = data.result
+        total.value = data.count
     } catch (error) {
         getError.value = true
         console.log(error.response || error)
@@ -60,7 +66,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.loading , .empty , .error{
+.loading,
+.empty,
+.error {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -82,5 +90,10 @@ onMounted(() => {
         color: #293843;
         margin-bottom: 20px;
     }
+}
+
+.pagination {
+    text-align: end;
+    margin: 15px 0px;
 }
 </style>

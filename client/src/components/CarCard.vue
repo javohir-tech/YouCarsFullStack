@@ -135,7 +135,8 @@ const onError = () => {
 .car_card_info {
     padding: 10px 15px;
     background: #fff;
-    border-radius: 14px;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 
@@ -144,9 +145,6 @@ const onError = () => {
     }
 }
 
-.car_card:hover .car_card_info {
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
-}
 
 .car_subtitle {
     p {
@@ -219,6 +217,10 @@ const onError = () => {
 :deep(.mySwiper .swiper-scrollbar) {
     opacity: 0;
     transition: opacity 0.3s ease;
+}
+
+.car_card:hover .car_card_info {
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
 }
 
 .car_card:hover :deep(.mySwiper .swiper-scrollbar) {
