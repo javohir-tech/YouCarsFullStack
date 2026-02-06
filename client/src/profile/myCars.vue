@@ -29,7 +29,8 @@
                                 <p>{{ item.inquiries || 0 }}</p>
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
-                                <HeartOutlined class="car_info_icon heart_icon" />
+                                <HeartOutlined @click="item.me_liked ? handleCarDislike(item.id): HandleCarLike(item.id)"
+                                    class="car_info_icon heart_icon" />
                                 <p>{{ item.likes_count }}</p>
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
@@ -85,6 +86,7 @@ const loading = ref(false)
 const cars_data = ref([])
 const keepLoading = ref(false)
 
+
 // ─── Fetch cars ──────────────────────────────
 const getUserDraftCars = async () => {
     loading.value = true
@@ -96,6 +98,25 @@ const getUserDraftCars = async () => {
         console.log(err.response || err)
     } finally {
         loading.value = false
+    }
+}
+
+const HandleCarLike = async (id) => {
+    try {
+        const {data} = await api.post(`/cars/car/like/${id}/`)
+        if(data.success){
+            message.success('like bosildi')
+        }
+    } catch (error) {
+        console.log(error.response || response)
+    }
+}
+
+const handleCarDislike = async (id) => {
+    try {
+        await api.delete(`/cars/car/like/${id}/`)
+    } catch (error) {
+        console.log(error.response || error)
     }
 }
 

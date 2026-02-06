@@ -45,7 +45,7 @@
                                 </div>
 
                                 <div class="profile_routes">
-                                    <router-link to="/profile" class="profile_route">
+                                    <router-link to="/profile/storage" class="profile_route">
                                         <StarOutlined class="router_icon" />
                                         <p>Избранное</p>
                                     </router-link>
@@ -140,7 +140,7 @@
                         </div>
 
                         <div class="profile_routes">
-                            <router-link to="/profile" class="profile_route" @click="closeDrawer">
+                            <router-link to="/profile/storage" class="profile_route" @click="closeDrawer">
                                 <StarOutlined class="router_icon" />
                                 <p>Избранное</p>
                             </router-link>

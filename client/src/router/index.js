@@ -6,7 +6,7 @@ import { CarDetail, Home } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
-import { CarUpload, EmailVeriy, myCars, myCarsWarehouse, profile } from '@/profile'
+import { CarUpload, EmailVeriy, myCars, myCarsWarehouse, profile, Storage } from '@/profile'
 import ProfileLayout from '@/layout/profileLayout.vue'
 import MyCarsLayout from '@/layout/myCarsLayout.vue'
 
@@ -81,6 +81,11 @@ const router = createRouter({
                   meta: { requiresAuth: true },
                 }
               ]
+            },
+            {
+              path: "storage",
+              component: Storage,
+              meta: { requiresAuth: true }
             }
           ]
         },
