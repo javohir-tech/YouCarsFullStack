@@ -680,7 +680,7 @@ const carData = {
 
   async createCar(data) {
     try {
-      const response = await api.post("/cars/car/upload/", { ...data })
+      const response = await api.post("/cars/car/", { ...data })
       return response.data.data.id
     } catch (error) {
       if (error.response) {
@@ -727,7 +727,7 @@ const carData = {
     formData.append('image', file);
     formData.append('is_main', isMain);
     try {
-      const response = await api.post('/cars/car/image/upload/', formData, {
+      const response = await api.post('/cars/car/image/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
