@@ -271,14 +271,17 @@ class UpdateUserSerializer(serializers.Serializer):
     def check_input_len(value):
         if value is None:
             return None
-        if 6 > len(value) or len(value) > 32:
+        if 5 > len(value) or len(value) > 32:
             raise ValidationError(
-                {"value": f"{value} must be between 6 and 32 characters."}
+                {"value": f"{value} must be between 5 and 32 characters."}
             )
             
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["message"] = "Successfully changed."
+        request = self.context.get('request')
+        if request and instance.photo :
+            data['photo'] = request.build_absolute_uri(instance.photo)
         return data
 
     def update(self, instance, validated_data):
@@ -291,7 +294,7 @@ class UpdateUserSerializer(serializers.Serializer):
         instance.photo = photo
 
         instance.save()
-
+        
         return instance
 
 
@@ -335,10 +338,12 @@ class UpdatePasswordSerializer(serializers.Serializer):
 # ////////////////   GET USER         ////////////////////
 # ////////////////////////////////////////////////////////
 class GetUserSerializer(serializers.ModelSerializer):
+    
+    photo = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name"]
+        fields = ["id", "username", "email", "first_name", "last_name" , 'photo']
         
         
     def to_representation(self, instance):
@@ -346,6 +351,14 @@ class GetUserSerializer(serializers.ModelSerializer):
         data['is_admin'] = instance.is_staff
         return data    
 
+    def get_photo(self , obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            if obj.photo  and hasattr(obj.photo , 'url'):
+                return request.build_absolute_uri(obj.photo.url)
+            return None
+        return obj.photo.url
+        
 # ////////////////////////////////////////////////////////
 # ////////////  REFRESH TOKEN         ////////////////////
 # ////////////////////////////////////////////////////////

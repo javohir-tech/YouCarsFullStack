@@ -3,7 +3,7 @@ from django.utils import timezone
 
 # ////////// REST FREMEWORK ////////
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
@@ -232,6 +232,7 @@ class ForgetPasswordView(APIView):
 class CodeVerifyView(APIView):
     permission_classes = [IsVerifyPermission, CodeVerifyPermission]
     authentication_classes = [VerifyTokenAuthentication]
+
     @swagger_auto_schema(
         tags=["auth"],
         operation_description="check verify code",
@@ -282,6 +283,7 @@ class CodeVerifyView(APIView):
 class NewPasswordView(APIView):
     permission_classes = [IsVerifyPermission, EditPasswordPermission]
     authentication_classes = [VerifyTokenAuthentication]
+
     @swagger_auto_schema(
         tags=["auth"],
         operation_description="User set new password",
@@ -289,9 +291,9 @@ class NewPasswordView(APIView):
             type=openapi.TYPE_OBJECT,
             properties={
                 "password": openapi.Schema(type=openapi.TYPE_STRING),
-                "confirm_password" : openapi.Schema(type=openapi.TYPE_STRING),
+                "confirm_password": openapi.Schema(type=openapi.TYPE_STRING),
             },
-            required=["password" , "confirm_password"],
+            required=["password", "confirm_password"],
         ),
         responses={
             200: openapi.Response("User change new passwordd successfully"),
@@ -322,6 +324,7 @@ class NewPasswordView(APIView):
 class EditEmailView(APIView):
 
     permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         tags=["auth"],
         operation_description="User change email address",
@@ -329,7 +332,7 @@ class EditEmailView(APIView):
             type=openapi.TYPE_OBJECT,
             properties={
                 "email": openapi.Schema(type=openapi.TYPE_STRING),
-                "old_email": openapi.Schema(type=openapi.TYPE_STRING)
+                "old_email": openapi.Schema(type=openapi.TYPE_STRING),
             },
             required=["email", "old_email"],
         ),
@@ -362,14 +365,13 @@ class EditEmailView(APIView):
 class EmailVerifyView(APIView):
     permission_classes = [EditEmailPermissions]
     authentication_classes = [EmailEditAuthentication]
+
     @swagger_auto_schema(
         tags=["auth"],
         operation_description="User check verify code",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            properties={
-                "code": openapi.Schema(type=openapi.TYPE_NUMBER)
-            },
+            properties={"code": openapi.Schema(type=openapi.TYPE_NUMBER)},
             required=["code"],
         ),
         responses={
@@ -429,6 +431,7 @@ class EmailVerifyView(APIView):
 # ////////////////////////////////////////////////////////
 class UpdateUserView(APIView):
     permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         tags=["auth"],
         operation_description="User update",
@@ -440,7 +443,7 @@ class UpdateUserView(APIView):
                 "last_name": openapi.Schema(type=openapi.TYPE_STRING),
                 "photo": openapi.Schema(type=openapi.TYPE_FILE),
             },
-            required=["first_name", "username", "last_name" , "photo"],
+            required=["first_name", "username", "last_name", "photo"],
         ),
         responses={
             201: openapi.Response("User update successfully"),
@@ -449,7 +452,9 @@ class UpdateUserView(APIView):
     )
     def put(self, request):
 
-        serializer = UpdateUserSerializer(instance=self.request.user, data=request.data)
+        serializer = UpdateUserSerializer(
+            instance=self.request.user, data=request.data, context={"request": request}
+        )
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -490,6 +495,7 @@ class UpdateUserView(APIView):
 # ////////////////////////////////////////////////////////
 class UpdatePasswordView(APIView):
     permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         tags=["auth"],
         operation_description="User update password",
@@ -525,6 +531,7 @@ class UpdatePasswordView(APIView):
 # ////////////////////////////////////////////////////////
 class GetUserView(APIView):
     permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         tags=["auth"],
         operation_description="get User",
@@ -534,7 +541,9 @@ class GetUserView(APIView):
         },
     )
     def get(self, request):
-        serializer = GetUserSerializer(instance=request.user)
+        serializer = GetUserSerializer(
+            instance=request.user, context={"request": request}
+        )
         return Response(serializer.data)
 
 
@@ -543,3 +552,24 @@ class GetUserView(APIView):
 # ////////////////////////////////////////////////////////
 class LoginRefreshView(TokenRefreshView):
     serializer_class = LoginRefreshSerializer
+    
+    
+# ////////////////////////////////////////////////////////
+# ////////////  DELETE USER IMAGE     ////////////////////
+# ////////////////////////////////////////////////////////
+class UserImageDelete(DestroyAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+    
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        if user.photo :
+            user.photo.delete(save=True)
+            return Response({
+                "success":  True, 
+                "message": "rasm ochirildi"
+            } , status=status.HTTP_200_OK)    
+        else :
+            return Response({
+                "message" : "rasmni ozi yoqku uka"
+            })

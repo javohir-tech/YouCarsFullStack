@@ -400,7 +400,7 @@ const cancel = () => {
 }
 
 .router-link-active .router_icon {
-    color: #1890ff;
+    color: #5A5A5A;
 }
 
 .router_icon {

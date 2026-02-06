@@ -11,7 +11,8 @@ from .views import (
     UpdateUserView,
     UpdatePasswordView,
     GetUserView,
-    LoginRefreshView
+    LoginRefreshView, 
+    UserImageDelete
 )
 
 # app_name = 'users'
@@ -28,5 +29,6 @@ urlpatterns = [
     path("user/update/", UpdateUserView.as_view()),
     path("password/update/", UpdatePasswordView.as_view()),
     path("user/", GetUserView.as_view()),
-    path("refresh/" , LoginRefreshView.as_view())
+    path("refresh/" , LoginRefreshView.as_view()), 
+    path("user/image/delete/<uuid:pk>" , UserImageDelete.as_view())
 ]
