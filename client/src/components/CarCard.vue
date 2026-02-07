@@ -118,9 +118,14 @@ const onError = () => {
 </script>
 
 <style scoped>
+
+.card_card{
+    width: 100%;
+}
+
 .car_card_image {
     width: 100%;
-    height: 160px;
+    height: 240px;
     overflow: hidden;
     border-radius: 10px;
 }
@@ -128,8 +133,9 @@ const onError = () => {
 .car_card_image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center;
+    object-fit: contain;
+    /* object-fit: cover; */
+    /* object-position: center; */
 }
 
 .car_card_info {
