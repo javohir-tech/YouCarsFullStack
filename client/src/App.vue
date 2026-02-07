@@ -46,6 +46,8 @@ const stopTokenRefreshTimer = () => {
 onMounted(() => {
   refreshAccessToken() 
   startTokenRefreshTimer() 
+  const splash = document.getElementById('splash')
+  if(splash) splash.remove()
 })
 
 onBeforeUnmount(() => {
