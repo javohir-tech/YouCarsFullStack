@@ -83,9 +83,6 @@ const liked = ref(props.like)
 const HandleCarLike = async (id) => {
     try {
         const { data } = await api.post(`/cars/car/like/${id}/`)
-        if (data.success) {
-            message.success(`${props.marka} ${props.model} liked`)
-        }
         liked.value = true
     } catch (error) {
         console.log(error.response || response)
@@ -96,7 +93,6 @@ const handleCarDislike = async (id) => {
     try {
         await api.delete(`/cars/car/like/${id}/`)
         liked.value = false
-        message.info(`${props.marka} ${props.model} disliked`)
         emit('dislike', id)
     } catch (error) {
         console.log(error.response || error)

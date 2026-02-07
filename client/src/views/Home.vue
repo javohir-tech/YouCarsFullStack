@@ -95,7 +95,10 @@
                 </h1>
             </div>
             <a-row class="cars" :gutter="[16, 24]">
-                <a-col v-for="car in carsData" class="gutter-row" :xs="24" :md="12" :xl="8">
+                <a-col v-if="carsLoading" v-for="_ in new Array(6).fill(0)" :xs="24" :md="12" :xl="8">
+                        <a-skeleton active/>
+                </a-col>
+                <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24" :md="12" :xl="8">
                     <CarCard :id="car.id" :model="car.car_model" :like="car.me_liked" :images="car.images"
                         :marka="car.marka" :price="car.price" :milage="car.milage" :displacement="car.displacement"
                         :year="car.year" :transmission_type="car.transmission_type" :power="car.power" :fuel="car.fuel"
@@ -109,8 +112,8 @@
             </div>
         </div>
 
-        <!-- ============================ ABOUT SECTION ======================================= -->
-        <div class="about_us">
+        <!-- ============================ SERVISE SECTION ======================================= -->
+        <div class="servises_section">
             <div class="header">
                 <h1>Почему мы?</h1>
             </div>
@@ -172,6 +175,29 @@
                 </a-row>
             </div>
         </div>
+
+        <!-- ============================ ABOUT SECTION ======================================= -->
+        <div class="about_section">
+            <a-row class="about_section_box">
+                <a-col class="gutter-row about_section_left" :md="24" :lg="12">
+                    <div class="about_section_image">
+                        <img src="./../../public/image copy.png" alt="about_section_image">
+                        <div></div>
+                    </div>
+                </a-col>
+                <a-col enter-class="gutter-row" :md="24" :lg="12">
+                    <h3 class="about_section_title">
+                        О нашей компании
+                    </h3>
+                    <p class="about_section_subtitle">
+                        Мы имеем огромный опыт работы с автомобильным рынком Кореи и тщательно отбираем автомобили для наших клиентов, учитывая их потребности и бюджет. Мы работаем только с надежными поставщиками и перевозчиками, чтобы обеспечить безопасность и надежность доставки.
+                    </p>
+                    <div class="about_section_btn">
+                        <a-button type="primary" size="large">Связаться с нами</a-button>
+                    </div>
+                </a-col>
+            </a-row>
+        </div>
     </div>
 </template>
 
@@ -209,7 +235,7 @@ const handleGetcCars = async () => {
     } catch (error) {
         console.log(error.response || error)
     } finally {
-        carsLoading.value = true
+        carsLoading.value = false
     }
 }
 
@@ -229,8 +255,51 @@ onMounted(() => {
         margin-bottom: 20px;
     }
 }
-
 /* =============================== ABOUT SECTION ============================================== */
+.about_section{
+    margin-top: 150px;
+    border-radius: 10px;
+    background-color: #F6F6F6;
+    padding:40px;
+}
+
+.about_section{
+    /* background: url(../../public/image.png); */
+    background-image: url(../../public/image.png);
+    background-size:350px;
+    background-position: 100px;
+    background-repeat: no-repeat;
+}
+
+
+.about_section_image{
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: relative;
+    bottom: 50px;
+    img{
+        /* width: 100%; */
+        height: 100%;
+        transform: scale(1.6);
+    }
+}
+
+.about_section_title{
+    font-weight: 600;
+    font-size: 28px;
+    color: #010101;
+}
+
+.about_section_subtitle{
+    font-weight: 400;
+    font-size: 16px;
+    color: #989898;
+}
+
+
+/* =============================== SERVISES SECTION ============================================== */
 .section_card {
     height: 200px;
     background-color: #fff;
@@ -302,7 +371,7 @@ onMounted(() => {
 
 .hero_section_image {
     width: 100%;
-    height: 300px;
+    height: 400px;
 
     img {
         width: 100%;
