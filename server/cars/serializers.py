@@ -558,4 +558,13 @@ class CarDeletionSerializer(serializers.Serializer):
         if not value in [1, 2, 3]:
             raise serializers.ValidationError("Noto'g'ri sabab kodi")
         return value
+    
+# /////////////////////////////////////////////////////////
+# ////////////       GET ALL MARKAS       /////////////////
+# /////////////////////////////////////////////////////////
+class GetAllMarkasSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Marka    
+        fields = ['id' , 'marka' , 'photo']
 

@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+# /////////////////////// FILTER ///////////////////////////
+from django_filters.rest_framework import DjangoFilterBackend
+
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -19,6 +22,7 @@ from .models import (
     CarImage,
     Like,
     DeletionStatistics,
+    Marka,
 )
 
 # //////////// SERIALIZERS  /////////////////////////////
@@ -36,6 +40,7 @@ from .serializers import (
     GetCarsSerializer,
     GetCarSerializer,
     CarDeletionSerializer,
+    GetAllMarkasSerializer,
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -66,6 +71,7 @@ class GetMarkaWithTypeView(APIView):
     """
     AVTOMABIL turiga qarab markalarini olish
     """
+
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -73,14 +79,14 @@ class GetMarkaWithTypeView(APIView):
         operation_summary="Marka olish (avto turi bo'yicha)",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['avto_type'],
+            required=["avto_type"],
             properties={
-                'avto_type': openapi.Schema(
+                "avto_type": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Avtomobil turi nomi',
-                    example='CT , CR , MO'
+                    description="Avtomobil turi nomi",
+                    example="CT , CR , MO",
                 ),
-            }
+            },
         ),
         responses={
             200: openapi.Response(
@@ -88,26 +94,37 @@ class GetMarkaWithTypeView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(type=openapi.TYPE_BOOLEAN, example=True),
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, example='Brands have been received'),
-                        'data': openapi.Schema(
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
+                        ),
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example="Brands have been received",
+                        ),
+                        "data": openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
                                 properties={
-                                    'id': openapi.Schema(type=openapi.TYPE_INTEGER, example=1),
-                                    'marka': openapi.Schema(type=openapi.TYPE_STRING, example='Toyota'),
-                                    'logo': openapi.Schema(type=openapi.TYPE_STRING, format='uri'),
-                                }
-                            )
-                        )
-                    }
-                )
+                                    "id": openapi.Schema(
+                                        type=openapi.TYPE_INTEGER, example=1
+                                    ),
+                                    "marka": openapi.Schema(
+                                        type=openapi.TYPE_STRING, example="Toyota"
+                                    ),
+                                    "logo": openapi.Schema(
+                                        type=openapi.TYPE_STRING, format="uri"
+                                    ),
+                                },
+                            ),
+                        ),
+                    },
+                ),
             ),
             400: "Validatsiya xatosi",
-            401: "Autentifikatsiya talab qilinadi"
+            401: "Autentifikatsiya talab qilinadi",
         },
-        tags=['Reference Data']
+        tags=["Reference Data"],
     )
     def post(self, request):
         serializer = GetMarkaWithTypeSerializer(data=request.data)
@@ -131,6 +148,7 @@ class GetModelsWithMarkaView(APIView):
     """
     markaga oid modellarni olish
     """
+
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -138,14 +156,12 @@ class GetModelsWithMarkaView(APIView):
         operation_summary="Modellar olish (marka bo'yicha)",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['marka'],
+            required=["marka"],
             properties={
-                'marka': openapi.Schema(
-                    type=openapi.TYPE_STRING,
-                    description='Marka nomi',
-                    example='Toyota'
+                "marka": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="Marka nomi", example="Toyota"
                 ),
-            }
+            },
         ),
         responses={
             200: openapi.Response(
@@ -153,26 +169,36 @@ class GetModelsWithMarkaView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(type=openapi.TYPE_BOOLEAN, example=True),
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, example='modellar olindi'),
-                        'models': openapi.Schema(
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
+                        ),
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="modellar olindi"
+                        ),
+                        "models": openapi.Schema(
                             type=openapi.TYPE_ARRAY,
                             items=openapi.Schema(
                                 type=openapi.TYPE_OBJECT,
                                 properties={
-                                    'id': openapi.Schema(type=openapi.TYPE_INTEGER, example=1),
-                                    'name': openapi.Schema(type=openapi.TYPE_STRING, example='Camry'),
-                                    'marka': openapi.Schema(type=openapi.TYPE_STRING, example='Toyota'),
-                                }
-                            )
-                        )
-                    }
-                )
+                                    "id": openapi.Schema(
+                                        type=openapi.TYPE_INTEGER, example=1
+                                    ),
+                                    "name": openapi.Schema(
+                                        type=openapi.TYPE_STRING, example="Camry"
+                                    ),
+                                    "marka": openapi.Schema(
+                                        type=openapi.TYPE_STRING, example="Toyota"
+                                    ),
+                                },
+                            ),
+                        ),
+                    },
+                ),
             ),
             400: "Validatsiya xatosi",
-            401: "Autentifikatsiya talab qilinadi"
+            401: "Autentifikatsiya talab qilinadi",
         },
-        tags=['Reference Data']
+        tags=["Reference Data"],
     )
     def post(self, request):
         serializer = GetModelsWithMarkaSerializer(data=request.data)
@@ -227,109 +253,120 @@ class CarView(APIView):
         operation_summary="Mashina yaratish",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['avto_type', 'marka', 'car_model', 'country', 'color', 
-                     'fuel', 'price', 'year', 'milage', 'displacement', 'power',
-                     'drive_type', 'transmission_type', 'doors_count', 
-                     'description', 'body', 'condition', 'availability', 'status'],
+            required=[
+                "avto_type",
+                "marka",
+                "car_model",
+                "country",
+                "color",
+                "fuel",
+                "price",
+                "year",
+                "milage",
+                "displacement",
+                "power",
+                "drive_type",
+                "transmission_type",
+                "doors_count",
+                "description",
+                "body",
+                "condition",
+                "availability",
+                "status",
+            ],
             properties={
-                'avto_type': openapi.Schema(
+                "avto_type": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Avto turi (masalan: sedan, SUV, crossover)',
-                    example='sedan'
+                    description="Avto turi (masalan: sedan, SUV, crossover)",
+                    example="sedan",
                 ),
-                'marka': openapi.Schema(
+                "marka": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Mashina markasi',
-                    example='Toyota'
+                    description="Mashina markasi",
+                    example="Toyota",
                 ),
-                'car_model': openapi.Schema(
+                "car_model": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Mashina modeli',
-                    example='Camry'
+                    description="Mashina modeli",
+                    example="Camry",
                 ),
-                'country': openapi.Schema(
+                "country": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Ishlab chiqarilgan mamlakat',
-                    example='Japan'
+                    description="Ishlab chiqarilgan mamlakat",
+                    example="Japan",
                 ),
-                'color': openapi.Schema(
+                "color": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Mashina rangi',
-                    example='Qora'
+                    description="Mashina rangi",
+                    example="Qora",
                 ),
-                'fuel': openapi.Schema(
+                "fuel": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Yoqilg\'i turi',
-                    example='Benzin'
+                    description="Yoqilg'i turi",
+                    example="Benzin",
                 ),
-                'price': openapi.Schema(
+                "price": openapi.Schema(
                     type=openapi.TYPE_NUMBER,
-                    format='decimal',
-                    description='Narxi (0 dan 999999999 gacha)',
-                    example=25000.00
+                    format="decimal",
+                    description="Narxi (0 dan 999999999 gacha)",
+                    example=25000.00,
                 ),
-                'year': openapi.Schema(
+                "year": openapi.Schema(
                     type=openapi.TYPE_INTEGER,
-                    description='Ishlab chiqarilgan yili (1951 dan hozirgi yilgacha)',
-                    example=2020
+                    description="Ishlab chiqarilgan yili (1951 dan hozirgi yilgacha)",
+                    example=2020,
                 ),
-                'milage': openapi.Schema(
+                "milage": openapi.Schema(
                     type=openapi.TYPE_INTEGER,
-                    description='Yurgan masofasi km da (0 dan 2000000 gacha)',
-                    example=45000
+                    description="Yurgan masofasi km da (0 dan 2000000 gacha)",
+                    example=45000,
                 ),
-                'displacement': openapi.Schema(
+                "displacement": openapi.Schema(
                     type=openapi.TYPE_NUMBER,
-                    format='decimal',
-                    description='Dvigatel hajmi (litrda)',
-                    example=2.5
+                    format="decimal",
+                    description="Dvigatel hajmi (litrda)",
+                    example=2.5,
                 ),
-                'power': openapi.Schema(
+                "power": openapi.Schema(
                     type=openapi.TYPE_INTEGER,
-                    description='Ot kuchi (0 dan 2000 gacha)',
-                    example=200
+                    description="Ot kuchi (0 dan 2000 gacha)",
+                    example=200,
                 ),
-                'drive_type': openapi.Schema(
+                "drive_type": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="Yurish turi", example="FWD"
+                ),
+                "transmission_type": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Yurish turi',
-                    example='FWD'
+                    description="Uzatmalar qutisi turi",
+                    example="AT",
                 ),
-                'transmission_type': openapi.Schema(
-                    type=openapi.TYPE_STRING,
-                    description='Uzatmalar qutisi turi',
-                    example='AT'
-                ),
-                'doors_count': openapi.Schema(
+                "doors_count": openapi.Schema(
                     type=openapi.TYPE_INTEGER,
-                    description='Eshiklar soni (0 dan 5 gacha)',
-                    example=4
+                    description="Eshiklar soni (0 dan 5 gacha)",
+                    example=4,
                 ),
-                'description': openapi.Schema(
+                "description": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Tavsif (10 dan 1200 belgigacha)',
-                    example='Juda yaxshi holatda, to\'liq ehtiyot qismlari yangi'
+                    description="Tavsif (10 dan 1200 belgigacha)",
+                    example="Juda yaxshi holatda, to'liq ehtiyot qismlari yangi",
                 ),
-                'body': openapi.Schema(
+                "body": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="Kuzov turi", example="Sedan"
+                ),
+                "condition": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Kuzov turi',
-                    example='Sedan'
+                    description="Mashina holati",
+                    example="new",
                 ),
-                'condition': openapi.Schema(
+                "availability": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Mashina holati',
-                    example='new'
+                    description="Sotuvda mavjudligi",
+                    example="available",
                 ),
-                'availability': openapi.Schema(
-                    type=openapi.TYPE_STRING,
-                    description='Sotuvda mavjudligi',
-                    example='available'
+                "status": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="E'lon holati", example="AC"
                 ),
-                'status': openapi.Schema(
-                    type=openapi.TYPE_STRING,
-                    description='E\'lon holati',
-                    example='AC'
-                ),
-            }
+            },
         ),
         responses={
             200: openapi.Response(
@@ -337,21 +374,30 @@ class CarView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(type=openapi.TYPE_BOOLEAN, example=True),
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, example='moshina muvvaqiyatli yaratildi'),
-                        'data': openapi.Schema(
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
+                        ),
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            example="moshina muvvaqiyatli yaratildi",
+                        ),
+                        "data": openapi.Schema(
                             type=openapi.TYPE_OBJECT,
                             properties={
-                                'id': openapi.Schema(type=openapi.TYPE_STRING, format='uuid', example='123e4567-e89b-12d3-a456-426614174000')
-                            }
-                        )
-                    }
-                )
+                                "id": openapi.Schema(
+                                    type=openapi.TYPE_STRING,
+                                    format="uuid",
+                                    example="123e4567-e89b-12d3-a456-426614174000",
+                                )
+                            },
+                        ),
+                    },
+                ),
             ),
             400: "Validatsiya xatosi",
-            401: "Autentifikatsiya talab qilinadi"
+            401: "Autentifikatsiya talab qilinadi",
         },
-        tags=['Car']
+        tags=["Car"],
     )
     def post(self, request):
         serializer = CarSerializer(data=request.data, context={"request": request})
@@ -369,42 +415,65 @@ class CarView(APIView):
         operation_summary="Mashinani yangilash (PUT)",
         manual_parameters=[
             openapi.Parameter(
-                'id',
+                "id",
                 openapi.IN_PATH,
                 description="Mashina ID (UUID format)",
                 type=openapi.TYPE_STRING,
-                format='uuid',
+                format="uuid",
                 required=True,
-                example='123e4567-e89b-12d3-a456-426614174000'
+                example="123e4567-e89b-12d3-a456-426614174000",
             )
         ],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['avto_type', 'marka', 'car_model', 'country', 'color', 
-                     'fuel', 'price', 'year', 'milage', 'displacement', 'power',
-                     'drive_type', 'transmission_type', 'doors_count', 
-                     'description', 'body', 'condition', 'availability', 'status'],
+            required=[
+                "avto_type",
+                "marka",
+                "car_model",
+                "country",
+                "color",
+                "fuel",
+                "price",
+                "year",
+                "milage",
+                "displacement",
+                "power",
+                "drive_type",
+                "transmission_type",
+                "doors_count",
+                "description",
+                "body",
+                "condition",
+                "availability",
+                "status",
+            ],
             properties={
-                'avto_type': openapi.Schema(type=openapi.TYPE_STRING, example='sedan'),
-                'marka': openapi.Schema(type=openapi.TYPE_STRING, example='Toyota'),
-                'car_model': openapi.Schema(type=openapi.TYPE_STRING, example='Camry'),
-                'country': openapi.Schema(type=openapi.TYPE_STRING, example='Japan'),
-                'color': openapi.Schema(type=openapi.TYPE_STRING, example='Qora'),
-                'fuel': openapi.Schema(type=openapi.TYPE_STRING, example='Benzin'),
-                'price': openapi.Schema(type=openapi.TYPE_NUMBER, example=25000.00),
-                'year': openapi.Schema(type=openapi.TYPE_INTEGER, example=2020),
-                'milage': openapi.Schema(type=openapi.TYPE_INTEGER, example=45000),
-                'displacement': openapi.Schema(type=openapi.TYPE_NUMBER, example=2.5),
-                'power': openapi.Schema(type=openapi.TYPE_INTEGER, example=200),
-                'drive_type': openapi.Schema(type=openapi.TYPE_STRING, example='FWD'),
-                'transmission_type': openapi.Schema(type=openapi.TYPE_STRING, example='AT'),
-                'doors_count': openapi.Schema(type=openapi.TYPE_INTEGER, example=4),
-                'description': openapi.Schema(type=openapi.TYPE_STRING, example='Yaxshi holatda'),
-                'body': openapi.Schema(type=openapi.TYPE_STRING, example='Sedan'),
-                'condition': openapi.Schema(type=openapi.TYPE_STRING, example='used'),
-                'availability': openapi.Schema(type=openapi.TYPE_STRING, example='available'),
-                'status': openapi.Schema(type=openapi.TYPE_STRING, example='AC'),
-            }
+                "avto_type": openapi.Schema(type=openapi.TYPE_STRING, example="sedan"),
+                "marka": openapi.Schema(type=openapi.TYPE_STRING, example="Toyota"),
+                "car_model": openapi.Schema(type=openapi.TYPE_STRING, example="Camry"),
+                "country": openapi.Schema(type=openapi.TYPE_STRING, example="Japan"),
+                "color": openapi.Schema(type=openapi.TYPE_STRING, example="Qora"),
+                "fuel": openapi.Schema(type=openapi.TYPE_STRING, example="Benzin"),
+                "price": openapi.Schema(type=openapi.TYPE_NUMBER, example=25000.00),
+                "year": openapi.Schema(type=openapi.TYPE_INTEGER, example=2020),
+                "milage": openapi.Schema(type=openapi.TYPE_INTEGER, example=45000),
+                "displacement": openapi.Schema(type=openapi.TYPE_NUMBER, example=2.5),
+                "power": openapi.Schema(type=openapi.TYPE_INTEGER, example=200),
+                "drive_type": openapi.Schema(type=openapi.TYPE_STRING, example="FWD"),
+                "transmission_type": openapi.Schema(
+                    type=openapi.TYPE_STRING, example="AT"
+                ),
+                "doors_count": openapi.Schema(type=openapi.TYPE_INTEGER, example=4),
+                "description": openapi.Schema(
+                    type=openapi.TYPE_STRING, example="Yaxshi holatda"
+                ),
+                "body": openapi.Schema(type=openapi.TYPE_STRING, example="Sedan"),
+                "condition": openapi.Schema(type=openapi.TYPE_STRING, example="used"),
+                "availability": openapi.Schema(
+                    type=openapi.TYPE_STRING, example="available"
+                ),
+                "status": openapi.Schema(type=openapi.TYPE_STRING, example="AC"),
+            },
         ),
         responses={
             200: openapi.Response(
@@ -412,17 +481,21 @@ class CarView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(type=openapi.TYPE_BOOLEAN, example=True),
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, example="o'zgartirildi"),
-                        'data': openapi.Schema(type=openapi.TYPE_OBJECT)
-                    }
-                )
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
+                        ),
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="o'zgartirildi"
+                        ),
+                        "data": openapi.Schema(type=openapi.TYPE_OBJECT),
+                    },
+                ),
             ),
             400: "Validatsiya xatosi",
             401: "Autentifikatsiya talab qilinadi",
-            404: "Mashina topilmadi"
+            404: "Mashina topilmadi",
         },
-        tags=['Car']
+        tags=["Car"],
     )
     def put(self, request, pk):
         car = get_object_or_404(Car, id=pk)
@@ -443,39 +516,37 @@ class CarView(APIView):
         operation_summary="Mashinani yangilash (PATCH)",
         manual_parameters=[
             openapi.Parameter(
-                'id',
+                "id",
                 openapi.IN_PATH,
                 description="Mashina ID (UUID format)",
                 type=openapi.TYPE_STRING,
-                format='uuid',
+                format="uuid",
                 required=True,
-                example='123e4567-e89b-12d3-a456-426614174000'
+                example="123e4567-e89b-12d3-a456-426614174000",
             )
         ],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'price': openapi.Schema(
-                    type=openapi.TYPE_NUMBER,
-                    description='Yangi narx',
-                    example=30000.00
+                "price": openapi.Schema(
+                    type=openapi.TYPE_NUMBER, description="Yangi narx", example=30000.00
                 ),
-                'description': openapi.Schema(
+                "description": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Yangi tavsif',
-                    example='Narx tushirildi'
+                    description="Yangi tavsif",
+                    example="Narx tushirildi",
                 ),
-                'availability': openapi.Schema(
+                "availability": openapi.Schema(
                     type=openapi.TYPE_STRING,
-                    description='Mavjudlik holati',
-                    example='available'
+                    description="Mavjudlik holati",
+                    example="available",
                 ),
-                'marka': openapi.Schema(type=openapi.TYPE_STRING),
-                'car_model': openapi.Schema(type=openapi.TYPE_STRING),
-                'color': openapi.Schema(type=openapi.TYPE_STRING),
-                'year': openapi.Schema(type=openapi.TYPE_INTEGER),
+                "marka": openapi.Schema(type=openapi.TYPE_STRING),
+                "car_model": openapi.Schema(type=openapi.TYPE_STRING),
+                "color": openapi.Schema(type=openapi.TYPE_STRING),
+                "year": openapi.Schema(type=openapi.TYPE_INTEGER),
             },
-            description="Faqat o'zgartirmoqchi bo'lgan fieldlarni yuboring"
+            description="Faqat o'zgartirmoqchi bo'lgan fieldlarni yuboring",
         ),
         responses={
             200: openapi.Response(
@@ -483,16 +554,20 @@ class CarView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(type=openapi.TYPE_BOOLEAN, example=True),
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, example='patch ishladi'),
-                    }
-                )
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
+                        ),
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="patch ishladi"
+                        ),
+                    },
+                ),
             ),
             400: "Validatsiya xatosi",
             401: "Autentifikatsiya talab qilinadi",
-            404: "Mashina topilmadi"
+            404: "Mashina topilmadi",
         },
-        tags=['Car']
+        tags=["Car"],
     )
     def patch(self, request, pk):
         car = get_object_or_404(Car, id=pk)
@@ -512,25 +587,25 @@ class CarView(APIView):
         operation_summary="Mashinani o'chirish",
         manual_parameters=[
             openapi.Parameter(
-                'id',
+                "id",
                 openapi.IN_PATH,
                 description="Mashina ID (UUID format)",
                 type=openapi.TYPE_STRING,
-                format='uuid',
+                format="uuid",
                 required=True,
-                example='123e4567-e89b-12d3-a456-426614174000'
+                example="123e4567-e89b-12d3-a456-426614174000",
             )
         ],
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
-            required=['reason'],
+            required=["reason"],
             properties={
-                'reason': openapi.Schema(
+                "reason": openapi.Schema(
                     type=openapi.TYPE_STRING,
                     description="O'chirish sababi",
-                    example='sotildi'
+                    example="sotildi",
                 ),
-            }
+            },
         ),
         responses={
             200: openapi.Response(
@@ -538,16 +613,20 @@ class CarView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(type=openapi.TYPE_BOOLEAN, example=True),
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, example='ochirildi'),
-                    }
-                )
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
+                        ),
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="ochirildi"
+                        ),
+                    },
+                ),
             ),
             400: "Validatsiya xatosi",
             401: "Autentifikatsiya talab qilinadi",
-            404: "Mashina topilmadi"
+            404: "Mashina topilmadi",
         },
-        tags=['Car']
+        tags=["Car"],
     )
     def delete(self, request, pk):
         car = get_object_or_404(Car, id=pk)
@@ -571,13 +650,13 @@ class CarView(APIView):
         operation_summary="Mashinani ko'rish",
         manual_parameters=[
             openapi.Parameter(
-                'id',
+                "id",
                 openapi.IN_PATH,
                 description="Mashina ID (UUID format)",
                 type=openapi.TYPE_STRING,
-                format='uuid',
+                format="uuid",
                 required=True,
-                example='123e4567-e89b-12d3-a456-426614174000'
+                example="123e4567-e89b-12d3-a456-426614174000",
             )
         ],
         responses={
@@ -586,16 +665,20 @@ class CarView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(type=openapi.TYPE_BOOLEAN, example=True),
-                        'message': openapi.Schema(type=openapi.TYPE_STRING, example='yuklandi'),
-                        'data': openapi.Schema(type=openapi.TYPE_OBJECT)
-                    }
-                )
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
+                        ),
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="yuklandi"
+                        ),
+                        "data": openapi.Schema(type=openapi.TYPE_OBJECT),
+                    },
+                ),
             ),
             401: "Autentifikatsiya talab qilinadi",
-            404: "Mashina topilmadi"
+            404: "Mashina topilmadi",
         },
-        tags=['Car']
+        tags=["Car"],
     )
     def get(self, request, pk):
         car = get_object_or_404(Car, id=pk)
@@ -689,6 +772,7 @@ class LikeAndDislikeView(APIView):
     """
     Mashinani like/unlike qilish
     """
+
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -696,13 +780,13 @@ class LikeAndDislikeView(APIView):
         operation_summary="Mashinani like qilish",
         manual_parameters=[
             openapi.Parameter(
-                'pk',
+                "pk",
                 openapi.IN_PATH,
                 description="Mashina ID (UUID format)",
                 type=openapi.TYPE_STRING,
-                format='uuid',
+                format="uuid",
                 required=True,
-                example='123e4567-e89b-12d3-a456-426614174000'
+                example="123e4567-e89b-12d3-a456-426614174000",
             )
         ],
         responses={
@@ -711,33 +795,30 @@ class LikeAndDislikeView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(
-                            type=openapi.TYPE_BOOLEAN, 
-                            example=True
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
                         ),
-                        'message': openapi.Schema(
-                            type=openapi.TYPE_STRING, 
-                            example='like bosildi'
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="like bosildi"
                         ),
-                    }
-                )
+                    },
+                ),
             ),
             400: openapi.Response(
                 description="Allaqachon like bosilgan",
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'like': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            example='like bosilgan'
+                        "like": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="like bosilgan"
                         )
-                    }
-                )
+                    },
+                ),
             ),
             401: "Autentifikatsiya talab qilinadi",
-            404: "Mashina topilmadi"
+            404: "Mashina topilmadi",
         },
-        tags=['Likes']
+        tags=["Likes"],
     )
     def post(self, request, pk):
         car = get_object_or_404(Car, id=pk)
@@ -752,13 +833,13 @@ class LikeAndDislikeView(APIView):
         operation_summary="Like ni olib tashlash",
         manual_parameters=[
             openapi.Parameter(
-                'pk',
+                "pk",
                 openapi.IN_PATH,
                 description="Mashina ID (UUID format)",
                 type=openapi.TYPE_STRING,
-                format='uuid',
+                format="uuid",
                 required=True,
-                example='123e4567-e89b-12d3-a456-426614174000'
+                example="123e4567-e89b-12d3-a456-426614174000",
             )
         ],
         responses={
@@ -767,16 +848,14 @@ class LikeAndDislikeView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'success': openapi.Schema(
-                            type=openapi.TYPE_BOOLEAN, 
-                            example=True
+                        "success": openapi.Schema(
+                            type=openapi.TYPE_BOOLEAN, example=True
                         ),
-                        'message': openapi.Schema(
-                            type=openapi.TYPE_STRING, 
-                            example='dislike'
+                        "message": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="dislike"
                         ),
-                    }
-                )
+                    },
+                ),
             ),
             401: "Autentifikatsiya talab qilinadi",
             404: openapi.Response(
@@ -784,21 +863,21 @@ class LikeAndDislikeView(APIView):
                 schema=openapi.Schema(
                     type=openapi.TYPE_OBJECT,
                     properties={
-                        'detail': openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            example='Not found.'
+                        "detail": openapi.Schema(
+                            type=openapi.TYPE_STRING, example="Not found."
                         )
-                    }
-                )
-            )
+                    },
+                ),
+            ),
         },
-        tags=['Likes']
+        tags=["Likes"],
     )
     def delete(self, request, pk):
         car = get_object_or_404(Car, id=pk)
         car_like = get_object_or_404(Like, author=request.user, car=car)
         car_like.delete()
         return Response({"success": True, "message": "dislike"})
+
 
 class MeLikedCarGet(ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -810,3 +889,23 @@ class MeLikedCarGet(ListAPIView):
             "car_id", flat=True
         )
         return Car.objects.filter(id__in=user_liked_ids)
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       GET All MARKAS       /////////////////
+# /////////////////////////////////////////////////////////
+class GetAllMarkasView(ListAPIView):
+    queryset = Marka.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = GetAllMarkasSerializer
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       FILTER CARS VIEW     /////////////////
+# /////////////////////////////////////////////////////////
+class FilterCarsView(ListAPIView):
+    queryset = Car.objects.all()
+    serializer_class = GetCarsSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields  = ["car_model", "marka"  , "status"]

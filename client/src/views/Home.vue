@@ -87,6 +87,16 @@
             </div>
         </div>
 
+        <!-- ============================ FILTER SECTION ======================================= -->
+        <div class="filter_section">
+            <div class="header">
+                <h1>Подбор авто</h1>
+            </div>
+            <div>
+                <Filter/>
+            </div>
+        </div>
+
         <!-- ============================ CARS SECTION ======================================= -->
         <div class="cars_section">
             <div class="header">
@@ -96,9 +106,10 @@
             </div>
             <a-row class="cars" :gutter="[16, 24]">
                 <a-col v-if="carsLoading" v-for="_ in new Array(6).fill(0)" :xs="24" :md="12" :xl="8">
-                        <a-skeleton active/>
+                    <a-skeleton active />
                 </a-col>
-                <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24" :md="12" :xl="8">
+                <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24"
+                    :md="12" :xl="8">
                     <CarCard :id="car.id" :model="car.car_model" :like="car.me_liked" :images="car.images"
                         :marka="car.marka" :price="car.price" :milage="car.milage" :displacement="car.displacement"
                         :year="car.year" :transmission_type="car.transmission_type" :power="car.power" :fuel="car.fuel"
@@ -154,7 +165,8 @@
                             <div class="card_info">
                                 <p class="card_title">Упрощенный выбор авто</p>
                                 <p class="card_subtitle">
-                                   мы создали этот сайт, чтобы сделать поиск автомобиля по вашим критериям максимально простым и удобным.
+                                    мы создали этот сайт, чтобы сделать поиск автомобиля по вашим критериям максимально
+                                    простым и удобным.
                                 </p>
                             </div>
                         </div>
@@ -190,7 +202,9 @@
                         О нашей компании
                     </h3>
                     <p class="about_section_subtitle">
-                        Мы имеем огромный опыт работы с автомобильным рынком Кореи и тщательно отбираем автомобили для наших клиентов, учитывая их потребности и бюджет. Мы работаем только с надежными поставщиками и перевозчиками, чтобы обеспечить безопасность и надежность доставки.
+                        Мы имеем огромный опыт работы с автомобильным рынком Кореи и тщательно отбираем автомобили для
+                        наших клиентов, учитывая их потребности и бюджет. Мы работаем только с надежными поставщиками и
+                        перевозчиками, чтобы обеспечить безопасность и надежность доставки.
                     </p>
                     <div class="about_section_btn">
                         <a-button type="primary" size="large">Связаться с нами</a-button>
@@ -216,7 +230,7 @@ import api from '@/utils/axios'
 import { onMounted, ref } from 'vue'
 
 //////////////////// COMPONENTS /////////////////////
-import { CarCard } from '@/components'
+import { CarCard , Filter } from '@/components'
 
 const carsLoading = ref(false)
 const carsData = ref([])
@@ -255,44 +269,51 @@ onMounted(() => {
         margin-bottom: 20px;
     }
 }
+
 /* =============================== ABOUT SECTION ============================================== */
-.about_section{
+.filter_section {
+    margin-top: 100px;
+}
+
+/* =============================== ABOUT SECTION ============================================== */
+.about_section {
     margin-top: 150px;
     border-radius: 10px;
     background-color: #F6F6F6;
-    padding:40px;
+    padding: 40px;
 }
 
-.about_section{
+.about_section {
     /* background: url(../../public/image.png); */
     background-image: url(../../public/image.png);
-    background-size:350px;
+    background-size: 350px;
     background-position: 100px;
     background-repeat: no-repeat;
 }
 
 
-.about_section_image{
+.about_section_image {
     height: 300px;
     display: flex;
     align-items: center;
     justify-content: space-around;
     position: relative;
     bottom: 50px;
-    img{
+
+    img {
         /* width: 100%; */
         height: 100%;
         transform: scale(1.6);
     }
 }
 
-.about_section_title{
+.about_section_title {
     font-weight: 600;
     font-size: 28px;
     color: #010101;
 }
 
-.about_section_subtitle{
+.about_section_subtitle {
     font-weight: 400;
     font-size: 16px;
     color: #989898;
@@ -317,6 +338,7 @@ onMounted(() => {
 .card_image {
     height: 48px;
     width: 48px;
+
     img {
         height: 100%;
         width: 100%;
