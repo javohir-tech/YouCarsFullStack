@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # /////////////////////// FILTER ///////////////////////////
 from django_filters.rest_framework import DjangoFilterBackend , OrderingFilter
-from .filters import CarFilter
+from .filters import CarFilter , GetMarkasWithModelsFilter
 
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
@@ -43,7 +43,8 @@ from .serializers import (
     GetCarSerializer,
     CarDeletionSerializer,
     GetAllMarkasSerializer,
-    getAllModelsSerializer
+    getAllModelsSerializer,
+    GetMarkasWithModels
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -152,7 +153,7 @@ class GetModelsWithMarkaView(APIView):
     markaga oid modellarni olish
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_description="Marka bo'yicha mashina modellarini olish",
@@ -216,6 +217,17 @@ class GetModelsWithMarkaView(APIView):
                 "models": car_models_serializer.data,
             }
         )
+        
+# /////////////////////////////////////////////////////////
+# //////////// GET MARKA WITH MODELS    ///////////////////
+# /////////////////////////////////////////////////////////
+class GetMarkasWithModelsView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = GetMarkasWithModels
+    queryset = Marka.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = GetMarkasWithModelsFilter
+    
 
 
 # /////////////////////////////////////////////////////////
@@ -741,7 +753,7 @@ class GetAllCarsView(ListAPIView):
     queryset = Car.objects.filter(status = Car.STATUS_CHOICES.PUBLISHED).order_by("-views")
     filter_backends = [DjangoFilterBackend]
     filterset_class  = CarFilter
-    pagination_class = CustomPagination
+    pagination_class = CustomPagination   
 
 
 # /////////////////////////////////////////////////////////
@@ -909,4 +921,4 @@ class GetAllMarkasView(ListAPIView):
 class getAllModelsView(ListAPIView):
     queryset = CarModel.objects.all()
     permission_classes = [AllowAny]
-    serializer_class = getAllModelsSerializer
+    serializer_class = getAllModelsSerializer 

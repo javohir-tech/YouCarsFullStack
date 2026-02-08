@@ -8,8 +8,10 @@
           <a-radio-button value="fair">С пробегом</a-radio-button>
         </a-radio-group>
         <div class="check_box">
-          <a-checkbox v-model:checked="in_stock" @change="handleInStockChange">В наличии</a-checkbox>
-          <a-checkbox v-model:checked="on_order" @change="handleOnOrderChange">Под заказ</a-checkbox>
+          <a-radio-group v-model:value="availability" @change="handleChangeAvailability">
+            <a-radio value="in_stock">В наличии</a-radio>
+            <a-radio value="on_order">Под заказ</a-radio>
+          </a-radio-group>
         </div>
       </div>
       <div class="select_box">
@@ -46,33 +48,35 @@
     </div>
     <div class="filter_btns">
       <a-button size="large" @click="handleClear">Сбросить</a-button>
-      <a-button type="primary" size="large" :disabled="paramsValid">{{ props.count }} Предложений</a-button>
+      <a-button type="primary" size="large" @click="handleNavigate" :disabled="props.count <= 0">{{ props.count }} Предложений</a-button>
     </div>
   </div>
 </template>
 
 <script setup>
 import api from '@/utils/axios';
-import { computed, ref } from 'vue';
+import { message } from 'ant-design-vue';
+import { toRaw } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+const validMarkaforModel = ref(null)
 
 const emit = defineEmits(['params'])
+
 const props = defineProps({
   count: Number
 })
 
-
 const params = ref({})
-const paramsValid = computed(() => {
-  return Object.keys(params.value).length > 0
-})
 
 const condition = ref('all')
-const in_stock = ref(false)
-const on_order = ref(false)
+const availability = ref("")
 
 const marka = ref("Марка");
 const model = ref("Модель")
-const country = ref("Страна") 
+const country = ref("Страна")
 
 // Loaders
 const markaLoading = ref(false)
@@ -86,11 +90,19 @@ const year = ref()
 const value2 = ref([20, 50]);
 
 const focus = () => {
-  handleGetMarka()
+  if (params.value.model) {
+    handleGetMarka(params.value.model)
+  } else {
+    handleGetMarka()
+  }
 };
 
 const focusModel = () => {
-  handleGetModels()
+  if (params.value.marka) {
+    handleGetModels(params.value.marka)
+  } else {
+    handleGetModels()
+  }
 }
 
 const focusCountry = () => {
@@ -110,8 +122,18 @@ const handleChangeCountry = (value) => {
 }
 
 const handleChange = (value) => {
+  
+  if (validMarkaforModel.value && validMarkaforModel.value !== value) {
+    message.warning(`${params.value.model} modeli ${value} markasiga tegishli emas`)
+    models.value = []
+    model.value = null
+
+    delete params.value.model
+  }
+  
   params.value = { ...params.value, marka: value }
   emit("params", params.value)
+  
 }
 
 const onRangeChange = (value, dateString) => {
@@ -132,34 +154,33 @@ const filterOption = (input, option) => {
   return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
-const handleInStockChange = (e) => {
-  if (in_stock.value) {
-    params.value['availability'] = "in_stock"
-    emit('params', params.value)
-  }
-}
-
 const handleChangeCondition = (e) => {
   params.value = { ...params.value, condition: e.target.value }
   emit('params', params.value)
 }
 
-const handleOnOrderChange = (e) => {
-  if (on_order.value) {
-    params.value['availability'] = 'on_order'
-    emit('params', params.value)
-  }
+const handleChangeAvailability = (e) => {
+  params.value['availability'] = e.target.value
+  emit('params', params.value)
 }
 
 
 ///////////////////////////////// get api ///////////////////////////////////////
-const handleGetMarka = async () => {
+const handleGetMarka = async (model) => {
   markaLoading.value = true
   try {
-    const { data } = await api.get("/cars/marka/all/")
+    const { data } = await api.get(`/cars/marka/all`)
     markas.value = data.map((item) => {
       return { value: item.marka, label: item.marka }
     })
+    if (model) {
+      const response = await api.get("/cars/marka/models", {
+        params: {
+          model: model
+        }
+      })
+      validMarkaforModel.value = response.data[0].marka
+    }
   } catch (error) {
     console.log(error.response || error)
   } finally {
@@ -167,10 +188,20 @@ const handleGetMarka = async () => {
   }
 }
 
-const handleGetModels = async () => {
+const handleGetModels = async (marka) => {
   modelLoading.value = true
   try {
-    const { data } = await api.get("/cars/models/all/")
+    let data = null
+    if (marka) {
+      const response = await api.post("/cars/models/", {
+        marka: marka
+      })
+      data = response.data.models
+      console.log(response)
+    } else {
+      const response = await api.get(`/cars/models/all/`)
+      data = response.data
+    }
     models.value = data.map((item) => {
       return { value: item.name, label: item.name }
     })
@@ -195,14 +226,24 @@ const handleGetCountries = async () => {
   }
 }
 
-
 ///////////////////////////// CLEAR /////////////////////
-const handleClear = () =>{
-  params.value = {}
+const handleClear = () => {
+  params.value = undefined
   model.value = "Модель"
   marka.value = "Марка"
   country.value = "Страна"
-  emit('params' , params.value)
+  condition.value = "all"
+  year.value = null
+  availability.value = null
+  value2.value = null
+  emit('params', params.value)
+}
+
+
+/// last button
+const handleNavigate = () =>{
+  localStorage.setItem('filter_params' , JSON.stringify(params.value))
+  router.push("/profile")
 }
 </script>
 

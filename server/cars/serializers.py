@@ -86,6 +86,14 @@ class AvtoTypeMarkaSerializer(serializers.ModelSerializer):
         model = AvtoTypeMarka
         fields = ["id", "marka", "photo"]
 
+# /////////////////////////////////////////////////////////
+# //////////// GET MARKAS WITH MODELS        //////////////
+# /////////////////////////////////////////////////////////
+class GetMarkasWithModels(serializers.ModelSerializer):
+    
+    class Meta :
+        model = Marka
+        fields = ['id' , 'marka']
 
 # /////////////////////////////////////////////////////////
 # //////////// GET MODELS WITH MARKA    ///////////////////

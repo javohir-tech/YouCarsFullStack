@@ -1,5 +1,5 @@
 import django_filters
-from .models import Car
+from .models import Car , Marka
 
 
 class CarFilter(django_filters.FilterSet):
@@ -31,3 +31,13 @@ class CarFilter(django_filters.FilterSet):
             "availability",
             "condition",
         ]
+        
+class GetMarkasWithModelsFilter(django_filters.FilterSet):
+    model = django_filters.CharFilter(
+        field_name='models__name' , lookup_expr="exact"
+    )
+    
+    class Meta :
+        model = Marka
+        fields = ['marka']
+        

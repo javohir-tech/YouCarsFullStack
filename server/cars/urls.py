@@ -17,6 +17,7 @@ from .views import (
     MeLikedCarGet,
     GetAllMarkasView,
     getAllModelsView,
+    GetMarkasWithModelsView,
 )
 
 urlpatterns = [
@@ -27,6 +28,7 @@ urlpatterns = [
     path("fuel/", GetFuelsView.as_view()),
     path("marka/all/", GetAllMarkasView.as_view()),
     path("models/all/", getAllModelsView.as_view()),
+    path("marka/models/" , GetMarkasWithModelsView.as_view()),
     # post
     path("car/", CarView.as_view()),
     # get put patch delete

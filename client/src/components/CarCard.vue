@@ -121,7 +121,7 @@ const onError = () => {
 
 .car_card_image {
     width: 100%;
-    height: 240px;
+    height: 170px;
     overflow: hidden;
     border-radius: 10px;
 }
@@ -143,7 +143,7 @@ const onError = () => {
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 
     p {
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
 }
 
@@ -179,7 +179,7 @@ const onError = () => {
 
 .car_like {
     color: #989898;
-    font-size: 16px;
+    font-size: 20px;
     cursor: pointer;
 }
 

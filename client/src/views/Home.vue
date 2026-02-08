@@ -6,8 +6,7 @@
             <Swiper :pagination="{ el: '.my-pagination', clickable: true, dynamicBullets: true, }" :navigation="{
                 nextEl: '.custom-next',
                 prevEl: '.custom-prev'
-            }" :spaceBetween="30" :autoplay="{ delay: 5000, disableOnInteraction: false }" :loop="true"
-                :modules="modules" class="mySwiper">
+            }" :spaceBetween="30" :loop="true" :modules="modules" class="mySwiper">
                 <SwiperSlide>
                     <a-row class="hero_section_row">
                         <a-col :md="12">
@@ -46,8 +45,7 @@
                         </a-col>
                         <a-col class="hero_section_col" :md="12">
                             <div class="hero_section_image">
-                                <img src="./../../public/23a119dc1551a0b9b7c880ef67fed15b332f02b4 (1).png"
-                                    alt="reclam car  image">
+                                <img src="./../../public/banner2.png" alt="reclam car  image">
                             </div>
                         </a-col>
                     </a-row>
@@ -93,7 +91,7 @@
                 <h1>Подбор авто</h1>
             </div>
             <div>
-                <Filter @params="handleGetcCars" :count="filterCount"/>
+                <Filter @params="handleGetcCars" :count="filterCount" />
             </div>
         </div>
 
@@ -104,12 +102,15 @@
                     Автомобильный каталог
                 </h1>
             </div>
+            <div class="empty" v-if="carsData.length === 0 && !carsLoading">
+                <a-empty description="filter bo'yicha ma'lumotlar toplimadi "/>
+            </div>
             <a-row class="cars" :gutter="[16, 24]">
-                <a-col v-if="carsLoading" v-for="_ in new Array(6).fill(0)" :xs="24" :md="12" :xl="8">
+                <a-col v-if="carsLoading" v-for="_ in new Array(8).fill(0)" :xs="24" :md="8" :xl="6">
                     <a-skeleton active />
                 </a-col>
                 <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24"
-                    :md="12" :xl="8">
+                    :md="8" :xl="6">
                     <CarCard :id="car.id" :model="car.car_model" :like="car.me_liked" :images="car.images"
                         :marka="car.marka" :price="car.price" :milage="car.milage" :displacement="car.displacement"
                         :year="car.year" :transmission_type="car.transmission_type" :power="car.power" :fuel="car.fuel"
@@ -230,7 +231,7 @@ import api from '@/utils/axios'
 import { onMounted, ref, toRaw } from 'vue'
 
 //////////////////// COMPONENTS /////////////////////
-import { CarCard , Filter } from '@/components'
+import { CarCard, Filter } from '@/components'
 
 const carsLoading = ref(false)
 const carsData = ref([])
@@ -245,15 +246,17 @@ const handleGetcCars = async (params) => {
     console.log(toRaw(params))
     carsLoading.value = true
     try {
-        const response = await api.get(`/cars/cars/` , {
+        const response = await api.get(`/cars/cars/`, {
             params: {
-                page_size : 6,
+                page_size: 8,
                 ...params
             }
         })
         carsData.value = response.data.result
-        if(params){
+        if (params) {
             filterCount.value = response.data.count
+        } else {
+            filterCount.value = 0
         }
     } catch (error) {
         console.log(error.response || error)
@@ -438,7 +441,7 @@ onMounted(() => {
 
 /* ==================================CARS SECTION=====================================  */
 .cars_section {
-    margin-top: 50px;
+    margin-top: 30px;
     padding: 30px 0px;
 }
 

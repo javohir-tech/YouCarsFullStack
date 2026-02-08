@@ -16,7 +16,7 @@
         </div>
         <div v-if="!loading && !getError && cars.length > 0" class="storage_cars">
             <a-row :gutter="[16, 24]">
-                <a-col v-for="car in cars" :key="car.id" class="gutter-row" :xl="10" :md="12" :sm="24" :xs="24">
+                <a-col v-for="car in cars" :key="car.id" class="gutter-row" :xl="8" :md="12" :sm="24" :xs="24">
                     <CarCard :id="car.id" :model="car.car_model" :like="car.me_liked" :images="car.images"
                         :marka="car.marka" :price="car.price" :milage="car.milage" :displacement="car.displacement"
                         :year="car.year" :transmission_type="car.transmission_type" :power="car.power" :fuel="car.fuel"
