@@ -93,7 +93,7 @@
                 <h1>Подбор авто</h1>
             </div>
             <div>
-                <Filter/>
+                <Filter @params="handleGetcCars" :count="filterCount"/>
             </div>
         </div>
 
@@ -227,25 +227,34 @@ import 'swiper/css/pagination'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 import api from '@/utils/axios'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, toRaw } from 'vue'
 
 //////////////////// COMPONENTS /////////////////////
 import { CarCard , Filter } from '@/components'
 
 const carsLoading = ref(false)
 const carsData = ref([])
+const filterCount = ref(0)
 
 const modules = [Navigation, Pagination, Autoplay]
 
 ///////////////////////////////////////////////////////
 ////////////// GET CARS          //////////////////////
 ///////////////////////////////////////////////////////
-const handleGetcCars = async () => {
+const handleGetcCars = async (params) => {
+    console.log(toRaw(params))
     carsLoading.value = true
     try {
-        const response = await api.get(`/cars/cars/?page_size=6`)
+        const response = await api.get(`/cars/cars/` , {
+            params: {
+                page_size : 6,
+                ...params
+            }
+        })
         carsData.value = response.data.result
-        // console.log(response)
+        if(params){
+            filterCount.value = response.data.count
+        }
     } catch (error) {
         console.log(error.response || error)
     } finally {
@@ -429,7 +438,7 @@ onMounted(() => {
 
 /* ==================================CARS SECTION=====================================  */
 .cars_section {
-    margin-top: 100px;
+    margin-top: 50px;
     padding: 30px 0px;
 }
 

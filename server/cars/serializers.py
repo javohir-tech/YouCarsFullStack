@@ -567,4 +567,12 @@ class GetAllMarkasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Marka    
         fields = ['id' , 'marka' , 'photo']
+        
+# /////////////////////////////////////////////////////////
+# ////////////       GET ALL MODELS       /////////////////
+# /////////////////////////////////////////////////////////
+class getAllModelsSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model =  CarModel
+        fields = ['id' , 'name']

@@ -16,6 +16,7 @@ from .views import (
     LikeAndDislikeView,
     MeLikedCarGet,
     GetAllMarkasView,
+    getAllModelsView,
 )
 
 urlpatterns = [
@@ -24,15 +25,14 @@ urlpatterns = [
     path("colors/", GetColorsView.as_view()),
     path("countries/", GetCountriesView.as_view()),
     path("fuel/", GetFuelsView.as_view()),
-    path("marka/all/" , GetAllMarkasView.as_view()),
+    path("marka/all/", GetAllMarkasView.as_view()),
+    path("models/all/", getAllModelsView.as_view()),
     # post
     path("car/", CarView.as_view()),
     # get put patch delete
     path("car/<uuid:pk>/", CarView.as_view()),
-    
     path("car/image/", CarImageView.as_view()),
     path("car/image/<uuid:pk>/", CarImageView.as_view()),
-    
     path("avtotype/", GetAvtoTypesView.as_view()),
     path("cars/", GetAllCarsView.as_view()),
     path("user/cars/draft/", GetUserCarsFDraftView.as_view()),

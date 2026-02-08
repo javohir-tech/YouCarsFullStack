@@ -24,6 +24,7 @@ from .models import (
     Like,
     DeletionStatistics,
     Marka,
+    CarModel
 )
 
 # //////////// SERIALIZERS  /////////////////////////////
@@ -42,6 +43,7 @@ from .serializers import (
     GetCarSerializer,
     CarDeletionSerializer,
     GetAllMarkasSerializer,
+    getAllModelsSerializer
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -900,4 +902,11 @@ class GetAllMarkasView(ListAPIView):
     queryset = Marka.objects.all()
     permission_classes = [AllowAny]
     serializer_class = GetAllMarkasSerializer
-
+    
+# /////////////////////////////////////////////////////////
+# ////////////       GET All MODELS       /////////////////
+# /////////////////////////////////////////////////////////
+class getAllModelsView(ListAPIView):
+    queryset = CarModel.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = getAllModelsSerializer
