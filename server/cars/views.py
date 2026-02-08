@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
 # /////////////////////// FILTER ///////////////////////////
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend , OrderingFilter
+from .filters import CarFilter
 
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
@@ -733,10 +734,11 @@ class GetAllCarsView(ListAPIView):
     """
     Hamma moshinalarni olish uchun
     """
-
     permission_classes = [AllowAny]
     serializer_class = GetCarsSerializer
-    queryset = Car.objects.filter(status=Car.STATUS_CHOICES.PUBLISHED)
+    queryset = Car.objects.filter(status = Car.STATUS_CHOICES.PUBLISHED).order_by("-views")
+    filter_backends = [DjangoFilterBackend]
+    filterset_class  = CarFilter
     pagination_class = CustomPagination
 
 
@@ -899,13 +901,3 @@ class GetAllMarkasView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = GetAllMarkasSerializer
 
-
-# /////////////////////////////////////////////////////////
-# ////////////       FILTER CARS VIEW     /////////////////
-# /////////////////////////////////////////////////////////
-class FilterCarsView(ListAPIView):
-    queryset = Car.objects.all()
-    serializer_class = GetCarsSerializer
-    permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields  = ["car_model", "marka"  , "status"]
