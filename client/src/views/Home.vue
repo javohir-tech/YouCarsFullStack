@@ -192,13 +192,13 @@
         <!-- ============================ ABOUT SECTION ======================================= -->
         <div class="about_section">
             <a-row class="about_section_box">
-                <a-col class="gutter-row about_section_left" :md="24" :lg="12">
+                <a-col class="gutter-row about_section_left" :order="2" :md="{span : 24 , order : 1}" :lg="12" >
                     <div class="about_section_image">
                         <img src="./../../public/image copy.png" alt="about_section_image">
-                        <div></div>
+                        <div class="secret_box"></div>
                     </div>
                 </a-col>
-                <a-col enter-class="gutter-row" :md="24" :lg="12">
+                <a-col enter-class="gutter-row" :order="1" :md="{span : 24 , order : 2}" :lg="12">
                     <h3 class="about_section_title">
                         О нашей компании
                     </h3>
@@ -208,7 +208,7 @@
                         перевозчиками, чтобы обеспечить безопасность и надежность доставки.
                     </p>
                     <div class="about_section_btn">
-                        <a-button type="primary" size="large">Связаться с нами</a-button>
+                        <a-button type="primary" block size="large">Связаться с нами</a-button>
                     </div>
                 </a-col>
             </a-row>
@@ -293,14 +293,11 @@ onMounted(() => {
     border-radius: 10px;
     background-color: #F6F6F6;
     padding: 40px;
-}
-
-.about_section {
     /* background: url(../../public/image.png); */
     background-image: url(../../public/image.png);
     background-size: 350px;
     background-position: 100px;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; 
 }
 
 
@@ -310,7 +307,7 @@ onMounted(() => {
     align-items: center;
     justify-content: space-around;
     position: relative;
-    bottom: 50px;
+    bottom: 50px; 
 
     img {
         /* width: 100%; */
@@ -329,6 +326,10 @@ onMounted(() => {
     font-weight: 400;
     font-size: 16px;
     color: #989898;
+}
+
+.about_section_btn{
+    display: inline-block;
 }
 
 
@@ -504,6 +505,41 @@ onMounted(() => {
     .custom-navigation {
         padding: 10px 15px;
     }
+}
 
+@media(max-width : 768px){
+    /* =============================== ABOUT SECTION ============================================== */
+    .about_section_title{
+        font-weight: 500;
+        font-size: 23px;
+    }
+    .secret_box{
+        display: none;
+    }
+    
+    .about_section_subtitle{
+        font-weight: 400;
+        font-size: 14px;
+    }
+    .about_section{
+        padding: 15px;
+        background-image: none;
+        margin-bottom: 1000px;
+    }
+
+    .about_section_btn{
+        display: block;
+        margin-bottom: 50px;
+    }
+
+    .about_section_image {
+        height: 170px; 
+        position: static;
+        justify-content: center;
+        align-items: center;
+        img{
+            transform: scale(1.2);
+        }
+    }
 }
 </style>

@@ -2,7 +2,8 @@
   <div class="filter_box">
     <div>
       <div class="filter_radio">
-        <a-radio-group v-model:value="condition" @change="handleChangeCondition" button-style="solid" size="large">
+        <a-radio-group block class="radio" v-model:value="condition" @change="handleChangeCondition"
+          button-style="solid" size="large">
           <a-radio-button value="all">Все</a-radio-button>
           <a-radio-button value="new">Новые</a-radio-button>
           <a-radio-button value="fair">С пробегом</a-radio-button>
@@ -47,18 +48,20 @@
       </div>
     </div>
     <div class="filter_btns">
-      <a-button size="large" @click="handleClear">Сбросить</a-button>
-      <a-button type="primary" size="large" @click="handleNavigate" :disabled="props.count <= 0">{{ props.count }} Предложений</a-button>
+      <a-button size="large" @click="handleClear" :disabled="validClear"><close-outlined /> Сбросить</a-button>
+      <a-button type="primary" size="large" @click="handleNavigate" :disabled="props.count <= 0">{{ props.count }}
+        Предложений</a-button>
     </div>
   </div>
 </template>
 
 <script setup>
 import api from '@/utils/axios';
+import { CloseOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-import { toRaw } from 'vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 
 const router = useRouter()
 const validMarkaforModel = ref(null)
@@ -71,6 +74,9 @@ const props = defineProps({
 
 const params = ref({})
 
+const validClear = computed(() => {
+  return Object.keys(params.value).length === 0
+})
 const condition = ref('all')
 const availability = ref("")
 
@@ -122,7 +128,7 @@ const handleChangeCountry = (value) => {
 }
 
 const handleChange = (value) => {
-  
+
   if (validMarkaforModel.value && validMarkaforModel.value !== value) {
     message.warning(`${params.value.model} modeli ${value} markasiga tegishli emas`)
     models.value = []
@@ -130,10 +136,10 @@ const handleChange = (value) => {
 
     delete params.value.model
   }
-  
+
   params.value = { ...params.value, marka: value }
   emit("params", params.value)
-  
+
 }
 
 const onRangeChange = (value, dateString) => {
@@ -155,7 +161,11 @@ const filterOption = (input, option) => {
 };
 
 const handleChangeCondition = (e) => {
-  params.value = { ...params.value, condition: e.target.value }
+  if (e.target.value === 'all') {
+    params.value = { ...params.value, condition: "" }
+  } else {
+    params.value = { ...params.value, condition: e.target.value }
+  }
   emit('params', params.value)
 }
 
@@ -228,7 +238,7 @@ const handleGetCountries = async () => {
 
 ///////////////////////////// CLEAR /////////////////////
 const handleClear = () => {
-  params.value = undefined
+  params.value = {}
   model.value = "Модель"
   marka.value = "Марка"
   country.value = "Страна"
@@ -241,8 +251,8 @@ const handleClear = () => {
 
 
 /// last button
-const handleNavigate = () =>{
-  localStorage.setItem('filter_params' , JSON.stringify(params.value))
+const handleNavigate = () => {
+  localStorage.setItem('filter_params', JSON.stringify(params.value))
   router.push("/profile")
 }
 </script>
@@ -288,6 +298,45 @@ const handleNavigate = () =>{
   display: flex;
   justify-content: end;
   gap: 20px;
+}
+
+@media(max-width: 768px) {
+  .filter_radio {
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+  }
+
+  :deep(.radio),
+  :deep(.radio .ant-radio-group) {
+    width: 100%;
+    display: flex;
+  }
+
+  :deep(.radio .ant-radio-button-wrapper) {
+    flex: 1;
+    text-align: center;
+  }
+
+  :deep(.ant-radio-button-wrapper),
+  :deep(.ant-radio-wrapper) {
+    font-weight: 400;
+    font-size: 13px;   
+  }
+
+  :deep(.check_box .ant-radio-group) {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .select_box {
+    flex-direction: column;
+  }
+
+  .select_item {
+    width: 100%;
+  }
 }
 </style>
 
