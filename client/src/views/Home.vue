@@ -103,7 +103,7 @@
                 </h1>
             </div>
             <div class="empty" v-if="carsData.length === 0 && !carsLoading">
-                <a-empty description="filter bo'yicha ma'lumotlar toplimadi "/>
+                <a-empty description="filter bo'yicha ma'lumotlar toplimadi " />
             </div>
             <a-row class="cars" :gutter="[16, 24]">
                 <a-col v-if="carsLoading" v-for="_ in new Array(8).fill(0)" :xs="24" :md="8" :xl="6">
@@ -192,13 +192,23 @@
         <!-- ============================ ABOUT SECTION ======================================= -->
         <div class="about_section">
             <a-row class="about_section_box">
-                <a-col class="gutter-row about_section_left" :order="2" :md="{span : 24 , order : 1}" :lg="12" >
+                <a-col 
+                class="gutter-row about_section_left" 
+                :xs="{ span: 24, order: 2 }" 
+                :md="{ span: 24, order: 1 }"
+                :lg="{ span: 12, order: 1 }"
+                >
                     <div class="about_section_image">
                         <img src="./../../public/image copy.png" alt="about_section_image">
                         <div class="secret_box"></div>
                     </div>
                 </a-col>
-                <a-col enter-class="gutter-row" :order="1" :md="{span : 24 , order : 2}" :lg="12">
+                <a-col
+                class="gutter-row"
+                :xs="{ span: 24, order: 1 }" 
+                :md="{ span: 24, order: 2 }"
+                :lg="{ span: 12, order: 2 }"
+                >
                     <h3 class="about_section_title">
                         О нашей компании
                     </h3>
@@ -297,7 +307,7 @@ onMounted(() => {
     background-image: url(../../public/image.png);
     background-size: 350px;
     background-position: 100px;
-    background-repeat: no-repeat; 
+    background-repeat: no-repeat;
 }
 
 
@@ -307,7 +317,7 @@ onMounted(() => {
     align-items: center;
     justify-content: space-around;
     position: relative;
-    bottom: 50px; 
+    bottom: 50px;
 
     img {
         /* width: 100%; */
@@ -328,7 +338,7 @@ onMounted(() => {
     color: #989898;
 }
 
-.about_section_btn{
+.about_section_btn {
     display: inline-block;
 }
 
@@ -507,38 +517,46 @@ onMounted(() => {
     }
 }
 
-@media(max-width : 768px){
+@media(max-width : 768px) {
+
     /* =============================== ABOUT SECTION ============================================== */
-    .about_section_title{
+    .about_section_title {
         font-weight: 500;
         font-size: 23px;
+        margin-top: 10px;
     }
-    .secret_box{
+
+    .secret_box {
         display: none;
     }
-    
-    .about_section_subtitle{
+
+    .about_section_subtitle {
         font-weight: 400;
         font-size: 14px;
     }
-    .about_section{
+
+    .about_section {
         padding: 15px;
         background-image: none;
+        overflow: hidden;
         margin-bottom: 1000px;
     }
 
-    .about_section_btn{
+    .about_section_btn {
         display: block;
-        margin-bottom: 50px;
+        margin-bottom: 70px;
     }
 
     .about_section_image {
-        height: 170px; 
-        position: static;
+        height: 180px;
+        top: 1px;
         justify-content: center;
         align-items: center;
-        img{
-            transform: scale(1.2);
+        
+        img {
+            position: absolute;
+            top: -20px;
+            transform: scale(1.5);
         }
     }
 }
