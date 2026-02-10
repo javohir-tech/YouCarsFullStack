@@ -106,11 +106,10 @@
                 <a-empty description="filter bo'yicha ma'lumotlar toplimadi " />
             </div>
             <a-row class="cars" :gutter="[16, 24]">
-                <a-col v-if="carsLoading" v-for="_ in new Array(8).fill(0)" :xs="24" :md="8" :xl="6">
+                <a-col v-if="carsLoading" v-for="_ in new Array(8).fill(0)" :xs="24" :md="12" :lg="8" :xl="6">
                     <a-skeleton active />
                 </a-col>
-                <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24"
-                    :md="8" :xl="6">
+                <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24" :md="12" :lg="8" :xl="6">
                     <CarCard :id="car.id" :model="car.car_model" :like="car.me_liked" :images="car.images"
                         :marka="car.marka" :price="car.price" :milage="car.milage" :displacement="car.displacement"
                         :year="car.year" :transmission_type="car.transmission_type" :power="car.power" :fuel="car.fuel"
@@ -131,7 +130,7 @@
             </div>
             <div class="section_cards">
                 <a-row :gutter="[16, 24]">
-                    <a-col class="gutter-row" :xs="24" :md="6">
+                    <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
                         <div class="section_card">
                             <div class="card_image">
                                 <img src="./../../public/key.png" alt="key image">
@@ -145,7 +144,7 @@
                             </div>
                         </div>
                     </a-col>
-                    <a-col class="gutter-row" :xs="24" :md="6">
+                    <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
                         <div class="section_card">
                             <div class="card_image">
                                 <img src="./../../public/message.png" alt="key image">
@@ -158,7 +157,7 @@
                             </div>
                         </div>
                     </a-col>
-                    <a-col class="gutter-row" :xs="24" :md="6">
+                    <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
                         <div class="section_card">
                             <div class="card_image">
                                 <img src="./../../public/car.png" alt="key image">
@@ -172,7 +171,7 @@
                             </div>
                         </div>
                     </a-col>
-                    <a-col class="gutter-row" :xs="24" :md="6">
+                    <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
                         <div class="section_card">
                             <div class="card_image">
                                 <img src="./../../public/car2.png" alt="key image">
@@ -195,7 +194,7 @@
                 <a-col 
                 class="gutter-row about_section_left" 
                 :xs="{ span: 24, order: 2 }" 
-                :md="{ span: 24, order: 1 }"
+                :md="{ span: 12, order: 1 }"
                 :lg="{ span: 12, order: 1 }"
                 >
                     <div class="about_section_image">
@@ -206,7 +205,7 @@
                 <a-col
                 class="gutter-row"
                 :xs="{ span: 24, order: 1 }" 
-                :md="{ span: 24, order: 2 }"
+                :md="{ span: 12, order: 2 }"
                 :lg="{ span: 12, order: 2 }"
                 >
                     <h3 class="about_section_title">
@@ -517,25 +516,41 @@ onMounted(() => {
     }
 }
 
+@media(max-width:992px){
+    .card_title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .card_subtitle{
+        font-weight: 400;
+        font-size: 15px;
+    }
+
+    .about_section{
+        background-size: 290px;
+    }
+}
+
 @media(max-width : 768px) {
 
     /* =============================== ABOUT SECTION ============================================== */
     .about_section_title {
         font-weight: 500;
         font-size: 23px;
-        margin-top: 10px;
     }
-
+    
     .secret_box {
         display: none;
     }
-
+    
     .about_section_subtitle {
         font-weight: 400;
         font-size: 14px;
     }
-
+    
     .about_section {
+        margin-top: 50px;
         padding: 15px;
         background-image: none;
         overflow: hidden;
@@ -544,7 +559,7 @@ onMounted(() => {
 
     .about_section_btn {
         display: block;
-        margin-bottom: 70px;
+        margin-bottom: 80px;
     }
 
     .about_section_image {
@@ -552,7 +567,10 @@ onMounted(() => {
         top: 1px;
         justify-content: center;
         align-items: center;
-        
+        background: url(../../public/image.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 250px;
         img {
             position: absolute;
             top: -20px;

@@ -299,6 +299,12 @@ const handleNavigate = () => {
   justify-content: end;
   gap: 20px;
 }
+@media(max-width : 992px){
+  .select_title{
+    font-weight: 400;
+    font-size: 12px;
+  }
+}
 
 @media(max-width: 768px) {
   .filter_radio {
