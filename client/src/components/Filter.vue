@@ -252,7 +252,6 @@ const handleClear = () => {
 
 /// last button
 const handleNavigate = () => {
-  localStorage.setItem('filter_params', JSON.stringify(params.value))
   router.push("/profile")
 }
 </script>

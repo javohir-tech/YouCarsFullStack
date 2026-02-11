@@ -27,7 +27,7 @@
                 </a-col>
             </a-row>
 
-            <a-pagination class="pagination" @change="handlePagination" v-model:current="current" :total="total" />
+            <a-pagination class="pagination" @change="handlePagination" v-model="current" :total="total" />
         </div>
 
         <CallCard/>
@@ -44,10 +44,12 @@ const carsLoading = ref(false)
 const filterCount = ref(0)
 const total = ref(0)
 
+const filterParams = ref(null)
+
 const current = ref(1)
 
 const handlePagination = async (value)=>{
-    
+    console.log(value)
 }
 
 ///////////////////////////////////////////////////////
@@ -79,7 +81,9 @@ const handleGetcCars = async (params) => {
 }
 
 onMounted(() => {
-    handleGetcCars()
+    filterParams.value = localStorage.getItem("filter_params")
+    console.log(JSON.parse(filterParams.value))
+    handleGetcCars(JSON.parse(filterParams.value))
 })
 </script>
 

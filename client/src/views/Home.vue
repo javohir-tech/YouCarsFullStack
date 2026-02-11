@@ -277,6 +277,7 @@ const handleGetcCars = async (params) => {
         })
         carsData.value = response.data.result
         if (params) {
+            localStorage.setItem('filter_params', JSON.stringify(params))
             filterCount.value = response.data.count
         } else {
             filterCount.value = 0
