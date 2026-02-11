@@ -1,4 +1,4 @@
-body{
+body {
   padding: 0;
   margin: 0;
 }
@@ -9,6 +9,19 @@ body{
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+}
+
+.bread_crumb {
+  margin: 30px 0;
+}
+
+.header {
+  h1 {
+    font-size: 30px;
+    font-weight: 600;
+    color: #010101;
+    margin-bottom: 20px;
+  }
 }
 
 @media (min-width: 576px) {

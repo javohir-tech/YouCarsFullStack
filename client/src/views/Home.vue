@@ -118,7 +118,7 @@
                 </a-col>
             </a-row>
             <div class="link_cars">
-                <router-link to="/">Перейти в каталог
+                <router-link to="/katalog">Перейти в каталог
                     <ArrowRightOutlined class="rounter_car" />
                 </router-link>
             </div>
@@ -301,15 +301,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ===============================  MAIN CSS ============================================== */
-.header {
-    h1 {
-        font-size: 30px;
-        font-weight: 600;
-        color: #010101;
-        margin-bottom: 20px;
-    }
-}
+
 
 
 /* ===============================  MARKAS CSS ============================================== */
