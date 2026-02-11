@@ -49,8 +49,8 @@
     </div>
     <div class="filter_btns">
       <a-button size="large" @click="handleClear" :disabled="validClear"><close-outlined /> Сбросить</a-button>
-      <a-button type="primary" size="large" @click="handleNavigate" :disabled="props.count <= 0">{{ props.count }}
-        Предложений</a-button>
+      <a-button type="primary" size="large" @click="handleNavigate" :disabled="validClear">
+        {{ validClear ? 0 : props.count }} Предложений</a-button>
     </div>
   </div>
 </template>
@@ -66,7 +66,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 const validMarkaforModel = ref(null)
 
-const emit = defineEmits(['params'])
+const emit = defineEmits(['params', 'clear'])
 
 const props = defineProps({
   count: Number
@@ -238,6 +238,7 @@ const handleGetCountries = async () => {
 
 ///////////////////////////// CLEAR /////////////////////
 const handleClear = () => {
+  emit('clear')
   params.value = {}
   model.value = "Модель"
   marka.value = "Марка"
@@ -252,7 +253,7 @@ const handleClear = () => {
 
 /// last button
 const handleNavigate = () => {
-  router.push("/profile")
+  router.push("katalog")
 }
 </script>
 
@@ -298,8 +299,9 @@ const handleNavigate = () => {
   justify-content: end;
   gap: 20px;
 }
-@media(max-width : 992px){
-  .select_title{
+
+@media(max-width : 992px) {
+  .select_title {
     font-weight: 400;
     font-size: 12px;
   }
@@ -326,7 +328,7 @@ const handleNavigate = () => {
   :deep(.ant-radio-button-wrapper),
   :deep(.ant-radio-wrapper) {
     font-weight: 400;
-    font-size: 13px;   
+    font-size: 13px;
   }
 
   :deep(.check_box .ant-radio-group) {

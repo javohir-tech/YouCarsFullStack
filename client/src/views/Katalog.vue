@@ -11,7 +11,7 @@
                     Каталог
                 </h1>
             </div>
-            <Filter @params="handleGetcCars" :count="filterCount" />
+            <Filter @params="handleGetcCars" :count="filterCount" @clear="handleClear"/>
         </div>
         <div class="katalok_section">
             <a-row class="cars" :gutter="[16, 24]">
@@ -29,7 +29,6 @@
 
             <a-pagination class="pagination" @change="handlePagination" v-model="current" :total="total" />
         </div>
-
         <CallCard/>
     </div>
 </template>
@@ -44,31 +43,37 @@ const carsLoading = ref(false)
 const filterCount = ref(0)
 const total = ref(0)
 
-const filterParams = ref(null)
+const filterParams = ref({})
 
 const current = ref(1)
 
-const handlePagination = async (value)=>{
-    console.log(value)
+const handlePagination = async (pagination)=>{
+    const pagination_params = { ...filterParams.value , page : pagination }
+    handleGetcCars(pagination_params)
+}
+
+const handleClear = () =>{
+    filterCount.value = 0
 }
 
 ///////////////////////////////////////////////////////
 ////////////// GET CARS         //////////////////////
 //////////////////////////////////////////////////////
 const handleGetcCars = async (params) => {
+    console.log(params)
     carsLoading.value = true
     try {
         const response = await api.get(`/cars/cars/`, {
             params: {
                 page_size: 12,
-                ...params,
-                page : current.value
+                ...params
             }
         })
         console.log(response)
         total.value = response.data.count
         carsData.value = response.data.result
         if (params) {
+            filterParams.value = params
             filterCount.value = response.data.count
         } else {
             filterCount.value = 0
@@ -81,9 +86,7 @@ const handleGetcCars = async (params) => {
 }
 
 onMounted(() => {
-    filterParams.value = localStorage.getItem("filter_params")
-    console.log(JSON.parse(filterParams.value))
-    handleGetcCars(JSON.parse(filterParams.value))
+  handleGetcCars()
 })
 </script>
 
