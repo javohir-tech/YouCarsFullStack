@@ -109,7 +109,8 @@
                 <a-col v-if="carsLoading" v-for="_ in new Array(8).fill(0)" :xs="24" :md="12" :lg="8" :xl="6">
                     <a-skeleton active />
                 </a-col>
-                <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24" :md="12" :lg="8" :xl="6">
+                <a-col v-if="!carsLoading && carsData.length > 0" v-for="car in carsData" class="gutter-row" :xs="24"
+                    :md="12" :lg="8" :xl="6">
                     <CarCard :id="car.id" :model="car.car_model" :like="car.me_liked" :images="car.images"
                         :marka="car.marka" :price="car.price" :milage="car.milage" :displacement="car.displacement"
                         :year="car.year" :transmission_type="car.transmission_type" :power="car.power" :fuel="car.fuel"
@@ -191,23 +192,15 @@
         <!-- ============================ ABOUT SECTION ======================================= -->
         <div class="about_section">
             <a-row class="about_section_box">
-                <a-col 
-                class="gutter-row about_section_left" 
-                :xs="{ span: 24, order: 2 }" 
-                :md="{ span: 12, order: 1 }"
-                :lg="{ span: 12, order: 1 }"
-                >
+                <a-col class="gutter-row about_section_left" :xs="{ span: 24, order: 2 }" :md="{ span: 12, order: 1 }"
+                    :lg="{ span: 12, order: 1 }">
                     <div class="about_section_image">
                         <img src="./../../public/image copy.png" alt="about_section_image">
                         <div class="secret_box"></div>
                     </div>
                 </a-col>
-                <a-col
-                class="gutter-row"
-                :xs="{ span: 24, order: 1 }" 
-                :md="{ span: 12, order: 2 }"
-                :lg="{ span: 12, order: 2 }"
-                >
+                <a-col class="gutter-row" :xs="{ span: 24, order: 1 }" :md="{ span: 12, order: 2 }"
+                    :lg="{ span: 12, order: 2 }">
                     <h3 class="about_section_title">
                         О нашей компании
                     </h3>
@@ -222,6 +215,23 @@
                 </a-col>
             </a-row>
         </div>
+        <!-- ============================ MARKAS SECTION ======================================= -->
+        <div class="markas_section">
+            <a-row class="markas" :gutter="[0, 0]">
+                <a-col v-if="loading" class="marka_col" v-for="_ in new Array(12).fill(1)" :xs="12" :sm="8" :md="6"
+                    :lg="4">
+                    <a-skeleton active />
+                </a-col>
+                <a-col v-else class="marka_col" :xs="12" :sm="8" :md="6" :lg="4" v-for="marka in data" :key="marka.id">
+                    <div class="marka_box">
+                        <img :src="marka.image" :alt="marka.name">
+                        <p>{{ capitalize(marka.name) }}</p>
+                    </div>
+                </a-col>
+            </a-row>
+        </div>
+        <!-- ============================ CALL  SECTION ======================================= -->
+        <CallCard />
     </div>
 </template>
 
@@ -240,7 +250,12 @@ import api from '@/utils/axios'
 import { onMounted, ref, toRaw } from 'vue'
 
 //////////////////// COMPONENTS /////////////////////
-import { CarCard, Filter } from '@/components'
+import { CallCard, CarCard, Filter } from '@/components'
+
+//////////////////////////////// useFetch ///////////////////////
+import useFetch from '@/Hooks/useFetch'
+
+const { data, loading, error, getData } = useFetch()
 
 const carsLoading = ref(false)
 const carsData = ref([])
@@ -252,7 +267,6 @@ const modules = [Navigation, Pagination, Autoplay]
 ////////////// GET CARS          //////////////////////
 ///////////////////////////////////////////////////////
 const handleGetcCars = async (params) => {
-    console.log(toRaw(params))
     carsLoading.value = true
     try {
         const response = await api.get(`/cars/cars/`, {
@@ -274,8 +288,14 @@ const handleGetcCars = async (params) => {
     }
 }
 
+//////////////////////  methods ////////////////////////
+const capitalize = (text) => {
+    return text[0].toUpperCase() + text.slice(1, text.length)
+}
+
 onMounted(() => {
     handleGetcCars()
+    getData('https://api.youcarrf.ru/marks')
 })
 
 </script>
@@ -288,6 +308,51 @@ onMounted(() => {
         font-weight: 600;
         color: #010101;
         margin-bottom: 20px;
+    }
+}
+
+
+/* ===============================  MARKAS CSS ============================================== */
+.markas_section {
+    margin-top: 100px;
+}
+
+.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.marka_col {
+    width: 216px;
+}
+
+.marka_col:hover {
+    cursor: pointer;
+    box-shadow: 0 21px 21px rgba(176, 176, 176, 0.09);
+
+    img {
+        transition: all 0.3s ease-in-out;
+        scale: 1.1;
+    }
+
+
+}
+
+.marka_box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 168px;
+    width: 100%;
+    border: 1px #F1F1F1 solid;
+
+    p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        color: rgba(41, 56, 67, 1);
     }
 }
 
@@ -516,45 +581,60 @@ onMounted(() => {
     }
 }
 
-@media(max-width:992px){
-    .card_title{
+@media(max-width:992px) {
+    .card_title {
         font-size: 18px;
         font-weight: 500;
     }
 
-    .card_subtitle{
+    .card_subtitle {
         font-weight: 400;
         font-size: 15px;
     }
 
-    .about_section{
+    .about_section {
         background-size: 290px;
+    }
+
+    .marka_box {
+        font-size: 12px;
+    }
+
+    .markas_section {
+        margin-top: 75px;
     }
 }
 
 @media(max-width : 768px) {
+
+    .marka_col {
+        width: 167px;
+    }
+
+    .marka_box {
+        height: 130px;
+    }
 
     /* =============================== ABOUT SECTION ============================================== */
     .about_section_title {
         font-weight: 500;
         font-size: 23px;
     }
-    
+
     .secret_box {
         display: none;
     }
-    
+
     .about_section_subtitle {
         font-weight: 400;
         font-size: 14px;
     }
-    
+
     .about_section {
         margin-top: 50px;
         padding: 15px;
         background-image: none;
         overflow: hidden;
-        margin-bottom: 1000px;
     }
 
     .about_section_btn {
@@ -571,6 +651,7 @@ onMounted(() => {
         background-position: top;
         background-repeat: no-repeat;
         background-size: 250px;
+
         img {
             position: absolute;
             top: -20px;
