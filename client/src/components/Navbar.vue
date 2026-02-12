@@ -76,15 +76,15 @@
 
                             <div class="dropdown-wrapper">
                                 <div>
-                                    <span><router-link to="/">Автомобили</router-link></span>
+                                    <span><router-link to="/avtomobiles">Автомобили</router-link></span>
                                     <SwapRightOutlined class="avto_icon" />
                                 </div>
                                 <div>
-                                    <span><router-link to="/">Коммерческий транспорт</router-link></span>
+                                    <span><router-link to="/transport">Коммерческий транспорт</router-link></span>
                                     <SwapRightOutlined class="avto_icon" />
                                 </div>
                                 <div>
-                                    <span><router-link to="/">Мотоциклы</router-link></span>
+                                    <span><router-link to="/moto">Мотоциклы</router-link></span>
                                     <SwapRightOutlined class="avto_icon" />
                                 </div>
                             </div>

@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # /////////////////////// FILTER ///////////////////////////
 from django_filters.rest_framework import DjangoFilterBackend , OrderingFilter
-from .filters import CarFilter , GetMarkasWithModelsFilter
+from .filters import CarFilter , GetMarkasWithModelsFilter, GetModelsWithAvtoTypeFilter
 
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
@@ -76,7 +76,7 @@ class GetMarkaWithTypeView(APIView):
     AVTOMABIL turiga qarab markalarini olish
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         operation_description="Avtomobil turiga qarab markalarni olish",
@@ -914,6 +914,8 @@ class GetAllMarkasView(ListAPIView):
     queryset = Marka.objects.all()
     permission_classes = [AllowAny]
     serializer_class = GetAllMarkasSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = GetMarkasWithModelsFilter
     
 # /////////////////////////////////////////////////////////
 # ////////////       GET All MODELS       /////////////////
@@ -922,3 +924,5 @@ class getAllModelsView(ListAPIView):
     queryset = CarModel.objects.all()
     permission_classes = [AllowAny]
     serializer_class = getAllModelsSerializer 
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = GetModelsWithAvtoTypeFilter

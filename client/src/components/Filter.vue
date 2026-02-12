@@ -69,7 +69,15 @@ const validMarkaforModel = ref(null)
 const emit = defineEmits(['params', 'clear'])
 
 const props = defineProps({
-  count: Number
+  count: Number,
+  avto_type: {
+    type: String,
+    default: ''
+  },
+  katalok: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const params = ref({})
@@ -130,7 +138,9 @@ const handleChangeCountry = (value) => {
 const handleChange = (value) => {
 
   if (validMarkaforModel.value && validMarkaforModel.value !== value) {
-    message.warning(`${params.value.model} modeli ${value} markasiga tegishli emas`)
+    if (params.value.model) {
+      message.warning(`${params.value.model} modeli ${value} markasiga tegishli emas`)
+    }
     models.value = []
     model.value = null
 
@@ -177,14 +187,18 @@ const handleChangeAvailability = (e) => {
 const handleGetMarka = async (model) => {
   markaLoading.value = true
   try {
-    const { data } = await api.get(`/cars/marka/all`)
+    const { data } = await api.get(`/cars/marka/all`, {
+      params: {
+        avto_type: props.avto_type
+      }
+    })
     markas.value = data.map((item) => {
       return { value: item.marka, label: item.marka }
     })
     if (model) {
       const response = await api.get("/cars/marka/models", {
         params: {
-          model: model
+          model: model,
         }
       })
       validMarkaforModel.value = response.data[0].marka
@@ -207,7 +221,11 @@ const handleGetModels = async (marka) => {
       data = response.data.models
       console.log(response)
     } else {
-      const response = await api.get(`/cars/models/all/`)
+      const response = await api.get(`/cars/models/all/`, {
+        params: {
+          avto_type: props.avto_type
+        }
+      })
       data = response.data
     }
     models.value = data.map((item) => {
@@ -257,6 +275,8 @@ onMounted(() => {
     model.value = filter_params?.model
     marka.value = filter_params?.marka
     country.value = filter_params?.country
+    condition.value = filter_params?.condition ?? "all"
+    availability.value = filter_params?.availability
     console.log(filter_params)
     console.log("localda bor")
   }
@@ -265,8 +285,10 @@ onMounted(() => {
 
 /// last button
 const handleNavigate = () => {
-  localStorage.setItem('filter_params', JSON.stringify(params.value))
-  router.push("katalog")
+  if (!props.katalok) {
+    router.push("katalog")
+    localStorage.setItem('filter_params', JSON.stringify(params.value))
+  }
 }
 </script>
 

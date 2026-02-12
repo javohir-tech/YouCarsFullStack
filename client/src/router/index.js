@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 ///////////// MAIN LAYUOT ////////////
 import mainLayout from '@/layout/mainLayout.vue'
 ///////////////// VIEWS ////////////////
-import { CarDetail, Home, Katalog } from '@/views'
+import { avtomabile, CarDetail, Home, Katalog, Moto, transport } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
@@ -25,8 +25,20 @@ const router = createRouter({
           name: "Home"
         },
         {
-          path : "katalog", 
-          component : Katalog
+          path: "katalog",
+          component: Katalog
+        },
+        {
+          path: 'avtomobiles',
+          component: avtomabile
+        },
+        {
+          path: 'transport',
+          component: transport
+        },
+        {
+          path: 'moto',
+          component: Moto,
         },
         {
           path: "cars/detail/:id",

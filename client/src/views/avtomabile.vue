@@ -2,21 +2,21 @@
     <div class="container">
         <a-breadcrumb class="bread_crumb" separator=">">
             <a-breadcrumb-item><router-link to="/">Главная</router-link></a-breadcrumb-item>
-            <a-breadcrumb-item>Каталог</a-breadcrumb-item>
+            <a-breadcrumb-item>Автомобили</a-breadcrumb-item>
         </a-breadcrumb>
 
         <div>
             <div class="header">
                 <h1>
-                    Каталог
+                    Автомобили
                 </h1>
             </div>
-            <Filter @params="handleGetcCars" :count="filterCount" @clear="handleClear" />
+            <Filter @params="handleGetcCars" :count="filterCount" @clear="handleClear" avto_type="CR" :katalok="true" />
         </div>
         <div class="katalok_section">
             <div class="empty" v-if="carsData.length === 0 && !carsLoading">
                 <a-empty description="filter bo'yicha ma'lumotlar toplimadi " />
-            </div>  
+            </div>
             <a-row class="cars" :gutter="[16, 24]">
                 <a-col v-if="carsLoading" v-for="_ in new Array(12).fill(0)" :xs="24" :md="12" :lg="8" :xl="6">
                     <a-skeleton active />
@@ -71,6 +71,7 @@ const handleGetcCars = async (params) => {
     try {
         const response = await api.get(`/cars/cars/`, {
             params: {
+                avto_type: "CR",
                 page_size: 12,
                 ...params
             }
