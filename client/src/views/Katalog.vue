@@ -86,7 +86,9 @@ const handleGetcCars = async (params) => {
 }
 
 onMounted(() => {
-  handleGetcCars()
+  filterParams.value = JSON.parse(localStorage.getItem('filter_params'))
+  console.log(filterParams.value)
+  handleGetcCars(filterParams.value)
 })
 </script>
 

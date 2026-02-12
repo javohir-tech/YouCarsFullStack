@@ -143,15 +143,13 @@ const handleChange = (value) => {
 }
 
 const onRangeChange = (value, dateString) => {
-  const year_to = dateString[1]
-  const year_from = dateString[0]
+  const [year_from, year_to] = dateString[1]
   params.value = { ...params.value, year_from: year_from, year_to: year_to }
   emit("params", params.value)
 };
 
 const onAfterChange = value => {
-  const price_from = value[0]
-  const price_to = value[1]
+  const [price_from, price_to] = value
   params.value = { ...params.value, price_from: price_from, price_to: price_to }
   emit("params", params.value)
 };
@@ -253,6 +251,7 @@ const handleClear = () => {
 
 /// last button
 const handleNavigate = () => {
+  localStorage.setItem('filter_params', JSON.stringify(params.value))
   router.push("katalog")
 }
 </script>
