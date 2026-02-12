@@ -11,7 +11,7 @@
                     Каталог
                 </h1>
             </div>
-            <Filter @params="handleGetcCars" :count="filterCount" @clear="handleClear"/>
+            <Filter @params="handleGetcCars" :count="filterCount" @clear="handleClear" />
         </div>
         <div class="katalok_section">
             <a-row class="cars" :gutter="[16, 24]">
@@ -27,9 +27,10 @@
                 </a-col>
             </a-row>
 
-            <a-pagination class="pagination" @change="handlePagination" v-model="current" :total="total" />
+            <a-pagination class="pagination" @v-model:pageSize="pageSize" @change="handlePagination" v-model="current"
+                :total="total" />
         </div>
-        <CallCard/>
+        <CallCard />
     </div>
 </template>
 
@@ -43,16 +44,18 @@ const carsLoading = ref(false)
 const filterCount = ref(0)
 const total = ref(0)
 
+const pageSize = ref(12)
+
 const filterParams = ref({})
 
 const current = ref(1)
 
-const handlePagination = async (pagination)=>{
-    const pagination_params = { ...filterParams.value , page : pagination }
+const handlePagination = async (pagination) => {
+    const pagination_params = { ...filterParams.value, page: pagination }
     handleGetcCars(pagination_params)
 }
 
-const handleClear = () =>{
+const handleClear = () => {
     filterCount.value = 0
 }
 
@@ -71,6 +74,7 @@ const handleGetcCars = async (params) => {
         })
         console.log(response)
         total.value = response.data.count
+        console.log(total.value)
         carsData.value = response.data.result
         if (params) {
             filterParams.value = params
@@ -86,9 +90,9 @@ const handleGetcCars = async (params) => {
 }
 
 onMounted(() => {
-  filterParams.value = JSON.parse(localStorage.getItem('filter_params'))
-  console.log(filterParams.value)
-  handleGetcCars(filterParams.value)
+    filterParams.value = JSON.parse(localStorage.getItem('filter_params'))
+    console.log(filterParams.value)
+    handleGetcCars(filterParams.value)
 })
 </script>
 
@@ -97,7 +101,7 @@ onMounted(() => {
     margin-top: 30px;
 }
 
-.pagination{
+.pagination {
     margin-top: 30px;
     text-align: end;
 }

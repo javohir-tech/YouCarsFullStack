@@ -59,7 +59,7 @@
 import api from '@/utils/axios';
 import { CloseOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 
@@ -143,7 +143,7 @@ const handleChange = (value) => {
 }
 
 const onRangeChange = (value, dateString) => {
-  const [year_from, year_to] = dateString[1]
+  const [year_from, year_to] = dateString
   params.value = { ...params.value, year_from: year_from, year_to: year_to }
   emit("params", params.value)
 };
@@ -245,8 +245,22 @@ const handleClear = () => {
   year.value = null
   availability.value = null
   value2.value = null
+  localStorage.removeItem("filter_params")
   emit('params', params.value)
 }
+
+onMounted(() => {
+  const filter_params = JSON.parse(localStorage.getItem('filter_params'))
+
+  if (filter_params) {
+    params.value = filter_params
+    model.value = filter_params?.model
+    marka.value = filter_params?.marka
+    country.value = filter_params?.country
+    console.log(filter_params)
+    console.log("localda bor")
+  }
+})
 
 
 /// last button
