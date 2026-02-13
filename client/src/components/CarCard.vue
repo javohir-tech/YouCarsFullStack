@@ -4,7 +4,7 @@
             <div class="car_card_image">
                 <Swiper :scrollbar="{ draggable: true }" :modules="modules" class="mySwiper">
                     <SwiperSlide v-for="image in props.images">
-                        <a-skeleton-image v-if="loading"/>
+                        <a-skeleton-image v-if="loading" />
                         <img :src="image.image" v-show="!loading" @load="onLoad" @error="onError" :alt="props.model">
                     </SwiperSlide>
                 </Swiper>
@@ -114,8 +114,7 @@ const onError = () => {
 </script>
 
 <style scoped>
-
-.card_card{
+.card_card {
     width: 100%;
 }
 

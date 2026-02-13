@@ -17,7 +17,8 @@
                             prevEl: '.custom-prev'
                         }" :thumbs="{ swiper: thumbsSwiper }" :modules="modules" class="mySwiper2">
                             <swiper-slide v-for="image in car_data.images" :key="image.id">
-                                <img :src="image.image" />
+                                <a-skeleton-image v-if="image_loader" />
+                                <img :src="image.image" v-show="!image_loader" @load="onLoad" @error="onError" />
                             </swiper-slide>
                             <div class="navigation_btn">
                                 <button class="custom-prev">
@@ -31,83 +32,99 @@
                         <swiper @swiper="setThumbsSwiper" :spaceBetween="10" :slidesPerView="4" :freeMode="true"
                             :watchSlidesProgress="true" :modules="modules" class="mySwiper">
                             <swiper-slide v-for="image in car_data.images" :key="image.id">
-                                <img :src="image.image" />
+                                <a-skeleton-image v-if="image_loader" />
+                                <img :src="image.image" v-show="!image_loader" @load="onLoad" @error="onError" />
                             </swiper-slide>
                         </swiper>
                     </div>
                 </a-col>
                 <a-col class="gutter-row " :xs="24" :lg="10">
                     <div class="banner">
-                        <div class="car_info">
-                            <h2 class="car_name">{{ car_data.marka }} {{ car_data.car_model }}</h2>
-                            <div class="car_header">
-                                <div class="car_view">
-                                    <p class="title">{{ formatDate(car_data.created_time) }}</p>
-                                    <p class="title">
-                                        {{ car_data.views }}
-                                        <EyeOutlined />
-                                    </p>
-                                    <p>
-                                        <HeartFilled class="car_like" />
-                                    </p>
-                                </div>
-                                <div class="car_aviability">
-                                    <CheckOutlined class="aviability_icon" />
-                                    <p class="subtitle">В наличии</p>
-                                </div>
-                            </div>
-
-                            <div class="under_line">
-                            </div>
-
-                            <div class="car_info_data">
-                                <div class="car_info_item">
-                                    <p class="title">Марка</p>
-                                    <p class="subtitle">{{ car_data.marka }}</p>
-                                </div>
-                                <div class="car_info_item">
-                                    <p class="title">Модель</p>
-                                    <p class="subtitle">{{ car_data.car_model }}</p>
-                                </div>
-                                <div class="car_info_item">
-                                    <p class="title">Год выпуска</p>
-                                    <p class="subtitle">{{ car_data.year }}</p>
-                                </div>
-                                <div class="car_info_item">
-                                    <p class="title">Пробег</p>
-                                    <p class="subtitle">{{ car_data.milage }} км</p>
-                                </div>
-                                <div class="car_info_item">
-                                    <p class="title">Цвет</p>
-                                    <p class="subtitle">{{ car_data.color }}</p>
-                                </div>
-                                <div class="car_info_item">
-                                    <p class="title">Двигатель</p>
-                                    <p class="subtitle">{{ car_data.displacement }} л / {{ car_data.power }} л.с</p>
-                                </div>
-                            </div>
+                        <div v-if="car_data_loader" class="skeleton">
+                            <a-skeleton active />
+                            <a-skeleton active />
+                            <a-skeleton active />
                         </div>
-                        <div class="car_price">
-                            <p class="price_text">Цена:</p>
-                            <p class="price">{{car_data.price}}$</p>
-                        </div>
-                        <div class="author_info">
-                            <div class="user_card">
-                                <div class="user">
-                                    <div class="author_profile">
-                                        <img
-                                            :src="`https://api.dicebear.com/9.x/initials/svg?seed=${car_data.author}}`">
+                        <div v-else>
+                            <div class="car_info">
+                                <h2 class="car_name">{{ car_data.marka }} {{ car_data.car_model }}</h2>
+                                <div class="car_header">
+                                    <div class="car_view">
+                                        <p class="title">{{ formatDate(car_data.created_time) }}</p>
+                                        <p class="title">
+                                            {{ car_data.views }}
+                                            <EyeOutlined />
+                                        </p>
+                                        <p>
+                                            <HeartFilled class="car_like" />
+                                        </p>
                                     </div>
-                                    <div class="author">
-                                        <p class="author_name">{{ car_data.author }}</p>
-                                        <p class="title">Рейтинг 5.0</p>
+                                    <div class="car_aviability" v-if="car_data.availability === 'in_stock'">
+                                        <CheckOutlined class="aviability_icon" />
+                                        <p class="subtitle">
+                                            В наличии
+                                        </p>
+                                    </div>
+                                    <div class="car_aviability" v-else-if="car_data.availability === 'on_order'">
+                                        <ExclamationOutlined class="aviability_icon in_order_icon"/>
+                                        <p class="subtitle">
+                                            Под заказ
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="message">
-                                    <router-link to="/">
-                                        <MessageOutlined class="message_icon" />
-                                        <p class="subtitle">Написать</p>
-                                    </router-link>
+
+                                <div class="under_line">
+                                </div>
+
+                                <div class="car_info_data">
+                                    <div class="car_info_item">
+                                        <p class="title">Марка</p>
+                                        <p class="subtitle">{{ car_data.marka }}</p>
+                                    </div>
+                                    <div class="car_info_item">
+                                        <p class="title">Модель</p>
+                                        <p class="subtitle">{{ car_data.car_model }}</p>
+                                    </div>
+                                    <div class="car_info_item">
+                                        <p class="title">Год выпуска</p>
+                                        <p class="subtitle">{{ car_data.year }}</p>
+                                    </div>
+                                    <div class="car_info_item">
+                                        <p class="title">Пробег</p>
+                                        <p class="subtitle">{{ car_data.milage }} км</p>
+                                    </div>
+                                    <div class="car_info_item">
+                                        <p class="title">Цвет</p>
+                                        <p class="subtitle">{{ car_data.color }}</p>
+                                    </div>
+                                    <div class="car_info_item">
+                                        <p class="title">Двигатель</p>
+                                        <p class="subtitle">{{ car_data.displacement }} л / {{ car_data.power }} л.с</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="car_price">
+                                <p class="price_text">Цена:</p>
+                                <p class="price">{{ car_data.price }}$</p>
+                            </div>
+                            <div class="author_info">
+                                <div class="user_card">
+                                    <div class="user">
+                                        <div class="author_profile">
+                                            <img
+                                                :src="`https://api.dicebear.com/9.x/initials/svg?seed=${car_data.author}}`">
+                                        </div>
+                                        <div class="author">
+                                            <p class="author_name">{{ car_data.author }}</p>
+                                            <p class="title">Рейтинг 5.0</p>
+                                        </div>
+                                    </div>
+                                    <div class="message">
+                                        <router-link to="/">
+                                            <MessageOutlined class="message_icon" />
+                                            <p class="subtitle">Написать</p>
+                                        </router-link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +135,10 @@
 
         <div class="description">
             <h2>Описание</h2>
-            <p>
+            <div v-if="car_data_loader">
+                <a-skeleton active />
+            </div>
+            <p v-else>
                 {{ car_data.description }}
             </p>
         </div>
@@ -128,7 +148,10 @@
                 <a-col class="gutter-row" :xs="24" :lg="12">
                     <div class="car_under_box">
                         <h2 class="header">Технические характеристики</h2>
-                        <div class="car_info_flex">
+                        <div v-if="car_data_loader">
+                            <a-skeleton active />
+                        </div>
+                        <div v-else class="car_info_flex">
                             <div class="item">
                                 <a-flex justify="space-between">
                                     <p class="title">Марка</p>
@@ -175,7 +198,10 @@
                 <a-col class="gutter-row" :xs="24" :lg="12">
                     <div class="car_under_box">
                         <h2 class="header">Задайте вопрос продавцу</h2>
-                        <div class="question_btns">
+                        <div v-if="car_data_loader">
+                            <a-skeleton active />
+                        </div>
+                        <div v-else class="question_btns">
                             <button class="question_btn">Здравствуйте</button>
                             <button class="question_btn">Какой срок доставки?</button>
                             <button class="question_btn">птс ОРИГИНАЛ?</button>
@@ -186,6 +212,24 @@
                 </a-col>
             </a-row>
         </div>
+
+        <div class="similar_section">
+            <div class="section_header">
+                <h1>Похожие</h1>
+            </div>
+            <div class="similar_cars">
+                <a-row :gutter="[16, 24]">
+                    <a-col class="gutter-row" :xs="24" :md="12" :lg="8" v-for="car in similar_cars" :key="car.id">
+                        <CarCard @click="handleNavigate" :id="car.id" :model="car.car_model" :like="car.me_liked"
+                            :images="car.images" :marka="car.marka" :price="car.price" :milage="car.milage"
+                            :displacement="car.displacement" :year="car.year" :transmission_type="car.transmission_type"
+                            :power="car.power" :fuel="car.fuel" :drive_type="car.drive_type" :country="car.country" />
+                    </a-col>
+                </a-row>
+            </div>
+        </div>
+
+        <CallCard />
     </div>
 </template>
 
@@ -204,8 +248,9 @@ import 'swiper/css/thumbs';
 
 // import required modules
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
-import { ArrowLeftOutlined, ArrowRightOutlined, CheckOutlined, EyeOutlined, HeartFilled, MessageOutlined } from '@ant-design/icons-vue';
+import { ArrowLeftOutlined, ArrowRightOutlined, CheckOutlined, ExclamationOutlined, EyeOutlined, HeartFilled, MessageOutlined } from '@ant-design/icons-vue';
 import api from '@/utils/axios';
+import { CallCard, CarCard } from '@/components';
 
 const modules = [FreeMode, Navigation, Thumbs]
 
@@ -213,10 +258,23 @@ const route = useRoute()
 // refs
 const thumbsSwiper = ref(null)
 const car_data = ref([])
+const similar_cars = ref([])
+
+//  loaders
+const car_data_loader = ref(false)
+const image_loader = ref(true)
 
 // methods
 const setThumbsSwiper = (swiper) => {
     thumbsSwiper.value = swiper
+}
+
+const onLoad = () => {
+    image_loader.value = false
+}
+
+const onError = () => {
+    image_loader.value = false
 }
 
 const getDriveType = (type) => {
@@ -246,14 +304,37 @@ const formatNumber = (num) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
-const handleGetCar = async () => {
+const handleGetSimilarCar = async (marka) => {
     try {
-        const { data } = await api.get(`/cars/car/${route.params.id}/`)
-        console.log(data)
-        car_data.value = data.data
+        const { data } = await api.get('/cars/cars/', {
+            params: {
+                marka: marka,
+                page_size: 3
+            }
+        })
+        similar_cars.value = data.result
     } catch (error) {
         console.log(error.response || error)
     }
+}
+
+const handleGetCar = async () => {
+    car_data_loader.value = true
+    try {
+        const { data } = await api.get(`/cars/car/${route.params.id}/`)
+        car_data.value = data.data
+        const marka = car_data.value.marka
+        console.log(data)
+        handleGetSimilarCar(marka)
+    } catch (error) {
+        console.log(error.response || error)
+    } finally {
+        car_data_loader.value = false
+    }
+}
+
+const handleNavigate = () => {
+    handleGetCar()
 }
 
 
@@ -269,7 +350,7 @@ onMounted(() => {
 }
 
 /*  SWIPER STYLE */
-.banner{
+.banner {
     height: 100%;
 }
 
@@ -281,7 +362,7 @@ onMounted(() => {
 .swiper-slide {
     text-align: center;
     font-size: 18px;
-    background: #444;
+    background: rgba(90, 90, 90, 1);
 
     /* Center slide text vertically */
     display: flex;
@@ -381,6 +462,13 @@ onMounted(() => {
     border-top-left-radius: 15px;
 }
 
+.skeleton {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    border-radius: 15px;
+    height: 100%;
+}
+
 .car_name {
     font-weight: 500;
     font-size: 25px;
@@ -430,6 +518,11 @@ onMounted(() => {
     justify-content: center;
     background: rgba(221, 250, 220, 1);
     border-radius: 100%;
+}
+
+.in_order_icon{
+    color: rgba(245, 171, 48, 1);
+    background-color: rgba(255, 235, 201, 1);
 }
 
 .under_line {
@@ -596,9 +689,19 @@ onMounted(() => {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.car_info_flex{
+.car_info_flex {
     display: flex;
     gap: 100px;
+}
+
+.similar_section {
+    margin-top: 50px;
+}
+
+.section_header {
+    font-weight: 500;
+    font-size: 30px;
+    color: rgba(1, 1, 1, 1);
 }
 
 @media(max-width : 992px) {
@@ -612,7 +715,7 @@ onMounted(() => {
         height: 200px;
     }
 
-    .car_info_flex{
+    .car_info_flex {
         flex-direction: column;
         gap: 0;
     }

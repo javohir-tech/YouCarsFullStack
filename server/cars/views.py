@@ -261,7 +261,10 @@ class GetFuelsView(ListAPIView):
 # ////////////        CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
 class CarView(APIView):
-    permission_classes = [IsAuthenticated]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     @swagger_auto_schema(
         operation_description="Yangi mashina e'lonini yaratish",
@@ -696,6 +699,7 @@ class CarView(APIView):
         tags=["Car"],
     )
     def get(self, request, pk):
+        
         car = get_object_or_404(Car, id=pk)
         car.views = car.views + 1
         car.save()
