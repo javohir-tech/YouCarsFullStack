@@ -306,13 +306,8 @@ const formatNumber = (num) => {
 
 const handleGetSimilarCar = async (marka) => {
     try {
-        const { data } = await api.get('/cars/cars/', {
-            params: {
-                marka: marka,
-                page_size: 3
-            }
-        })
-        similar_cars.value = data.result
+        const { data } = await api.get(`/cars/car/similar/${route.params.id}/`)
+        similar_cars.value = data
     } catch (error) {
         console.log(error.response || error)
     }
@@ -324,7 +319,6 @@ const handleGetCar = async () => {
         const { data } = await api.get(`/cars/car/${route.params.id}/`)
         car_data.value = data.data
         const marka = car_data.value.marka
-        console.log(data)
         handleGetSimilarCar(marka)
     } catch (error) {
         console.log(error.response || error)

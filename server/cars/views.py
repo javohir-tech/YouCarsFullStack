@@ -1,8 +1,8 @@
 from django.shortcuts import render
 
 # /////////////////////// FILTER ///////////////////////////
-from django_filters.rest_framework import DjangoFilterBackend , OrderingFilter
-from .filters import CarFilter , GetMarkasWithModelsFilter, GetModelsWithAvtoTypeFilter
+from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
+from .filters import CarFilter, GetMarkasWithModelsFilter, GetModelsWithAvtoTypeFilter
 
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
@@ -24,7 +24,7 @@ from .models import (
     Like,
     DeletionStatistics,
     Marka,
-    CarModel
+    CarModel,
 )
 
 # //////////// SERIALIZERS  /////////////////////////////
@@ -44,7 +44,7 @@ from .serializers import (
     CarDeletionSerializer,
     GetAllMarkasSerializer,
     getAllModelsSerializer,
-    GetMarkasWithModels
+    GetMarkasWithModels,
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -217,7 +217,8 @@ class GetModelsWithMarkaView(APIView):
                 "models": car_models_serializer.data,
             }
         )
-        
+
+
 # /////////////////////////////////////////////////////////
 # //////////// GET MARKA WITH MODELS    ///////////////////
 # /////////////////////////////////////////////////////////
@@ -227,7 +228,6 @@ class GetMarkasWithModelsView(ListAPIView):
     queryset = Marka.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_class = GetMarkasWithModelsFilter
-    
 
 
 # /////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ class GetFuelsView(ListAPIView):
 # /////////////////////////////////////////////////////////
 class CarView(APIView):
     def get_permissions(self):
-        if self.request.method == 'GET':
+        if self.request.method == "GET":
             return [AllowAny()]
         return [IsAuthenticated()]
 
@@ -699,7 +699,7 @@ class CarView(APIView):
         tags=["Car"],
     )
     def get(self, request, pk):
-        
+
         car = get_object_or_404(Car, id=pk)
         car.views = car.views + 1
         car.save()
@@ -752,12 +752,26 @@ class GetAllCarsView(ListAPIView):
     """
     Hamma moshinalarni olish uchun
     """
+
     permission_classes = [AllowAny]
     serializer_class = GetCarsSerializer
-    queryset = Car.objects.filter(status = Car.STATUS_CHOICES.PUBLISHED).order_by("-views")
+    queryset = Car.objects.filter(status=Car.STATUS_CHOICES.PUBLISHED).order_by(
+        "-views"
+    )
     filter_backends = [DjangoFilterBackend]
-    filterset_class  = CarFilter
-    pagination_class = CustomPagination   
+    filterset_class = CarFilter
+    pagination_class = CustomPagination
+
+
+class GetSimilarCarsView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = GetCarsSerializer
+
+    def get_queryset(self):
+        id = self.kwargs.get("pk")
+        car = get_object_or_404(Car, id=id)
+        marka = car.marka
+        return Car.objects.filter(marka=marka).order_by("-views").exclude(id=id)[:3]
 
 
 # /////////////////////////////////////////////////////////
@@ -920,13 +934,14 @@ class GetAllMarkasView(ListAPIView):
     serializer_class = GetAllMarkasSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = GetMarkasWithModelsFilter
-    
+
+
 # /////////////////////////////////////////////////////////
 # ////////////       GET All MODELS       /////////////////
 # /////////////////////////////////////////////////////////
 class getAllModelsView(ListAPIView):
     queryset = CarModel.objects.all()
     permission_classes = [AllowAny]
-    serializer_class = getAllModelsSerializer 
+    serializer_class = getAllModelsSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = GetModelsWithAvtoTypeFilter
