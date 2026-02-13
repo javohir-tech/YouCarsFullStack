@@ -124,6 +124,15 @@ const router = createRouter({
       ]
     }
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // back / forward bosilganda
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    // har doim tepaga qaytaradi
+    return { top: 0 }
+  }
 })
 
 router.beforeEach((to, from, next) => {

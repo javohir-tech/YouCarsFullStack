@@ -123,7 +123,7 @@
                         </div>
                         <div class="bottom_rigth" v-else>
                             <Button>
-                                <router-link to="login">
+                                <router-link to="/login">
                                     Войти
                                 </router-link>
                             </Button>
