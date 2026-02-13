@@ -23,8 +23,8 @@
                         :drive_type="car.drive_type" :country="car.country" @dislike="handleDislike" />
                 </a-col>
             </a-row>
-            <a-pagination v-if="total" class="pagination" v-model:current="current" :total="total"
-                show-less-items />
+            <a-pagination v-if="total" @change="handlePagination" class="pagination" v-model:current="current"
+                :total="total" show-less-items />
         </div>
     </div>
 </template>
@@ -38,14 +38,22 @@ import { onMounted, ref } from 'vue';
 const cars = ref([])
 const loading = ref(false)
 const getError = ref(false)
-const current = ref(2);
+const current = ref(1);
 const total = ref(0);
 
+const handlePagination = (value) => {
+    getMeLikedcars(value)
+}
 
-const getMeLikedcars = async () => {
+
+const getMeLikedcars = async (page) => {
     loading.value = true
     try {
-        const { data } = await api.get("/cars/cars/meliked/")
+        const { data } = await api.get("/cars/cars/meliked/", {
+            params: {
+                page: page
+            }
+        })
         cars.value = data.result
         total.value = data.count
     } catch (error) {
@@ -58,6 +66,13 @@ const getMeLikedcars = async () => {
 
 const handleDislike = (id) => {
     cars.value = cars.value.filter(c => c.id !== id)
+    if (total > 10 && cars.value.length === 9) {
+        getMeLikedcars()
+    }
+    if(cars.value.length === 0){
+        
+    }
+    total.value -= 1
 }
 
 onMounted(() => {

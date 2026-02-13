@@ -66,7 +66,7 @@
                                         </p>
                                     </div>
                                     <div class="car_aviability" v-else-if="car_data.availability === 'on_order'">
-                                        <ExclamationOutlined class="aviability_icon in_order_icon"/>
+                                        <ExclamationOutlined class="aviability_icon in_order_icon" />
                                         <p class="subtitle">
                                             Под заказ
                                         </p>
@@ -219,7 +219,12 @@
             </div>
             <div class="similar_cars">
                 <a-row :gutter="[16, 24]">
-                    <a-col class="gutter-row" :xs="24" :md="12" :lg="8" v-for="car in similar_cars" :key="car.id">
+                    <a-col v-if="similar_loading"  class="gutter-row" :xs="24" :md="12" :lg="8"
+                        v-for="_ in new Array(3).fill(1)">
+                        <a-skeleton active />
+                    </a-col>
+                    <a-col v-else class="gutter-row" :xs="24" :md="12" :lg="8" v-for="car in similar_cars"
+                        :key="car.id">
                         <CarCard @click="handleNavigate" :id="car.id" :model="car.car_model" :like="car.me_liked"
                             :images="car.images" :marka="car.marka" :price="car.price" :milage="car.milage"
                             :displacement="car.displacement" :year="car.year" :transmission_type="car.transmission_type"
@@ -263,6 +268,7 @@ const similar_cars = ref([])
 //  loaders
 const car_data_loader = ref(false)
 const image_loader = ref(true)
+const similar_loading = ref(false)
 
 // methods
 const setThumbsSwiper = (swiper) => {
@@ -304,12 +310,17 @@ const formatNumber = (num) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
-const handleGetSimilarCar = async (marka) => {
+
+
+const handleGetSimilarCar = async () => {
+    similar_loading.value = true
     try {
         const { data } = await api.get(`/cars/car/similar/${route.params.id}/`)
         similar_cars.value = data
     } catch (error) {
         console.log(error.response || error)
+    } finally {
+        similar_loading.value = false
     }
 }
 
@@ -318,8 +329,6 @@ const handleGetCar = async () => {
     try {
         const { data } = await api.get(`/cars/car/${route.params.id}/`)
         car_data.value = data.data
-        const marka = car_data.value.marka
-        handleGetSimilarCar(marka)
     } catch (error) {
         console.log(error.response || error)
     } finally {
@@ -334,6 +343,7 @@ const handleNavigate = () => {
 
 onMounted(() => {
     handleGetCar()
+    handleGetSimilarCar()
 })
 
 </script>
@@ -514,7 +524,7 @@ onMounted(() => {
     border-radius: 100%;
 }
 
-.in_order_icon{
+.in_order_icon {
     color: rgba(245, 171, 48, 1);
     background-color: rgba(255, 235, 201, 1);
 }
