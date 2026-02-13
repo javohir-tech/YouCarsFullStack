@@ -55,6 +55,9 @@ import 'swiper/css/scrollbar'
 // Modules
 import { Scrollbar } from 'swiper/modules'
 
+import { useUserStore } from '@/store/useUserStore';
+
+const userStore = useUserStore()
 // Modules array
 const modules = [Scrollbar]
 const loading = ref(true)
@@ -84,8 +87,12 @@ const HandleCarLike = async (id) => {
     try {
         const { data } = await api.post(`/cars/car/like/${id}/`)
         liked.value = true
+        
     } catch (error) {
         console.log(error.response || response)
+        if(error.response.data.detail){
+            message.error(error.response.data.detail)
+        }
     }
 }
 

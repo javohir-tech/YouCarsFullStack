@@ -78,7 +78,7 @@ class SingUpSarializer(serializers.ModelSerializer):
 class LoginSerilazer(serializers.Serializer):
     user_input = serializers.CharField(required=True, write_only=True)
     password = serializers.CharField(required=True, write_only=True)
-
+            
     def validate(self, attrs):
 
         user_input = attrs.get("user_input")
@@ -101,7 +101,7 @@ class LoginSerilazer(serializers.Serializer):
 
         if not user:
             raise ValidationError({"user": "Email , username or password is incorrect"})
-
+        
         attrs["user"] = current_user
 
         return attrs

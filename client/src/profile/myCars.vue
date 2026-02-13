@@ -6,7 +6,9 @@
                 <a-col class="gutter-row" :span="14">
                     <div class="car_left">
                         <div class="car_image" v-if="item.images.length > 0">
-                            <img :src="item.images[0].image" alt="car_image">
+                            <a-skeleton-image v-if="imageLoading" />
+                            <img v-show="!imageLoading" @load="onLoad" @error="onError" :src="item.images[0].image"
+                                alt="car_image">
                         </div>
                         <div class="car_info">
                             <p class="car_name">
@@ -29,7 +31,8 @@
                                 <p>{{ item.inquiries || 0 }}</p>
                             </a-flex>
                             <a-flex class="car_view" gap="10" align="center">
-                                <HeartOutlined @click="item.me_liked ? handleCarDislike(item.id): HandleCarLike(item.id)"
+                                <HeartOutlined
+                                    @click="item.me_liked ? handleCarDislike(item.id) : HandleCarLike(item.id)"
                                     class="car_info_icon heart_icon" />
                                 <p>{{ item.likes_count }}</p>
                             </a-flex>
@@ -60,6 +63,9 @@
             </a-row>
         </div>
 
+        <a-pagination style="text-align: end;" v-if="total > 10" @change="handlePagination" class="pagination"
+            v-model:current="current" :total="total" show-less-items />
+
         <div class="loader" v-if="loading">
             <a-spin />
         </div>
@@ -68,7 +74,7 @@
             <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
         </div>
 
-        <div class="empty" v-if="cars_data.length === 0 && !loading && !error">
+        <div class="empty" v-if="total === 0 && !loading && !error">
             <a-empty />
         </div>
     </div>
@@ -85,13 +91,25 @@ const error = ref(false)
 const loading = ref(false)
 const cars_data = ref([])
 const keepLoading = ref(false)
+const total = ref(0)
+const current = ref(1)
+const imageLoading = ref(true)
+
+const handlePagination = (value) => {
+    getUserDraftCars(value)
+}
 
 
 // ─── Fetch cars ──────────────────────────────
-const getUserDraftCars = async () => {
+const getUserDraftCars = async (page) => {
     loading.value = true
     try {
-        const { data } = await api.get('/cars/user/cars/published/')
+        const { data } = await api.get('/cars/user/cars/published/', {
+            params: {
+                page: page
+            }
+        })
+        total.value = data.count
         cars_data.value = data.result
     } catch (err) {
         error.value = true
@@ -101,10 +119,18 @@ const getUserDraftCars = async () => {
     }
 }
 
+const onLoad = () => {
+    imageLoading.value = false
+}
+
+const onError = () => {
+    imageLoading.value = false
+}
+
 const HandleCarLike = async (id) => {
     try {
-        const {data} = await api.post(`/cars/car/like/${id}/`)
-        if(data.success){
+        const { data } = await api.post(`/cars/car/like/${id}/`)
+        if (data.success) {
             message.success('like bosildi')
         }
     } catch (error) {
@@ -134,6 +160,10 @@ const handleKeepDeactive = async (carId) => {
         })
         cars_data.value = cars_data.value.filter(c => c.id !== carId)
         message.success(response.data.message)
+        total.value -= 1
+        if (cars_data.value.length === 0) {
+            getUserDraftCars()
+        }
     } catch (err) {
         console.log(err.response || err)
     } finally {

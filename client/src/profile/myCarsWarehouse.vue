@@ -6,7 +6,9 @@
                 <a-col class="gutter-row" :span="14">
                     <div class="car_left">
                         <div class="car_image" v-if="item.images.length > 0">
-                            <img :src="item.images[0].image" alt="car_image">
+                            <a-skeleton-image v-if="imageLoading" />
+                            <img v-show="!imageLoading" @load="onLoad" @error="onError" :src="item.images[0].image"
+                                alt="car_image">
                         </div>
                         <div class="car_info">
                             <p class="car_name">
@@ -47,7 +49,8 @@
                 </a-col>
             </a-row>
         </div>
-
+        <a-pagination style="text-align: end;" v-if="total > 10" @change="handlePagination" class="pagination"
+            v-model:current="current" :total="total" show-less-items />
         <div class="loader" v-if="loading">
             <a-spin />
         </div>
@@ -56,7 +59,7 @@
             <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist." />
         </div>
 
-        <div class="empty" v-if="cars_data.length === 0 && !loading && !error">
+        <div class="empty" v-if="total === 0 && !loading && !error">
             <a-empty />
         </div>
         <!-- ============ MODAL ============ -->
@@ -116,6 +119,14 @@ const selectedReason = ref(null)
 const deleteLoading = ref(false)
 const keepLoading = ref(false)
 
+const total = ref(0)
+const current = ref(1)
+const imageLoading = ref(true)
+
+const handlePagination = (value) => {
+    getUserDraftCars(value)
+}
+
 // ─── Delete reasons ──────────────────────────
 const deleteReasons = [
     { value: 1, label: 'Продал на YouCar' },
@@ -124,10 +135,15 @@ const deleteReasons = [
 ]
 
 // ─── Fetch cars ──────────────────────────────
-const getUserDraftCars = async () => {
+const getUserDraftCars = async (page) => {
     loading.value = true
     try {
-        const { data } = await api.get('/cars/user/cars/draft/')
+        const { data } = await api.get('/cars/user/cars/draft/', {
+            params: {
+                page: page
+            }
+        })
+        total.value = data.count
         cars_data.value = data.result
     } catch (err) {
         error.value = true
@@ -137,9 +153,14 @@ const getUserDraftCars = async () => {
     }
 }
 
-onMounted(() => {
-    getUserDraftCars()
-})
+const onLoad = () => {
+    imageLoading.value = false
+}
+
+const onError = () => {
+    imageLoading.value = false
+}
+
 
 // ─── Modal open / close ──────────────────────
 function openModal(car) {
@@ -154,8 +175,7 @@ function closeModal() {
     selectedReason.value = null
 }
 
-// ─── Удалить ─────────────────────────────────
-// ← o'z API chaqirigingiz yozing
+
 const handleDelete = async () => {
     if (!selectedReason.value) return
 
@@ -168,6 +188,10 @@ const handleDelete = async () => {
         })
         message.success(response.data.message)
         cars_data.value = cars_data.value.filter(c => c.id !== selectedCar.value.id)
+        total.value -= 1
+        if (cars_data.value.length === 0) {
+            getUserDraftCars()
+        }
         closeModal()
     } catch (err) {
         console.log(err.response || err)
@@ -176,8 +200,6 @@ const handleDelete = async () => {
     }
 }
 
-// ─── Оставить активным ───────────────────────
-// ← o'z API chaqirigingiz yozing
 const handleKeepActive = async () => {
     keepLoading.value = true
     try {
@@ -187,12 +209,20 @@ const handleKeepActive = async () => {
         message.success(response.data.message)
         cars_data.value = cars_data.value.filter(item => item.id !== selectedCar.value.id)
         closeModal()
+        total.value -= 1
+        if (cars_data.value.length === 0) {
+            getUserDraftCars()
+        }
     } catch (err) {
         console.log(err.response || err)
     } finally {
         keepLoading.value = false
     }
 }
+
+onMounted(() => {
+    getUserDraftCars()
+})
 </script>
 
 <style scoped>

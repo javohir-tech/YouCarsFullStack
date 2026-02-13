@@ -305,12 +305,6 @@ const formatDate = (dateString) => {
     return `${day} ${month} ${year}`
 }
 
-const formatNumber = (num) => {
-    if (!num) return '0'
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-}
-
-
 
 const handleGetSimilarCar = async () => {
     similar_loading.value = true

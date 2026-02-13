@@ -112,7 +112,7 @@
 
                     <Col :xs="0" :sm="0" :md="5" :lg="5">
                         <div class="bottom_rigth" v-if="userStore.access_token">
-                            <router-link to="/profile">
+                            <router-link to="/profile/storage">
                                 <div class="avatar">
                                     <p>{{ userStore.username }}</p>
                                     <a-spin v-if="loading" />

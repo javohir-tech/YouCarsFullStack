@@ -4,10 +4,10 @@
         <div v-if="loading" class="loading">
             <a-spin clas="spin" size="large" tip="loading..." />
         </div>
-        <div v-if="cars.length === 0 && !getError && !loading" class="empty">
+        <div v-if="total === 0 && !getError && !loading" class="empty">
             <a-empty description="Нет сохраненных объявлений" />
             <p>Чтобы добавить авто в избранное, нажмите на сердечко на карточке машины!</p>
-            <router-link to="/">
+            <router-link to="/katalog">
                 <a-button type="primary">Перейти в каталог</a-button>
             </router-link>
         </div>
@@ -23,7 +23,7 @@
                         :drive_type="car.drive_type" :country="car.country" @dislike="handleDislike" />
                 </a-col>
             </a-row>
-            <a-pagination v-if="total" @change="handlePagination" class="pagination" v-model:current="current"
+            <a-pagination v-if="total > 10" @change="handlePagination" class="pagination" v-model:current="current"
                 :total="total" show-less-items />
         </div>
     </div>
@@ -69,8 +69,8 @@ const handleDislike = (id) => {
     if (total > 10 && cars.value.length === 9) {
         getMeLikedcars()
     }
-    if(cars.value.length === 0){
-        
+    if (cars.value.length === 0) {
+        getMeLikedcars()
     }
     total.value -= 1
 }

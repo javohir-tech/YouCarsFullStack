@@ -111,7 +111,7 @@ const onFinish = async (values) => {
             user_input: values.user_input,
             password: values.password
         })
-
+        // console.log(data)
         const email = data.data.email
         const username = data.data.username
         const access_token = data.data.tokens.access_token
@@ -120,7 +120,7 @@ const onFinish = async (values) => {
             localStorage.setItem("access_token", access_token)
             localStorage.setItem("refresh_token", refresh_token)
         }
-
+        userStore.updateAvatar(data.data.profile)
         userStore.add_user(username, email, access_token)
 
         message.success(data.message)

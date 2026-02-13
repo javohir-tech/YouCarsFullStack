@@ -922,8 +922,7 @@ class MeLikedCarGet(ListAPIView):
         user_liked_ids = Like.objects.filter(author=self.request.user).values_list(
             "car_id", flat=True
         )
-        return Car.objects.filter(id__in=user_liked_ids)
-
+        return Car.objects.filter(id__in=user_liked_ids).order_by("-likes__created_time")
 
 # /////////////////////////////////////////////////////////
 # ////////////       GET All MARKAS       /////////////////

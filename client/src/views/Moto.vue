@@ -66,7 +66,6 @@ const handleClear = () => {
 ////////////// GET CARS         //////////////////////
 //////////////////////////////////////////////////////
 const handleGetcCars = async (params) => {
-    console.log(params)
     carsLoading.value = true
     try {
         const response = await api.get(`/cars/cars/`, {
@@ -76,9 +75,7 @@ const handleGetcCars = async (params) => {
                 ...params
             }
         })
-        console.log(response)
         total.value = response.data.count
-        console.log(total.value)
         carsData.value = response.data.result
         if (params) {
             filterParams.value = params
@@ -95,7 +92,6 @@ const handleGetcCars = async (params) => {
 
 onMounted(() => {
     filterParams.value = JSON.parse(localStorage.getItem('filter_params'))
-    console.log(filterParams.value)
     handleGetcCars(filterParams.value)
 })
 </script>

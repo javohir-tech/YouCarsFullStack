@@ -128,6 +128,8 @@ class LoginView(APIView):
 
         if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data["user"]
+            if user.photo:
+                photo = request.build_absolute_uri(user.photo.url)
             user.auth_status = Auth_STATUS.DONE
             user.save()
             token = user.token()
@@ -139,6 +141,7 @@ class LoginView(APIView):
                     "data": {
                         "username": user.username,
                         "email": user.email,
+                        "profile" : str(photo),
                         "tokens": {
                             "access_token": token["access_token"],
                             "refresh_token": token["refresh"],

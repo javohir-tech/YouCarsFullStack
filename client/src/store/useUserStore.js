@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
             edit_password_token: localStorage.getItem("edit_password_token") || "",
             email_edit_token: localStorage.getItem("email_edit_token") || "",
             new_email: localStorage.getItem("new_email") || "",
-            user_image : null
+            user_image : localStorage.getItem("profile" ) || undefined , 
         }
     ),
     getters: {
@@ -27,6 +27,7 @@ export const useUserStore = defineStore('user', {
         },
         updateAvatar(photo){
             this.user_image = photo
+            localStorage.setItem('profile' , photo)
         },
         add_email(email) {
             this.email = email
