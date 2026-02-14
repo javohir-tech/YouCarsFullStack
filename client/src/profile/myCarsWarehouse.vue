@@ -3,12 +3,16 @@
         <div v-if="!loading" v-for="item in cars_data" class="my_car" :key="item.id">
 
             <a-row :gutter="[16, 24]">
-                <a-col class="gutter-row" :span="14">
+                <!-- Left section: image + info - responsive breakpoints -->
+                <a-col class="gutter-row" :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
                     <div class="car_left">
                         <div class="car_image" v-if="item.images.length > 0">
                             <a-skeleton-image v-if="imageLoading" />
                             <img v-show="!imageLoading" @load="onLoad" @error="onError" :src="item.images[0].image"
                                 alt="car_image">
+                            
+                            <!-- Menu button overlay - faqat mobile uchun -->
+                            <EllipsisOutlined class="car_menu_mobile" @click="openModal(item)" />
                         </div>
                         <div class="car_info">
                             <p class="car_name">
@@ -19,7 +23,9 @@
                         </div>
                     </div>
                 </a-col>
-                <a-col class="gutter-row" :span="10">
+                
+                <!-- Right section: stats + menu -->
+                <a-col class="gutter-row" :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
                     <div class="car_right">
                         <div class="car_status">
                             <p class="car_status_label"
@@ -43,14 +49,17 @@
                                 <p>{{ item.messages || 'Нет новых сообщений' }}</p>
                             </a-flex>
                         </div>
-
-                        <EllipsisOutlined class="car_menu" @click="openModal(item)" />
+                        
+                        <!-- Menu button - desktop uchun -->
+                        <EllipsisOutlined class="car_menu_desktop" @click="openModal(item)" />
                     </div>
                 </a-col>
             </a-row>
         </div>
+        
         <a-pagination style="text-align: end;" v-if="total > 10" @change="handlePagination" class="pagination"
             v-model:current="current" :total="total" show-less-items />
+        
         <div class="loader" v-if="loading">
             <a-spin />
         </div>
@@ -62,6 +71,7 @@
         <div class="empty" v-if="total === 0 && !loading && !error">
             <a-empty />
         </div>
+        
         <!-- ============ MODAL ============ -->
         <a-modal v-model:open="modalVisible" :footer="null" :width="400" :centered="true" class="delete_modal"
             @cancel="closeModal">
@@ -253,10 +263,14 @@ onMounted(() => {
 /* Left: image + name/price/country — fills available space */
 .car_left {
     display: flex;
-    gap: 20px;
+    gap: 8px;
     align-items: flex-start;
     flex: 1;
     min-width: 0;
+}
+
+.car_image {
+    position: relative;
 }
 
 .car_image img {
@@ -289,7 +303,7 @@ onMounted(() => {
     color: #989898;
 }
 
-/* Right: stats + menu — pinned to right edge */
+/* Right: stats + menu */
 .car_right {
     display: flex;
     align-items: flex-start;
@@ -334,7 +348,8 @@ onMounted(() => {
     color: #e53935 !important;
 }
 
-.car_menu {
+/* Menu button - Desktop (o'ng tomonda) */
+.car_menu_desktop {
     padding: 6px;
     font-size: 18px;
     background-color: #fff;
@@ -344,8 +359,29 @@ onMounted(() => {
     transform: rotate(90deg);
 }
 
-.car_menu:hover {
+.car_menu_desktop:hover {
     background-color: #ececec;
+}
+
+/* Menu button - Mobile (rasm ustida) */
+.car_menu_mobile {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 6px;
+    font-size: 18px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    transform: rotate(90deg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.car_menu_mobile:hover {
+    background-color: #fff;
 }
 
 /* ═══ MODAL ═══ */
@@ -425,5 +461,163 @@ onMounted(() => {
 
 .modal_btn_keep:hover {
     background-color: #e4e4e4;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* ═══ RESPONSIVE STYLES ═══ */
+/* ═══════════════════════════════════════════════════ */
+
+/* Tablet va kichikroq ekranlar (1012px va past) */
+@media (max-width: 1012px) {
+    .car_image img {
+        width: 150px;
+        height: 100px;
+    }
+
+    .car_name {
+        font-size: 15px;
+    }
+
+    .car_price {
+        font-size: 18px;
+    }
+
+    .car_left {
+        gap: 8px;
+    }
+}
+
+/* Medium tablet (768px - 1012px) */
+@media (max-width: 768px) {
+    .my_car {
+        padding: 12px;
+    }
+
+    .car_left {
+        gap: 8px;
+    }
+
+    .car_image img {
+        width: 140px;
+        height: 95px;
+    }
+    
+    /* Desktop menu yashirish, mobile menu ko'rsatish */
+    .car_menu_desktop {
+        display: none;
+    }
+    
+    .car_menu_mobile {
+        display: block;
+    }
+
+    /* Stats qismi pastga tushadi */
+    .car_right {
+        margin-left: 0;
+        margin-top: 12px;
+        justify-content: flex-start;
+    }
+
+    .car_status {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 12px;
+        flex: 1;
+    }
+
+    .car_view {
+        min-width: 70px;
+    }
+}
+
+/* Mobile ekranlar (576px va past) */
+@media (max-width: 576px) {
+    .my_car {
+        padding: 10px;
+    }
+
+    /* Rasm va info vertical */
+    .car_left {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .car_image {
+        width: 100%;
+    }
+
+    .car_image img {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+    }
+
+    .car_name {
+        font-size: 16px;
+        margin-top: 0 !important;
+    }
+
+    .car_price {
+        font-size: 20px;
+    }
+
+    /* Stats grid layout */
+    .car_right {
+        margin-top: 10px;
+    }
+
+    .car_status {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .car_view {
+        min-width: auto;
+    }
+
+    .car_view p {
+        font-size: 13px;
+    }
+
+    .car_info_icon {
+        font-size: 14px;
+    }
+    
+    .car_status_label {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Juda kichik ekranlar (400px va past) */
+@media (max-width: 400px) {
+    .my_cars {
+        margin: 5px auto;
+    }
+
+    .my_car {
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .car_name {
+        font-size: 14px;
+    }
+
+    .car_price {
+        font-size: 18px;
+    }
+
+    .car_country {
+        font-size: 13px;
+    }
+
+    .car_view p {
+        font-size: 12px;
+    }
+
+    .car_info_icon {
+        font-size: 13px;
+    }
 }
 </style>

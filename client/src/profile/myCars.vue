@@ -11,10 +11,10 @@
                             <img v-show="!imageLoading" @load="onLoad" @error="onError" :src="item.images[0].image"
                                 alt="car_image">
                             
-                            <!-- Dropdown menu overlay -->
-                            <a-dropdown placement="bottomLeft">
+                            <!-- Dropdown menu overlay - faqat mobile uchun -->
+                            <a-dropdown placement="bottomLeft" class="dropdown_mobile">
                                 <a class="ant-dropdown-link" @click.prevent>
-                                    <EllipsisOutlined class="car_menu" />
+                                    <EllipsisOutlined class="car_menu_mobile" />
                                 </a>
                                 <template #overlay>
                                     <a-menu>
@@ -40,7 +40,7 @@
                     </div>
                 </a-col>
                 
-                <!-- Right section: stats only -->
+                <!-- Right section: stats + menu -->
                 <a-col class="gutter-row" :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
                     <div class="car_right">
                         <div class="car_status">
@@ -63,6 +63,25 @@
                                 <p>{{ item.messages || 'Нет новых сообщений' }}</p>
                             </a-flex>
                         </div>
+                        
+                        <!-- Dropdown menu - desktop uchun -->
+                        <a-dropdown placement="bottomLeft" class="dropdown_desktop">
+                            <a class="ant-dropdown-link" @click.prevent>
+                                <EllipsisOutlined class="car_menu_desktop" />
+                            </a>
+                            <template #overlay>
+                                <a-menu>
+                                    <a-menu-item>
+                                        <router-link :to="`/update/${item.id}`">
+                                            Редактировать
+                                        </router-link>
+                                    </a-menu-item>
+                                    <a-menu-item>
+                                        <a @click="handleKeepDeactive(item.id)">Снять с публикации</a>
+                                    </a-menu-item>
+                                </a-menu>
+                            </template>
+                        </a-dropdown>
                     </div>
                 </a-col>
             </a-row>
@@ -251,11 +270,12 @@ function capitalizeWords(text) {
     color: #989898;
 }
 
-/* Right: stats only */
+/* Right: stats + menu */
 .car_right {
     display: flex;
     align-items: flex-start;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: 16px;
     height: 100%;
     flex-shrink: 0;
     margin-left: auto;
@@ -298,7 +318,31 @@ function capitalizeWords(text) {
     color: #e53935 !important;
 }
 
-/* Dropdown menu overlay on image */
+/* Dropdown desktop */
+.dropdown_desktop {
+    display: block;
+}
+
+.dropdown_mobile {
+    display: none;
+}
+
+/* Menu button - Desktop (o'ng tomonda) */
+.car_menu_desktop {
+    padding: 6px;
+    font-size: 18px;
+    background-color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    transform: rotate(90deg);
+}
+
+.car_menu_desktop:hover {
+    background-color: #ececec;
+}
+
+/* Dropdown menu overlay on image - mobile */
 .car_image .ant-dropdown-link {
     position: absolute;
     top: 8px;
@@ -306,7 +350,7 @@ function capitalizeWords(text) {
     z-index: 10;
 }
 
-.car_menu {
+.car_menu_mobile {
     padding: 6px;
     font-size: 18px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -317,7 +361,7 @@ function capitalizeWords(text) {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.car_menu:hover {
+.car_menu_mobile:hover {
     background-color: #fff;
 }
 
@@ -358,6 +402,15 @@ function capitalizeWords(text) {
     .car_image img {
         width: 140px;
         height: 95px;
+    }
+    
+    /* Desktop dropdown yashirish, mobile ko'rsatish */
+    .dropdown_desktop {
+        display: none;
+    }
+    
+    .dropdown_mobile {
+        display: block;
     }
 
     /* Stats qismi pastga tushadi */
