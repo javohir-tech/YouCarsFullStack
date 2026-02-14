@@ -1,20 +1,73 @@
 <template>
     <div class="my_cars">
-        <div v-if="!loading" v-for="item in cars_data" class="my_car" :key="item.id">
+        <div v-if="!loading">
+            <div v-for="item in cars_data" class="my_car" :key="item.id" @click="handleNavigate(item.id)">
 
-            <a-row :gutter="[16, 24]">
-                <!-- Left section: image + info - responsive breakpoints -->
-                <a-col class="gutter-row" :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
-                    <div class="car_left">
-                        <div class="car_image" v-if="item.images.length > 0">
-                            <a-skeleton-image v-if="imageLoading" />
-                            <img v-show="!imageLoading" @load="onLoad" @error="onError" :src="item.images[0].image"
-                                alt="car_image">
-                            
-                            <!-- Dropdown menu overlay - faqat mobile uchun -->
-                            <a-dropdown placement="bottomLeft" class="dropdown_mobile">
+                <a-row :gutter="[16, 24]">
+                    <!-- Left section: image + info - responsive breakpoints -->
+                    <a-col class="gutter-row" :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
+                        <div class="car_left">
+                            <div class="car_image" v-if="item.images.length > 0">
+                                <a-skeleton-image v-if="imageLoading" />
+                                <img v-show="!imageLoading" @load="onLoad" @error="onError" :src="item.images[0].image"
+                                    alt="car_image">
+
+                                <!-- Dropdown menu overlay - faqat mobile uchun -->
+                                <a-dropdown placement="bottomLeft" class="dropdown_mobile">
+                                    <a class="ant-dropdown-link" @click.prevent>
+                                        <EllipsisOutlined class="car_menu_mobile" />
+                                    </a>
+                                    <template #overlay>
+                                        <a-menu>
+                                            <a-menu-item>
+                                                <router-link :to="`/update/${item.id}`">
+                                                    Редактировать
+                                                </router-link>
+                                            </a-menu-item>
+                                            <a-menu-item>
+                                                <a @click="handleKeepDeactive(item.id)">Снять с публикации</a>
+                                            </a-menu-item>
+                                        </a-menu>
+                                    </template>
+                                </a-dropdown>
+                            </div>
+                            <div class="car_info">
+                                <p class="car_name">
+                                    {{ capitalizeWords(item.marka) }} {{ capitalizeWords(item.car_model) }}, {{
+                                        item.year }}
+                                </p>
+                                <p class="car_price">{{ item.price }}$</p>
+                                <p class="car_country">{{ capitalizeWords(item.country) }}</p>
+                            </div>
+                        </div>
+                    </a-col>
+
+                    <!-- Right section: stats + menu -->
+                    <a-col class="gutter-row" :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+                        <div class="car_right">
+                            <div class="car_status">
+                                <a-flex class="car_view" gap="10" align="center">
+                                    <EyeOutlined class="car_info_icon" />
+                                    <p>{{ item.views }}</p>
+                                </a-flex>
+                                <a-flex class="car_view" gap="10" align="center">
+                                    <UserOutlined class="car_info_icon" />
+                                    <p>{{ item.inquiries || 0 }}</p>
+                                </a-flex>
+                                <a-flex class="car_view" gap="10" align="center">
+                                    <HeartOutlined class="car_info_icon heart_icon" />
+                                    <p>{{ item.likes_count }}</p>
+                                </a-flex>
+                                <a-flex class="car_view" gap="10" align="center">
+                                    <MessageOutlined class="car_info_icon" />
+                                    <p>{{ item.messages || 'Нет новых сообщений' }}</p>
+                                </a-flex>
+                            </div>
+
+                            <!-- Dropdown menu - desktop uchun -->
+                            <a-dropdown @click.stop placement="bottomLeft" class="dropdown_desktop">
                                 <a class="ant-dropdown-link" @click.prevent>
-                                    <EllipsisOutlined class="car_menu_mobile" />
+                                    <EllipsisOutlined class="car_menu_desktop" />
                                 </a>
                                 <template #overlay>
                                     <a-menu>
@@ -30,65 +83,13 @@
                                 </template>
                             </a-dropdown>
                         </div>
-                        <div class="car_info">
-                            <p class="car_name">
-                                {{ capitalizeWords(item.marka) }} {{ capitalizeWords(item.car_model) }}, {{ item.year }}
-                            </p>
-                            <p class="car_price">{{ item.price }}$</p>
-                            <p class="car_country">{{ capitalizeWords(item.country) }}</p>
-                        </div>
-                    </div>
-                </a-col>
-                
-                <!-- Right section: stats + menu -->
-                <a-col class="gutter-row" :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
-                    <div class="car_right">
-                        <div class="car_status">
-                            <a-flex class="car_view" gap="10" align="center">
-                                <EyeOutlined class="car_info_icon" />
-                                <p>{{ item.views }}</p>
-                            </a-flex>
-                            <a-flex class="car_view" gap="10" align="center">
-                                <UserOutlined class="car_info_icon" />
-                                <p>{{ item.inquiries || 0 }}</p>
-                            </a-flex>
-                            <a-flex class="car_view" gap="10" align="center">
-                                <HeartOutlined
-                                    @click="item.me_liked ? handleCarDislike(item.id) : HandleCarLike(item.id)"
-                                    class="car_info_icon heart_icon" />
-                                <p>{{ item.likes_count }}</p>
-                            </a-flex>
-                            <a-flex class="car_view" gap="10" align="center">
-                                <MessageOutlined class="car_info_icon" />
-                                <p>{{ item.messages || 'Нет новых сообщений' }}</p>
-                            </a-flex>
-                        </div>
-                        
-                        <!-- Dropdown menu - desktop uchun -->
-                        <a-dropdown placement="bottomLeft" class="dropdown_desktop">
-                            <a class="ant-dropdown-link" @click.prevent>
-                                <EllipsisOutlined class="car_menu_desktop" />
-                            </a>
-                            <template #overlay>
-                                <a-menu>
-                                    <a-menu-item>
-                                        <router-link :to="`/update/${item.id}`">
-                                            Редактировать
-                                        </router-link>
-                                    </a-menu-item>
-                                    <a-menu-item>
-                                        <a @click="handleKeepDeactive(item.id)">Снять с публикации</a>
-                                    </a-menu-item>
-                                </a-menu>
-                            </template>
-                        </a-dropdown>
-                    </div>
-                </a-col>
-            </a-row>
-        </div>
+                    </a-col>
+                </a-row>
+            </div>
 
-        <a-pagination style="text-align: end;" v-if="total > 10" @change="handlePagination" class="pagination"
-            v-model:current="current" :total="total" show-less-items />
+            <a-pagination style="text-align: end;" v-if="total > 10" @change="handlePagination" class="pagination"
+                v-model:current="current" :total="total" show-less-items />
+        </div>
 
         <div class="loader" v-if="loading">
             <a-spin />
@@ -109,6 +110,9 @@ import api from '@/utils/axios'
 import { EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // ─── Data ────────────────────────────────────
 const error = ref(false)
@@ -121,6 +125,10 @@ const imageLoading = ref(true)
 
 const handlePagination = (value) => {
     getUserDraftCars(value)
+}
+
+const handleNavigate = (id) => {
+    router.push(`/cars/detail/${id}`)
 }
 
 
@@ -149,25 +157,6 @@ const onLoad = () => {
 
 const onError = () => {
     imageLoading.value = false
-}
-
-const HandleCarLike = async (id) => {
-    try {
-        const { data } = await api.post(`/cars/car/like/${id}/`)
-        if (data.success) {
-            message.success('like bosildi')
-        }
-    } catch (error) {
-        console.log(error.response || error)
-    }
-}
-
-const handleCarDislike = async (id) => {
-    try {
-        await api.delete(`/cars/car/like/${id}/`)
-    } catch (error) {
-        console.log(error.response || error)
-    }
 }
 
 onMounted(() => {
@@ -403,12 +392,12 @@ function capitalizeWords(text) {
         width: 140px;
         height: 95px;
     }
-    
+
     /* Desktop dropdown yashirish, mobile ko'rsatish */
     .dropdown_desktop {
         display: none;
     }
-    
+
     .dropdown_mobile {
         display: block;
     }

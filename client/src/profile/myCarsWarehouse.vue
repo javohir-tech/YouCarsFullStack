@@ -1,6 +1,6 @@
 <template>
     <div class="my_cars">
-        <div v-if="!loading" v-for="item in cars_data" class="my_car" :key="item.id">
+        <div v-if="!loading" v-for="item in cars_data" class="my_car" :key="item.id" @click="handleNavigate(item.id)">
 
             <a-row :gutter="[16, 24]">
                 <!-- Left section: image + info - responsive breakpoints -->
@@ -10,7 +10,7 @@
                             <a-skeleton-image v-if="imageLoading" />
                             <img v-show="!imageLoading" @load="onLoad" @error="onError" :src="item.images[0].image"
                                 alt="car_image">
-                            
+
                             <!-- Menu button overlay - faqat mobile uchun -->
                             <EllipsisOutlined class="car_menu_mobile" @click="openModal(item)" />
                         </div>
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </a-col>
-                
+
                 <!-- Right section: stats + menu -->
                 <a-col class="gutter-row" :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
                     <div class="car_right">
@@ -49,17 +49,17 @@
                                 <p>{{ item.messages || 'Нет новых сообщений' }}</p>
                             </a-flex>
                         </div>
-                        
+
                         <!-- Menu button - desktop uchun -->
-                        <EllipsisOutlined class="car_menu_desktop" @click="openModal(item)" />
+                        <EllipsisOutlined @click.stop class="car_menu_desktop" @click="openModal(item)" />
                     </div>
                 </a-col>
             </a-row>
         </div>
-        
+
         <a-pagination style="text-align: end;" v-if="total > 10" @change="handlePagination" class="pagination"
             v-model:current="current" :total="total" show-less-items />
-        
+
         <div class="loader" v-if="loading">
             <a-spin />
         </div>
@@ -71,7 +71,7 @@
         <div class="empty" v-if="total === 0 && !loading && !error">
             <a-empty />
         </div>
-        
+
         <!-- ============ MODAL ============ -->
         <a-modal v-model:open="modalVisible" :footer="null" :width="400" :centered="true" class="delete_modal"
             @cancel="closeModal">
@@ -116,11 +116,14 @@ import api from '@/utils/axios'
 import { EllipsisOutlined, EyeOutlined, HeartOutlined, MessageOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 // ─── Data ────────────────────────────────────
 const error = ref(false)
 const loading = ref(false)
 const cars_data = ref([])
+
+const router = useRouter()
 
 // ─── Modal state ─────────────────────────────
 const modalVisible = ref(false)
@@ -135,6 +138,10 @@ const imageLoading = ref(true)
 
 const handlePagination = (value) => {
     getUserDraftCars(value)
+}
+
+const handleNavigate = (id) => {
+    router.push(`/cars/detail/${id}`)
 }
 
 // ─── Delete reasons ──────────────────────────
@@ -501,12 +508,12 @@ onMounted(() => {
         width: 140px;
         height: 95px;
     }
-    
+
     /* Desktop menu yashirish, mobile menu ko'rsatish */
     .car_menu_desktop {
         display: none;
     }
-    
+
     .car_menu_mobile {
         display: block;
     }
@@ -583,7 +590,7 @@ onMounted(() => {
     .car_info_icon {
         font-size: 14px;
     }
-    
+
     .car_status_label {
         grid-column: 1 / -1;
     }
