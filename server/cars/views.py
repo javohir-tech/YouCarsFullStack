@@ -27,6 +27,9 @@ from .models import (
     CarModel,
 )
 
+# ////////////////////// Permissions /////////////////////
+from .permissions import IsAuthor , IsAuthorImage
+
 # //////////// SERIALIZERS  /////////////////////////////
 from .serializers import (
     GetAvtoTypeSerializer,
@@ -243,7 +246,7 @@ class GetColorsView(ListAPIView):
 # //////////// GET COUNTRY     ////////////////////////////
 # /////////////////////////////////////////////////////////
 class GetCountriesView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     serializer_class = GetCountriesSerializer
     queryset = Country.objects.all()
 
@@ -264,7 +267,7 @@ class CarView(APIView):
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
-        return [IsAuthenticated()]
+        return [IsAuthenticated() , IsAuthor()]
 
     @swagger_auto_schema(
         operation_description="Yangi mashina e'lonini yaratish",
@@ -517,6 +520,8 @@ class CarView(APIView):
     )
     def put(self, request, pk):
         car = get_object_or_404(Car, id=pk)
+        
+        self.check_object_permissions(request , car)
         serializer = CarSerializer(car, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -589,6 +594,8 @@ class CarView(APIView):
     )
     def patch(self, request, pk):
         car = get_object_or_404(Car, id=pk)
+        
+        self.check_object_permissions(request , car)
         serializer = CarSerializer(car, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -648,6 +655,8 @@ class CarView(APIView):
     )
     def delete(self, request, pk):
         car = get_object_or_404(Car, id=pk)
+        
+        self.check_object_permissions(request , car)
         deletion_serializer = CarDeletionSerializer(data=request.data)
         deletion_serializer.is_valid(raise_exception=True)
         reason = deletion_serializer.validated_data["reason"]
@@ -720,7 +729,7 @@ class CarImageView(APIView):
     moshina rasmlarini joylash
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , IsAuthorImage]
 
     def post(self, request):
         serializer = CarImageUploadSerializer(data=request.data)
@@ -736,6 +745,8 @@ class CarImageView(APIView):
 
     def delete(self, request, pk):
         car_image = get_object_or_404(CarImage, id=pk)
+        
+        # self.check_object_permissions(request , car_image)
         car_image.delete()
         return Response(
             {

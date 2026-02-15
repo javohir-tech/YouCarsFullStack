@@ -130,6 +130,8 @@ class LoginView(APIView):
             user = serializer.validated_data["user"]
             if user.photo:
                 photo = request.build_absolute_uri(user.photo.url)
+            else:
+                photo = ''
             user.auth_status = Auth_STATUS.DONE
             user.save()
             token = user.token()
