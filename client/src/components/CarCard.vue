@@ -57,9 +57,6 @@ import { Scrollbar } from 'swiper/modules'
 
 import { useUserStore } from '@/store/useUserStore';
 
-import LikeManager from '@/Hooks/LikeManager';
-
-const {like ,  handleLike , handleDisLike} =  LikeManager()
 const userStore = useUserStore()
 // Modules array
 const modules = [Scrollbar]
