@@ -56,7 +56,7 @@
                                             <EyeOutlined />
                                         </p>
                                         <p>
-                                            <HeartFilled class="car_like" />
+                                            <HeartFilled @click="like ? handleDisLike(route.params.id) : handleLike(route.params.id) " class="car_like" :class="like ? 'car_liked' : '' " />
                                         </p>
                                     </div>
                                     <div class="car_aviability" v-if="car_data.availability === 'in_stock'">
@@ -219,7 +219,7 @@
             </div>
             <div class="similar_cars">
                 <a-row :gutter="[16, 24]">
-                    <a-col v-if="similar_loading"  class="gutter-row" :xs="24" :md="12" :lg="8"
+                    <a-col v-if="similar_loading" class="gutter-row" :xs="24" :md="12" :lg="8"
                         v-for="_ in new Array(3).fill(1)">
                         <a-skeleton active />
                     </a-col>
@@ -256,6 +256,11 @@ import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import { ArrowLeftOutlined, ArrowRightOutlined, CheckOutlined, ExclamationOutlined, EyeOutlined, HeartFilled, MessageOutlined } from '@ant-design/icons-vue';
 import api from '@/utils/axios';
 import { CallCard, CarCard } from '@/components';
+import LikeManager from '@/Hooks/LikeManager';
+
+const { like , handleLike , handleDisLike } = LikeManager()
+
+
 
 const modules = [FreeMode, Navigation, Thumbs]
 
@@ -322,6 +327,7 @@ const handleGetCar = async () => {
     car_data_loader.value = true
     try {
         const { data } = await api.get(`/cars/car/${route.params.id}/`)
+        like.value = data.data.me_liked
         car_data.value = data.data
     } catch (error) {
         console.log(error.response || error)
@@ -450,6 +456,10 @@ onMounted(() => {
     color: #989898;
     font-size: 20px;
     cursor: pointer;
+}
+
+.car_liked {
+    color : #FF0000;
 }
 
 /*  car style */
