@@ -8,7 +8,6 @@ export default function LikeManager() {
         try {
             await api.post(`/cars/car/like/${id}/`)
             like.value = true
-            console.log(like.value)
         } catch (error) {
             console.log(error.response || error)
         }
@@ -18,7 +17,6 @@ export default function LikeManager() {
         try {
             await api.delete(`/cars/car/like/${id}/`)
             like.value = false
-            console.log(like.value)
         } catch (error) {
             console.log(error.response || error)
         }
