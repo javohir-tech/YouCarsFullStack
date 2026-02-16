@@ -7,11 +7,18 @@
         </header>
 
         <div class="section_blogs">
-            <a-row :gutter="[16, 24]">
-                <a-col v-for="blog in blogs" :key="blog.id" class="gutter-row" :xs="24" :sm="12" :md="8">
-                     <BlogCard :id="blog.id" :image="blog.image" :title="blog.title" :text="blog.text" />
+            <a-row :gutter="[16, 24]" align="strech">
+                <a-col v-if="loading" v-for="_ in new Array(3).fill(1)" class="gutter-row" :xs="24" :sm="12" :md="8">
+                    <a-skeleton active />
+                </a-col>
+                <a-col v-if="!loading && !error" v-for="blog in blogs" :key="blog.id" class="gutter-row" :xs="24"
+                    :sm="12" :md="8">
+                    <BlogCard :id="blog.id" :image="blog.image" :title="blog.title" :text="blog.text" />
                 </a-col>
             </a-row>
+            <div v-if="!loading &&blogs.length === 0" class="empty">
+                <a-empty />
+            </div>
         </div>
     </section>
 </template>
