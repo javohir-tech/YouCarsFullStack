@@ -25,7 +25,7 @@ urlpatterns = [
     # API endpoints
     path("auth/", include("users.urls")),
     path("cars/", include("cars.urls")),
-    
+    path("blog/", include("blog.urls")),
     # API Documentation
     path(
         "swagger/",
