@@ -1,11 +1,10 @@
 from django.shortcuts import render
-from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView , RetrieveAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView , RetrieveAPIView 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Blog
 from .serializers import BlogSerializer
 from .permissions import BlogCreatePermissions
 from shared.custom_pagination import CustomPagination
-
 
 class BlogPostView(CreateAPIView):
     permission_classes = [IsAuthenticated, BlogCreatePermissions]
@@ -25,7 +24,19 @@ class GetBlogsView(ListAPIView):
 class DetailBlogView(RetrieveAPIView):
     permission_classes = [AllowAny]
     serializer_class = BlogSerializer
-    pass
+    queryset = Blog.objects.all()
+    
+class SemialerBlogsView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = BlogSerializer
+    pagination_class = CustomPagination
+    def get_queryset(self):
+        blog_id = self.kwargs.get("pk")
+        return Blog.objects.exclude(id = blog_id)
+    
+    
+    
+    
 
 
 # Create your views here.
