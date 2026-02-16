@@ -232,6 +232,8 @@
         </div>
         <!-- ============================ CALL  SECTION ======================================= -->
         <CallCard />
+        <!-- =========================== BLog Section ========================================= -->
+        <BlogSec />
     </div>
 </template>
 
@@ -254,6 +256,7 @@ import { CallCard, CarCard, Filter } from '@/components'
 
 //////////////////////////////// useFetch ///////////////////////
 import useFetch from '@/Hooks/useFetch'
+import { BlogSec } from './Home'
 
 const { data, loading, error, getData } = useFetch()
 
@@ -301,9 +304,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
-
-
 /* ===============================  MARKAS CSS ============================================== */
 .markas_section {
     margin-top: 100px;
