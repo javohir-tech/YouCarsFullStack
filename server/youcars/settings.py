@@ -47,10 +47,12 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     "django_filters",
+    "channels",
     # apps
     "users",
     "cars",
     "blog",
+    "myapp",
 ]
 
 MIDDLEWARE = [
@@ -136,7 +138,17 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = "youcars.asgi.application"
 WSGI_APPLICATION = "youcars.wsgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 
 # Database
