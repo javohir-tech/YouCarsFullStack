@@ -338,6 +338,7 @@ const handleGetCar = async () => {
 
 const handleNavigate = () => {
     handleGetCar()
+    image_loader.value = true
 }
 
 
