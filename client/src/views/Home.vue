@@ -45,7 +45,7 @@
                         </a-col>
                         <a-col class="hero_section_col" :md="12">
                             <div class="hero_section_image">
-                                <img src="./../../public/banner2.png" alt="reclam car  image">
+                                <img src="./../../public/23a119dc1551a0b9b7c880ef67fed15b332f02b4 (1).png" alt="reclam car  image">
                             </div>
                         </a-col>
                     </a-row>

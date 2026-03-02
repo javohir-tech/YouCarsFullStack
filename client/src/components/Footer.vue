@@ -105,7 +105,6 @@
 <script setup>
 import { GithubOutlined, InstagramOutlined, WhatsAppOutlined } from '@ant-design/icons-vue';
 
-
 </script>
 
 <style scoped>
