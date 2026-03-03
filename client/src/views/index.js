@@ -5,6 +5,9 @@ import transport from "./transport.vue";
 import Moto from "./Moto.vue";
 import avtomabile from "./avtomabile.vue";
 import BlogDetail from "./BlogDetail/BlogDetail.vue";
-import ChatView from "./Chat/ChatView.vue";
 
-export { Home, CarDetail, Katalog, transport, Moto, avtomabile, BlogDetail, ChatView }
+////////////////// Chat ///////////////////////
+import ChatView from "./Chat/ChatView.vue";
+import Partners from "./Chat/Partners.vue";
+
+export { Home, CarDetail, Katalog, transport, Moto, avtomabile, BlogDetail, ChatView, Partners }

@@ -111,4 +111,8 @@ onMounted(() => {
     text-align: end;
     margin: 15px 0px;
 }
+
+@media(max-media : 768px){
+    
+}
 </style>
