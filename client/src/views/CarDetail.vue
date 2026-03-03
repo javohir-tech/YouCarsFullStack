@@ -120,7 +120,7 @@
                                         </div>
                                     </div>
                                     <div class="message">
-                                        <router-link to="/">
+                                        <router-link :to="`/chat/${author_id}/${car_data.author}`">
                                             <MessageOutlined class="message_icon" />
                                             <p class="subtitle">Написать</p>
                                         </router-link>
@@ -260,8 +260,6 @@ import LikeManager from '@/Hooks/LikeManager';
 
 const { like , handleLike , handleDisLike } = LikeManager()
 
-
-
 const modules = [FreeMode, Navigation, Thumbs]
 
 const route = useRoute()
@@ -269,6 +267,7 @@ const route = useRoute()
 const thumbsSwiper = ref(null)
 const car_data = ref([])
 const similar_cars = ref([])
+const author_id = ref("")
 
 //  loaders
 const car_data_loader = ref(false)
@@ -327,6 +326,7 @@ const handleGetCar = async () => {
     car_data_loader.value = true
     try {
         const { data } = await api.get(`/cars/car/${route.params.id}/`)
+        author_id.value = data.author_id
         like.value = data.data.me_liked
         car_data.value = data.data
     } catch (error) {

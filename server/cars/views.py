@@ -712,10 +712,12 @@ class CarView(APIView):
         car = get_object_or_404(Car, id=pk)
         car.views = car.views + 1
         car.save()
+        author_id = car.author.id
         carSerializer = GetCarSerializer(car, context={"request": request})
         data = {
             "success": True,
             "message": "yuklandi",
+            "author_id" : author_id,
             "data": carSerializer.data,
         }
         return Response(data)

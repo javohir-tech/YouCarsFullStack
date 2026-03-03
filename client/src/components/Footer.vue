@@ -30,7 +30,7 @@
                     <div class="footer_section">
                         <h2 class="header">Компания</h2>
                         <div class="links">
-                            <router-link to="/kataalog">Каталог</router-link>
+                            <router-link to="/katalog">Каталог</router-link>
                             <router-link to="/">О нас</router-link>
                             <router-link to="/">Новости</router-link>
                             <router-link to="/">Контакты</router-link>
@@ -42,7 +42,7 @@
                     <div class="footer_section">
                         <h2 class="header">Избранные</h2>
                         <div class="links">
-                            <router-link to="/kataalog">Из Европы</router-link>
+                            <router-link to="/katalog">Из Европы</router-link>
                             <router-link to="/">Из США</router-link>
                             <router-link to="/">Из ОАЭ</router-link>
                             <router-link to="/">Из Китая</router-link>
@@ -55,35 +55,35 @@
                         <h2 class="header">Марки</h2>
                         <div class="markas">
                             <div class="links">
-                                <router-link to="/kataalog">Audi</router-link>
+                                <router-link to="/katalog">Audi</router-link>
                                 <router-link to="/">Audi</router-link>
                                 <router-link to="/">Acura</router-link>
                                 <router-link to="/">Alfa Romeo</router-link>
                                 <router-link to="/">Avatr</router-link>
                             </div>
                             <div class="links">
-                                <router-link to="/kataalog">BMW</router-link>
+                                <router-link to="/katalog">BMW</router-link>
                                 <router-link to="/">Baic</router-link>
                                 <router-link to="/">Byd</router-link>
                                 <router-link to="/">Bently</router-link>
                                 <router-link to="/">Chery</router-link>
                             </div>
                             <div class="links">
-                                <router-link to="/kataalog">Chery</router-link>
+                                <router-link to="/katalog">Chery</router-link>
                                 <router-link to="/">Cadillac</router-link>
                                 <router-link to="/">Changan</router-link>
                                 <router-link to="/">Chevrolet</router-link>
                                 <router-link to="/">Citroen</router-link>
                             </div>
                             <div class="links">
-                                <router-link to="/kataalog">daewoo</router-link>
+                                <router-link to="/katalog">daewoo</router-link>
                                 <router-link to="/">Datsun</router-link>
                                 <router-link to="/">Dodge</router-link>
                                 <router-link to="/">EXEED</router-link>
                                 <router-link to="/">Ferrari</router-link>
                             </div>
                             <div class="links">
-                                <router-link to="/kataalog">Fiat</router-link>
+                                <router-link to="/katalog">Fiat</router-link>
                                 <router-link to="/">Ford</router-link>
                                 <router-link to="/">GAC</router-link>
                                 <router-link to="/">Geely</router-link>

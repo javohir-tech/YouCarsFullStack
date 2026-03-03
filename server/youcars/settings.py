@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "users",
     "cars",
     "blog",
-    "websocket",
+    "websoket",
 ]
 
 MIDDLEWARE = [
