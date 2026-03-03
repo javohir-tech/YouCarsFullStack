@@ -1,7 +1,7 @@
 import { ref } from "vue"
 
 export function useChat(userId) {
-    const message = ref([])
+    const messages = ref([])
     const ws = ref(null)
     const isConnect = ref(false)
 
@@ -31,8 +31,8 @@ export function useChat(userId) {
         }
 
         ws.value.onmessage = (e) => {
-            const data  = JSON.parse(e.data)
-            console.log(data)
+            const data = JSON.parse(e.data)
+            messages.value.push(data)
         }
 
         ws.value.onerror = (e) => {
@@ -40,5 +40,20 @@ export function useChat(userId) {
         }
     }
 
-    return {message , isConnect , connect}
+    function SendMessage(text) {
+        if (!text.trim()) return
+
+        if (ws.value?.readyState === WebSocket.OPEN) {
+            ws.value.send(JSON.stringify({ message: text.trim() }))
+        } else {
+            console.log("web socket ulanmagan")
+        }
+    }
+
+    function disconnect() {
+        ws.value?.close()
+        ws.value = null
+    }
+
+    return { messages, isConnect, connect , SendMessage , disconnect }
 }

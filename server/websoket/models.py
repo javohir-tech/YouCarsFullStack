@@ -7,7 +7,7 @@ class Message(BaseModel):
     sender = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="sent_message"
     )
-    reveiver = models.ForeignKey(
+    receiver = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="receive_message"
     )
     content = models.TextField(max_length=1200)
@@ -17,7 +17,7 @@ class Message(BaseModel):
         ordering = ["created_time"]
         
     def __str__(self):
-        return f"{self.sender}->{self.reveiver} : {self.content[:30]}"
+        return f"{self.sender}->{self.receiver} : {self.content[:30]}"
     
 
 

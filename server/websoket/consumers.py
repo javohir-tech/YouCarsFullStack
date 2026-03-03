@@ -16,7 +16,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
 
         self.room_name = self.get_room_name(self.me.id, self.target_id)
-        self.group_name = f"chat-{self.room_name}"
+        self.group_name = f"chat_{self.room_name}"
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
@@ -36,7 +36,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "type": "chat_send",
                 "message": msg.content,
                 "receiver": self.me.username,
-                "reveriver_id": str(self.me.id),
+                "receiver_id": str(self.me.id),
                 "created_time": msg.created_time.strftime("%H:%M"),
             },
         )
@@ -56,9 +56,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @staticmethod
     def get_room_name(user_id, target_id):
         ids = sorted([str(user_id), str(target_id)])
-        print("="*50)
-        print(f"{ids[0]}_{ids[1]}")
-        print("="*50)
         return f"{ids[0]}_{ids[1]}"
 
     @database_sync_to_async
