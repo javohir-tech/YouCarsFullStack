@@ -1,9 +1,24 @@
+import api from "@/utils/axios"
 import { ref } from "vue"
 
 export function useChat(userId) {
     const messages = ref([])
     const ws = ref(null)
     const isConnect = ref(false)
+
+    async function getChatHistory() {
+        try {
+            const data = await api.get(`/api/chat/${userId}/history/` , {
+                params : {
+                    page_size : 10, 
+                }
+            })
+            console.log(data)
+            messages.value = data.data.result.reverse()
+        } catch (error) {
+            console.log(error.reponse || error)
+        }
+    }
 
     function connect() {
         const token = localStorage.getItem("access_token")
@@ -55,5 +70,5 @@ export function useChat(userId) {
         ws.value = null
     }
 
-    return { messages, isConnect, connect , SendMessage , disconnect }
+    return { messages, isConnect, connect, SendMessage, disconnect, getChatHistory }
 }

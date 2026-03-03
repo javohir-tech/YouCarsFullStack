@@ -27,17 +27,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         content = data.get("message", "")
-
         msg = await self.save_message(content)
 
         await self.channel_layer.group_send(
             self.group_name,
             {
                 "type": "chat_send",
-                "message": msg.content,
-                "receiver": self.me.username,
-                "receiver_id": str(self.me.id),
-                "created_time": msg.created_time.strftime("%H:%M"),
+                "id": str(msg.id),
+                "content": msg.content,
+                "sender": self.me.username,
+                "sender_id": str(self.me.id),
+                "created_time": msg.created_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "updated_time": msg.updated_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "is_read": msg.is_read,
             },
         )
 
@@ -45,10 +47,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(
             text_data=json.dumps(
                 {
-                    "message": event["message"],
-                    "receiver": event["receiver"],
-                    "receiver_id": event["receiver_id"],
+                    "id": event["id"],
+                    "content": event["content"],
+                    "sender": event["sender"],
+                    "sender_id": event["sender_id"],
                     "created_time": event["created_time"],
+                    "updated_time": event["updated_time"],
+                    "is_read": event["is_read"],
                 }
             )
         )
