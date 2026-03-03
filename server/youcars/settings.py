@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "users",
     "cars",
     "blog",
-    "myapp",
+    "websocket",
 ]
 
 MIDDLEWARE = [
@@ -138,7 +138,7 @@ TEMPLATES = [
     },
 ]
 
-# ASGI_APPLICATION = "youcars.asgi.application"
+ASGI_APPLICATION = "youcars.asgi.application"
 WSGI_APPLICATION = "youcars.wsgi.application"
 
 CHANNEL_LAYERS = {
