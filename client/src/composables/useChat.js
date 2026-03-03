@@ -10,7 +10,7 @@ export function useChat(userId) {
         try {
             const data = await api.get(`/api/chat/${userId}/history/` , {
                 params : {
-                    page_size : 10, 
+                    page_size : 100, 
                 }
             })
             console.log(data)
