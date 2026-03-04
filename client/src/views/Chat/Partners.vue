@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        p
+        partners
     </div>
 </template>
 

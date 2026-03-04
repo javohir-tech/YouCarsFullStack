@@ -4,7 +4,7 @@
             <a-row :gutter="[16, 24]" class="profile_container">
 
                 <!-- Sidebar -->
-                <a-col class="gutter-row desktop_sidebar" :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+                <a-col v-if="!isMobileFullPage" class="gutter-row desktop_sidebar" :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
                     <div class="side_bar_sticy">
                         <div class="gutter-box profile_sidebar">
                             <div class="profile_info">
@@ -67,7 +67,7 @@
                                         <ThunderboltOutlined class="router_icon" />
                                         <p>Тариф</p>
                                     </router-link>
-                                    <router-link to="/profile" class="profile_route">
+                                    <router-link to="/profile/settings" class="profile_route">
                                         <ToolOutlined class="router_icon" />
                                         <p>Настройки аккаунта</p>
                                     </router-link>
@@ -94,12 +94,17 @@
                 </a-col>
 
             </a-row>
+            <a-row v-if="isMobileFullPage" class="profile_desktop">
+                <a-col class="gutter-row" :xs="24" :sm="24" :md="0">
+                    <RouterView/>
+                </a-col>
+            </a-row>
         </div>
     </div>
 </template>
 
 <script setup>
-import { RouterView, useRouter } from 'vue-router'
+import { RouterView, useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store/useUserStore'
 import { message } from 'ant-design-vue'
 import api from '@/utils/axios'
@@ -113,11 +118,16 @@ import {
     ThunderboltOutlined,
     ToolOutlined,
 } from "@ant-design/icons-vue"
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
+const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const isDesktop = ref(window.innerWidth > 768)
+
+const isMobileFullPage = computed(() => {
+    return !isDesktop.value && route.meta.isMobileFullPage
+})
 
 const updateScreen = () => {
     isDesktop.value = window.innerWidth > 768
@@ -141,6 +151,7 @@ async function handleLogOut() {
 
 onMounted(() => {
     window.addEventListener("resize", updateScreen)
+    console.log(route.params)
 })
 
 onUnmounted(() => {
@@ -150,6 +161,11 @@ onUnmounted(() => {
 
 <style scoped>
 .profile_layout_box {
+    background-color: #F5F5F5;
+    min-height: 100vh;
+}
+
+.profile_desktop{
     background-color: #F5F5F5;
     min-height: 100vh;
 }
@@ -271,6 +287,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+    .profile_layout_box{
+        min-height: 0;
+    }
+
     .profile_router_view {
         padding: 0;
         background-color: #F5F5F5;

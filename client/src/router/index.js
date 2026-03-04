@@ -90,15 +90,15 @@ const router = createRouter({
           meta: { requiresAuth: true },
           children: [
             {
-              path: "",
+              path: "settings",
               component: profile,
-              meta: { requiresAuth: true }
+              meta: { requiresAuth: true , isMobileFullPage : true }
             },
             ////////////// MY CARS /////////////////
             {
               path: "mycars",
               component: MyCarsLayout,
-              meta: { requiresAuth: true },
+              meta: { requiresAuth: true  , isMobileFullPage : true},
               children: [
                 {
                   path: "",
@@ -115,15 +115,16 @@ const router = createRouter({
             {
               path: "storage",
               component: Storage,
-              meta: { requiresAuth: true }
-            }, 
+              meta: { requiresAuth: true, isMobileFullPage: true }
+            },
             {
-              path : "partners", 
-              component : Partners
+              path: "partners",
+              component: Partners,
+              meta: { requiresAuth: true, isMobileFullPage: true }
             },
           ]
         },
-        
+
         {
           path: "email_verify",
           component: EmailVeriy,
