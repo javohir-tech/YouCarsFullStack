@@ -40,7 +40,7 @@
                                         <StarOutlined class="router_icon" />
                                         <p>Избранное</p>
                                     </router-link>
-                                    <router-link to="/profile/partners" class="profile_route">
+                                    <router-link to="/profile/conversations" class="profile_route">
                                         <MessageOutlined class="router_icon" />
                                         <p>Сообщения</p>
                                     </router-link>
@@ -151,7 +151,6 @@ async function handleLogOut() {
 
 onMounted(() => {
     window.addEventListener("resize", updateScreen)
-    console.log(route.params)
 })
 
 onUnmounted(() => {

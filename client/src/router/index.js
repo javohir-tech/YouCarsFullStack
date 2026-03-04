@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 ///////////// MAIN LAYUOT ////////////
 import mainLayout from '@/layout/mainLayout.vue'
 ///////////////// VIEWS ////////////////
-import { avtomabile, BlogDetail, CarDetail, ChatView, Home, Katalog, Moto, Partners, transport } from '@/views'
+import { avtomabile, BlogDetail, CarDetail, ChatView, Conservations, Home, Katalog, Moto, transport  } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
@@ -54,8 +54,8 @@ const router = createRouter({
           component: ChatView
         },
         {
-          path: "partners",
-          component: Partners
+          path: "conservations",
+          component: Conservations
         },
         ////// AUTH /////
         {
@@ -118,8 +118,8 @@ const router = createRouter({
               meta: { requiresAuth: true, isMobileFullPage: true }
             },
             {
-              path: "partners",
-              component: Partners,
+              path: "conversations",
+              component: Conservations,
               meta: { requiresAuth: true, isMobileFullPage: true }
             },
           ]

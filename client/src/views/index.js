@@ -8,6 +8,6 @@ import BlogDetail from "./BlogDetail/BlogDetail.vue";
 
 ////////////////// Chat ///////////////////////
 import ChatView from "./Chat/ChatView.vue";
-import Partners from "./Chat/Partners.vue";
+import Conservations from "./Chat/Conservations.vue";
 
-export { Home, CarDetail, Katalog, transport, Moto, avtomabile, BlogDetail, ChatView, Partners }
+export { Home, CarDetail, Katalog, transport, Moto, avtomabile, BlogDetail, ChatView, Conservations }

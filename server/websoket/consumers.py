@@ -21,6 +21,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
+        await self.update_message_read()
+
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
@@ -40,6 +42,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "created_time": msg.created_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "updated_time": msg.updated_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "is_read": msg.is_read,
+            },
+        )
+
+        await self.channel_layer.group_send(
+            f"conversations_{self.target_id}",
+            {
+                "type": "conversation_chat",
+                "partner": self.me.username,
+                "partner_id": str(self.me.id),
+                "last_message": msg.content,
+                "last_message_time": msg.created_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "last_sent_me": False,
             },
         )
 
@@ -70,3 +84,65 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         return message
+
+    @database_sync_to_async
+    def update_message_read(self):
+        Message.objects.filter(
+            receiver=self.me, sender_id=self.target_id, is_read=False
+        ).update(is_read=True)
+
+
+class ConversationsConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self):
+        self.me = self.scope["user"]
+        if self.me.is_anonymous:
+            await self.close()
+            return
+
+        self.room_name = self.me.id
+        self.group_name = f"conversations_{self.room_name}"
+        self.partners_ids = await self.get_know_partners_ids()
+
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
+        
+
+    async def disconnect(self, code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def conversation_chat(self, event):
+        partner_id = event["partner_id"]
+        
+        is_new_partner = partner_id not in self.partners_ids
+        
+        if is_new_partner:
+            self.partners_ids.add(partner_id)
+        
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "partner": event["partner"],
+                    "partner_id": event["partner_id"],
+                    "last_message": event["last_message"],
+                    "last_message_time": event["last_message_time"],
+                    "last_sent_me": event["last_sent_me"],
+                    "is_new_partner" : is_new_partner
+                }
+            )
+        )
+
+    @database_sync_to_async
+    def get_know_partners_ids(self):
+        messages = Message.objects.filter(
+            Q(sender=self.me) | Q(receiver=self.me)
+        ).values_list("sender_id", "receiver_id")
+        ids = set()
+        
+        for sender_id , receiver_id in messages:
+            ids.add(str(sender_id))
+            ids.add(str(receiver_id))
+            
+        ids.remove(str(self.me.id))
+
+        return ids
