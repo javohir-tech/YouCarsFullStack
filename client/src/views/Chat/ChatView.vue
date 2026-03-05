@@ -28,22 +28,15 @@
                     Hali xabar yo'q. Birinchi xabar yuboring! 👋
                 </div>
 
-                <div
-                    v-for="msg in messages"
-                    :key="msg.id"
-                    class="message-row"
-                    :class="msg.sender_id !== route.params.userId ? 'sent' : 'received'"
-                >
+                <div v-for="msg in messages" :key="msg.id" class="message-row"
+                    :class="msg.sender_id !== route.params.userId ? 'sent' : 'received'">
                     <div class="bubble">
                         <p class="text">{{ msg.content }}</p>
                         <div class="meta">
                             <span class="time">{{ formatTime(msg.created_time) }}</span>
                             <!-- O'qilgan belgisi faqat o'z xabarlarimizda -->
-                            <span
-                                v-if="msg.sender_id !== route.params.userId"
-                                class="read-status"
-                                :class="{ read: msg.is_read }"
-                            >
+                            <span v-if="msg.sender_id !== route.params.userId" class="read-status"
+                                :class="{ read: msg.is_read }">
                                 {{ msg.is_read ? "✓✓" : "✓" }}
                             </span>
                         </div>
@@ -55,12 +48,7 @@
 
         <!-- Input -->
         <div class="input-area">
-            <input
-                v-model="inputText"
-                @keyup.enter="handleSend"
-                placeholder="Xabar yozing..."
-                :disabled="!isConnect"
-            />
+            <input v-model="inputText" @keyup.enter="handleSend" placeholder="Xabar yozing..." :disabled="!isConnect" />
             <button @click="handleSend" :disabled="!isConnect || !inputText.trim()">
                 ➤
             </button>
@@ -79,6 +67,14 @@ const { messages, isConnect, isLoading, connect, SendMessage, disconnect, getCha
 
 const inputText = ref("")
 const messagesContainer = ref(null)
+
+async function initChat() {
+    const userId = route.params.userId
+    disconnect()
+    messages.value = []
+    await getChatHistory(userId)
+    connect(userId)
+}
 
 function formatTime(isoString) {
     if (!isoString) return ""
@@ -105,9 +101,14 @@ watch(messages, () => {
     scrollToBottom()
 }, { deep: true })
 
+watch(() => route.params.userId, (newId) => {
+    if(newId){
+        initChat()
+    }
+})
+
 onMounted(async () => {
-    await getChatHistory() 
-    connect()     
+    initChat()
     scrollToBottom()
 })
 
@@ -132,7 +133,7 @@ onUnmounted(() => {
     background: #ffffff;
     padding: 14px 20px;
     border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .user-info {
@@ -168,7 +169,9 @@ onUnmounted(() => {
     margin: 2px 0 0;
 }
 
-.status.online { color: #22c55e; }
+.status.online {
+    color: #22c55e;
+}
 
 /* ---- Messages ---- */
 .messages-container {
@@ -199,7 +202,11 @@ onUnmounted(() => {
     animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 .empty-state {
     text-align: center;
@@ -212,15 +219,20 @@ onUnmounted(() => {
     display: flex;
 }
 
-.message-row.sent     { justify-content: flex-end; }
-.message-row.received { justify-content: flex-start; }
+.message-row.sent {
+    justify-content: flex-end;
+}
+
+.message-row.received {
+    justify-content: flex-start;
+}
 
 .bubble {
     max-width: 65%;
     padding: 10px 14px;
     border-radius: 18px;
     background: white;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .sent .bubble {
@@ -282,8 +294,15 @@ onUnmounted(() => {
     transition: border-color 0.2s;
 }
 
-.input-area input:focus   { border-color: #4f46e5; background: white; }
-.input-area input:disabled { background: #f3f4f6; cursor: not-allowed; }
+.input-area input:focus {
+    border-color: #4f46e5;
+    background: white;
+}
+
+.input-area input:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+}
 
 .input-area button {
     width: 44px;
@@ -301,6 +320,12 @@ onUnmounted(() => {
     flex-shrink: 0;
 }
 
-.input-area button:hover:not(:disabled) { background: #4338ca; }
-.input-area button:disabled { background: #d1d5db; cursor: not-allowed; }
+.input-area button:hover:not(:disabled) {
+    background: #4338ca;
+}
+
+.input-area button:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
 </style>

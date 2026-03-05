@@ -1,6 +1,8 @@
 import api from "@/utils/axios";
 import { ref } from "vue";
 import { useConversationStore } from "@/store/useConversationStore";
+import { notification } from 'ant-design-vue';
+import { useRouter, useRoute } from "vue-router";
 
 export function useConversations() {
 
@@ -8,6 +10,8 @@ export function useConversations() {
     const isConnect = ref(false)
     const loading = ref(false)
     const conversationStore = useConversationStore()
+    const router = useRouter()
+    const route = useRoute()
 
     async function fetchConversation() {
         loading.value = true
@@ -37,6 +41,17 @@ export function useConversations() {
 
         ws.value.onmessage = (e) => {
             const data = JSON.parse(e.data)
+            conversationStore.on_message(data)
+            if (route.params.userId !== data.partner_id && route.params.username !== data.partner) {
+                notification.info({
+                    message: `${data.partner}`,
+                    description: data.last_message,
+                    placement: "bottomRight",
+                    onClick: async () => {
+                        router.push(`/chat/${data.partner_id}/${data.partner}`)
+                    }
+                });
+            }
             console.log(data)
         }
 

@@ -39,7 +39,10 @@ const props = defineProps({
     partner_name: String,
     last_message: String,
     last_message_time: String,
-    is_read: Boolean,
+    is_read: {
+        type: Boolean, 
+        default : false
+    },
     last_sent_me : Boolean,
     unread_count: Number,
     mute: Boolean
