@@ -50,7 +50,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             f"conversations_{self.target_id}",
             {
                 "type": "conversation_chat",
-                # "avatar" : self.me.photo.url or None,
                 "partner": self.me.username,
                 "partner_id": str(self.me.id),
                 "last_message": msg.content,

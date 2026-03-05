@@ -81,9 +81,6 @@ class ConversationListView(APIView):
 
             if len(last_messages) == len(partners_ids):
                 break
-        print("="*50)
-        print(last_messages)
-        print("="*50)
         unread_count = dict(
             Message.objects.filter(receiver=me, is_read=False)
             .values("sender_id")

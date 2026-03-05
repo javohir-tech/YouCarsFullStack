@@ -12,10 +12,8 @@ export function useConversations() {
     async function fetchConversation() {
         loading.value = true
         try {
-            console.log(loading.value)
             const { data } = await api.get("/api/conversations")
             conversationStore.add_converstions(data)
-            console.log(data)
         } catch (error) {
             console.log(error.response || error)
         } finally {
