@@ -5,6 +5,11 @@ import { onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from './store/useUserStore'
 import { useRouter } from 'vue-router'
 
+////////////////// Conversations ///////////////////////////
+import { useConversations } from './composables/useConversations'
+
+const {connect ,  disconnect, fetchConversation} = useConversations()
+
 const router = useRouter()
 const userStore = useUserStore()
 
@@ -44,6 +49,8 @@ const stopTokenRefreshTimer = () => {
 }
 
 onMounted(() => {
+  connect()
+  fetchConversation()
   refreshAccessToken() 
   startTokenRefreshTimer() 
   const splash = document.getElementById('splash')
@@ -51,6 +58,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  disconnect()
   stopTokenRefreshTimer()
 })
 </script>

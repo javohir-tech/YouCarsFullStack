@@ -3,6 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.db.models import Q
 from .models import Message
+from users.models import User
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -49,6 +50,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             f"conversations_{self.target_id}",
             {
                 "type": "conversation_chat",
+                # "avatar" : self.me.photo.url or None,
                 "partner": self.me.username,
                 "partner_id": str(self.me.id),
                 "last_message": msg.content,
@@ -106,28 +108,30 @@ class ConversationsConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
-        
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def conversation_chat(self, event):
         partner_id = event["partner_id"]
-        
+
         is_new_partner = partner_id not in self.partners_ids
-        
+
         if is_new_partner:
             self.partners_ids.add(partner_id)
-        
+
+        partner_avatar = await self.get_sender_avatar(partner_id)
+
         await self.send(
             text_data=json.dumps(
                 {
                     "partner": event["partner"],
                     "partner_id": event["partner_id"],
+                    "avatar": partner_avatar,
                     "last_message": event["last_message"],
                     "last_message_time": event["last_message_time"],
                     "last_sent_me": event["last_sent_me"],
-                    "is_new_partner" : is_new_partner
+                    "is_new_partner": is_new_partner,
                 }
             )
         )
@@ -138,11 +142,20 @@ class ConversationsConsumer(AsyncWebsocketConsumer):
             Q(sender=self.me) | Q(receiver=self.me)
         ).values_list("sender_id", "receiver_id")
         ids = set()
-        
-        for sender_id , receiver_id in messages:
+
+        for sender_id, receiver_id in messages:
             ids.add(str(sender_id))
             ids.add(str(receiver_id))
-            
+
         ids.remove(str(self.me.id))
 
         return ids
+
+    @database_sync_to_async
+    def get_sender_avatar(self, id):
+        user = User.objects.get(id=id)
+        
+        if user.photo :
+            return  user.photo.url 
+        
+        return None

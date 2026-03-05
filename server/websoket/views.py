@@ -74,14 +74,16 @@ class ConversationListView(APIView):
         ).order_by("-created_time")
 
         for msg in messages:
-            pid = msg.receiver.id if msg.sender == me else me.id
+            pid = msg.receiver.id if msg.sender.id == me.id else msg.sender.id
 
             if pid not in last_messages:
                 last_messages[pid] = msg.content
 
             if len(last_messages) == len(partners_ids):
                 break
-
+        print("="*50)
+        print(last_messages)
+        print("="*50)
         unread_count = dict(
             Message.objects.filter(receiver=me, is_read=False)
             .values("sender_id")
@@ -93,12 +95,21 @@ class ConversationListView(APIView):
 
         for pid, partner in partners.items():
 
+            avatar = None
+            
+            if partner.photo and hasattr(partner.photo , "url"):
+                if request is not None:
+                    avatar = request.build_absolute_uri(partner.photo.url)
+                else:
+                    avatar = partner.photo.url
+            
             conversations.append(
                 {
                     "partner": partner.username,
+                    "avatar" : avatar,
                     "partner_id": pid,
                     "last_message": last_messages.get(pid, ""),
-                    "unread_count": unread_count.get(pid),
+                    "unread_count": unread_count.get(pid , 0),
                     "last_message_time": partners_time.get(pid, ""),
                     "last_sent_me": partner == me,
                     "is_new_partner": False,
