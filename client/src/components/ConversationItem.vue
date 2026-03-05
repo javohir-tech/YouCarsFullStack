@@ -1,6 +1,6 @@
 <template>
     <div>
-        <router-link :to="`/chat/${props.partner_id}/${props.partner_name}`">
+        <router-link :to="`/profile/chat/${props.partner_id}/${props.partner_name}`">
             <a-flex justify="space-between" align="center" class="partner_box">
                 <a-flex align="center" gap="10" class="partner_info">
                     <div class="avatar">
