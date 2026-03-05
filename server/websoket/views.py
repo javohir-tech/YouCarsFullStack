@@ -77,7 +77,7 @@ class ConversationListView(APIView):
             pid = msg.receiver.id if msg.sender.id == me.id else msg.sender.id
 
             if pid not in last_messages:
-                last_messages[pid] = msg.content
+                last_messages[pid] = msg
 
             if len(last_messages) == len(partners_ids):
                 break
@@ -93,6 +93,7 @@ class ConversationListView(APIView):
         for pid, partner in partners.items():
 
             avatar = None
+            message = last_messages.get(pid)
             
             if partner.photo and hasattr(partner.photo , "url"):
                 if request is not None:
@@ -105,10 +106,11 @@ class ConversationListView(APIView):
                     "partner": partner.username,
                     "avatar" : avatar,
                     "partner_id": pid,
-                    "last_message": last_messages.get(pid, ""),
+                    "last_message": message.content,
+                    "is_read" : message.is_read,
                     "unread_count": unread_count.get(pid , 0),
                     "last_message_time": partners_time.get(pid, ""),
-                    "last_sent_me": partner == me,
+                    "last_sent_me": message.sender.id == me.id,
                     "is_new_partner": False,
                 }
             )
