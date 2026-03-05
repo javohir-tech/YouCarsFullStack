@@ -9,6 +9,7 @@
                 <p>{{ partner.last_message_time }}</p>
                 <p>{{ partner.last_sent_me }}</p>
                 <p>{{ partner.is_new_partner }}</p>
+                <ConversationItem/>
             </div>
         </div>
     </div>
@@ -17,6 +18,9 @@
 <script setup>
 import { useConversations } from '@/composables/useConversations';
 import { useConversationStore } from '@/store/useConversationStore';
+
+////////////////////// COMPONENTS //////////////////////////////
+import { ConversationItem } from '@/components';
 
 const conversationStore = useConversationStore()
 
