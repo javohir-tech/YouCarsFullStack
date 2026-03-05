@@ -102,13 +102,13 @@ watch(messages, () => {
 }, { deep: true })
 
 watch(() => route.params.userId, (newId) => {
-    if(newId){
+    if (newId) {
         initChat()
     }
 })
 
 onMounted(async () => {
-    initChat()
+    await initChat()
     scrollToBottom()
 })
 

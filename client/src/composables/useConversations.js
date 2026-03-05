@@ -47,9 +47,11 @@ export function useConversations() {
                     message: `${data.partner}`,
                     description: data.last_message,
                     placement: "bottomRight",
+                    style: { cursor: "pointer" },
                     onClick: async () => {
                         router.push(`/chat/${data.partner_id}/${data.partner}`)
-                    }
+                    }, 
+                    
                 });
             }
             console.log(data)
