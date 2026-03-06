@@ -23,6 +23,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         await self.update_message_read()
+        
+        await self.channel_layer.group_send(
+            self.group_name, 
+            {
+                "type" : "chat_read", 
+                "reader_id" : str(self.me.id)
+            }
+        )
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
@@ -58,6 +66,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "is_read" : msg.is_read
             },
         )
+        
+        # await self.channel_layer.send()
         
         partner = await  self.get_receiver() 
         
