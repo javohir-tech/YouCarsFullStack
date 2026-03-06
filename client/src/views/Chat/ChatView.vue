@@ -4,7 +4,9 @@
         <!-- Header -->
         <div class="chat-header">
             <div class="user-info">
-                <div><LeftOutlined /></div>
+                <div>
+                    <LeftOutlined />
+                </div>
                 <div class="avatar">{{ route.params.username?.charAt(0).toUpperCase() }}</div>
                 <div>
                     <p class="username">{{ route.params.username }}</p>
@@ -63,9 +65,11 @@ import { useRoute } from 'vue-router'
 import { useChat } from '@/composables/useChat'
 import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue'
 import { LeftOutlined } from '@ant-design/icons-vue'
+import { useConversationStore } from '@/store/useConversationStore'
 
 const route = useRoute()
 const { messages, isConnect, isLoading, connect, SendMessage, disconnect, getChatHistory } = useChat(route.params.userId)
+const { onread  } = useConversationStore()
 
 const inputText = ref("")
 const messagesContainer = ref(null)
@@ -75,6 +79,7 @@ async function initChat() {
     disconnect()
     messages.value = []
     await getChatHistory(userId)
+    onread(userId)
     connect(userId)
 }
 

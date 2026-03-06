@@ -29,6 +29,7 @@ class GetChathistory(ListAPIView):
             Q(receiver_id=pk, sender=self.request.user)
             | Q(receiver=self.request.user, sender_id=pk)
         ).order_by("-created_time")
+        
 
 
 class ConversationListView(APIView):

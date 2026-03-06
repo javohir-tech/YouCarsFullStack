@@ -51,6 +51,7 @@ export function useChat(initialUserId) {
 
         ws.value.onmessage = (e) => {
             const data = JSON.parse(e.data)
+            console.log(data)
             messages.value.push(data)
         }
 
