@@ -22,15 +22,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
-        await self.update_message_read()
-        
-        await self.channel_layer.group_send(
-            self.group_name, 
-            {
-                "type" : "chat_read", 
-                "reader_id" : str(self.me.id)
-            }
-        )
+        updated = await self.update_message_read()
+
+        if updated > 0:
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "message_read",
+                    "reader_id": str(self.me.id),
+                    "reader": self.me.username,
+                },
+            )
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
@@ -53,6 +55,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "is_read": msg.is_read,
             },
         )
+        
+        # await self.channel_layer.group_send(
+        #     self.group_name,
+        #     {
+        #         "type": "message_read",
+        #         "reader_id": str(self.me.id),
+        #         "reader": self.me.username,
+        #     },
+        # )
 
         await self.channel_layer.group_send(
             f"conversations_{self.target_id}",
@@ -63,14 +74,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "last_message": msg.content,
                 "last_message_time": msg.created_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "last_sent_me": False,
-                "is_read" : msg.is_read
+                "is_read": msg.is_read,
             },
         )
-        
+
         # await self.channel_layer.send()
-        
-        partner = await  self.get_receiver() 
-        
+
+        partner = await self.get_receiver()
+
         await self.channel_layer.group_send(
             f"conversations_{self.me.id}",
             {
@@ -80,8 +91,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "last_message": msg.content,
                 "last_message_time": msg.created_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "last_sent_me": True,
-                "is_read" : msg.is_read
+                "is_read": msg.is_read,
             },
+        )
+
+    async def message_read(self, event):
+        await self.send(  
+            text_data=json.dumps(
+                {
+                    "type": "message_read", 
+                    "reader_id": event["reader_id"],
+                    "reader": event["reader"],
+                }
+            )
         )
 
     async def chat_send(self, event):
@@ -114,13 +136,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def update_message_read(self):
-        Message.objects.filter(
+        return Message.objects.filter(
             receiver_id=self.me.id, sender_id=self.target_id, is_read=False
         ).update(is_read=True)
-        
+
     @database_sync_to_async
     def get_receiver(self):
-        return User.objects.get(id = self.target_id)
+        return User.objects.get(id=self.target_id)
 
 
 class ConversationsConsumer(AsyncWebsocketConsumer):
@@ -184,8 +206,8 @@ class ConversationsConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_sender_avatar(self, id):
         user = User.objects.get(id=id)
-        
-        if user.photo :
-            return  user.photo.url 
-        
+
+        if user.photo:
+            return user.photo.url
+
         return None

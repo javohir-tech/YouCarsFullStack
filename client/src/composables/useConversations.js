@@ -54,7 +54,6 @@ export function useConversations() {
                     
                 });
             }
-            console.log(data)
         }
 
         ws.value.onclose = () => {
