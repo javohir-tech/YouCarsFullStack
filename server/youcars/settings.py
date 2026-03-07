@@ -144,6 +144,7 @@ WSGI_APPLICATION = "youcars.wsgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "LOCATION": "redis://127.0.0.1:6379/1",
     },
 }
 

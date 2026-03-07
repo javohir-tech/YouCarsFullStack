@@ -1,9 +1,11 @@
 import json
+import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.db.models import Q
 from .models import Message
 from users.models import User
+from django.core.cache import cache
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -20,6 +22,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.group_name = f"chat_{self.room_name}"
 
         await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.set_user_in_room(True)
         await self.accept()
 
         updated = await self.update_message_read()
@@ -29,18 +32,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.group_name,
                 {
                     "type": "message_read",
-                    "reader_id": str(self.me.id),
-                    "reader": self.me.username,
+                    "reader_id": str(self.target_id),
                 },
             )
 
     async def disconnect(self, code):
+        await self.set_user_in_room(False)
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         content = data.get("message", "")
-        msg = await self.save_message(content)
+
+        target_online = await self.is_terget_in_room()
+
+        if target_online:
+            msg = await self.save_message(content , True)
+            await self.channel_layer.group_send(
+                self.group_name,
+                {
+                    "type": "message_read",
+                    "reader_id": str(self.target_id),
+                },
+            )
+        else :
+            msg = await self.save_message(content)
+            
 
         await self.channel_layer.group_send(
             self.group_name,
@@ -55,15 +72,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "is_read": msg.is_read,
             },
         )
-        
-        # await self.channel_layer.group_send(
-        #     self.group_name,
-        #     {
-        #         "type": "message_read",
-        #         "reader_id": str(self.me.id),
-        #         "reader": self.me.username,
-        #     },
-        # )
 
         await self.channel_layer.group_send(
             f"conversations_{self.target_id}",
@@ -95,13 +103,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
             },
         )
 
+    async def set_user_in_room(self, is_present: bool):
+        key = f"room_presence_{self.room_name}_{self.me.id}"
+        if is_present:
+            await asyncio.to_thread(cache.set, key, True, timeout=86400)
+        else:
+            await asyncio.to_thread(cache.delete, key)
+
+    async def is_terget_in_room(self) -> bool:
+        key = f"room_presence_{self.room_name}_{self.target_id}"
+        result = await asyncio.to_thread(cache.get, key)
+        return result is True
+
     async def message_read(self, event):
-        await self.send(  
+        await self.send(
             text_data=json.dumps(
                 {
-                    "type": "message_read", 
+                    "type": "message_read",
                     "reader_id": event["reader_id"],
-                    "reader": event["reader"],
                 }
             )
         )
@@ -127,9 +146,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return f"{ids[0]}_{ids[1]}"
 
     @database_sync_to_async
-    def save_message(self, content):
+    def save_message(self, content, is_read: bool = False):
         message = Message.objects.create(
-            sender_id=self.me.id, receiver_id=self.target_id, content=content
+            sender_id=self.me.id,
+            receiver_id=self.target_id,
+            content=content,
+            is_read=is_read,
         )
 
         return message
