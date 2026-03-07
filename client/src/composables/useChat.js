@@ -1,11 +1,13 @@
 import api from "@/utils/axios"
 import { ref } from "vue"
+import { useConversationStore } from "@/store/useConversationStore"
 
 export function useChat(initialUserId) {
     const messages = ref([])
     const ws = ref(null)
     const isConnect = ref(false)
     const currentUserId = ref(initialUserId)
+    const {onread} = useConversationStore()
 
     async function getChatHistory(userId = currentUserId.value) {
         currentUserId.value = userId
@@ -55,6 +57,7 @@ export function useChat(initialUserId) {
                 messages.value.push(data)
             } else {
                 console.log(data)
+                onread(data.reader_id)
                 messages.value = messages.value.map(msg => {
                     if (msg.sender_id !== userId) {
                         return { ...msg, is_read: true }

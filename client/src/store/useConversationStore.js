@@ -20,7 +20,7 @@ export const useConversationStore = defineStore('conversations', {
                 const partner_id = message.partner_id
                 const partner_index = this.conversations.findIndex(c => c.partner_id === partner_id)
                 let unread_count = this.conversations[partner_index]?.unread_count || 0
-                if(!message.last_sent_me){
+                if(!message.last_sent_me && !message.is_read){
                     unread_count += 1
                 }
                 this.conversations.splice(partner_index, 1)
@@ -28,6 +28,7 @@ export const useConversationStore = defineStore('conversations', {
             }
         },
         onread(userId) {
+            console.log(1)
             const last_message_index = this.conversations.findIndex(c => c.partner_id === userId)
             const last_message = this.conversations[last_message_index]
             if (last_message?.is_read === false) {
