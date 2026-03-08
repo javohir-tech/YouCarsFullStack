@@ -42,7 +42,7 @@ export function useConversations() {
         ws.value.onmessage = (e) => {
             const data = JSON.parse(e.data)
             conversationStore.on_message(data)
-            console.log(data)
+            // console.log(data)
             if (route.params.userId !== data.partner_id && route.params.username !== data.partner) {
                 notification.info({
                     message: `${data.partner}`,

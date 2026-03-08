@@ -28,7 +28,6 @@ export const useConversationStore = defineStore('conversations', {
             }
         },
         onread(userId) {
-            console.log(1)
             const last_message_index = this.conversations.findIndex(c => c.partner_id === userId)
             const last_message = this.conversations[last_message_index]
             if (last_message?.is_read === false) {

@@ -56,7 +56,7 @@ export function useChat(initialUserId) {
             if (data.type !== "message_read") {
                 messages.value.push(data)
             } else {
-                console.log(data)
+                // console.log(data)
                 onread(data.reader_id)
                 messages.value = messages.value.map(msg => {
                     if (msg.sender_id !== userId) {
