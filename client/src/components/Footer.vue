@@ -191,5 +191,9 @@ import { GithubOutlined, InstagramOutlined, WhatsAppOutlined } from '@ant-design
         flex-wrap: wrap;
         justify-content:first baseline;
     }
+
+    .footer{
+        margin-top: 0px;
+    }
 }
 </style>
