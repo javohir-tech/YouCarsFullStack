@@ -29,7 +29,6 @@ class GetChathistory(ListAPIView):
             Q(receiver_id=pk, sender=self.request.user)
             | Q(receiver=self.request.user, sender_id=pk)
         ).order_by("-created_time")
-        
 
 
 class ConversationListView(APIView):
@@ -95,32 +94,31 @@ class ConversationListView(APIView):
 
             avatar = None
             message = last_messages.get(pid)
-            
-            if partner.photo and hasattr(partner.photo , "url"):
+
+            if partner.photo and hasattr(partner.photo, "url"):
                 if request is not None:
                     avatar = request.build_absolute_uri(partner.photo.url)
                 else:
                     avatar = partner.photo.url
-            
+
             conversations.append(
                 {
                     "partner": partner.username,
-                    "avatar" : avatar,
+                    "avatar": avatar,
                     "partner_id": pid,
                     "last_message": message.content,
-                    "is_read" : message.is_read,
-                    "unread_count": unread_count.get(pid , 0),
+                    "is_read": message.is_read,
+                    "unread_count": unread_count.get(pid, 0),
                     "last_message_time": partners_time.get(pid, ""),
                     "last_sent_me": message.sender.id == me.id,
                     "is_new_partner": False,
+                    "is_online": False,
                 }
             )
 
         conversations.sort(key=lambda x: x["last_message_time"], reverse=True)
 
         return Response(conversations)
-    
-
 
 
 # Create your views here.

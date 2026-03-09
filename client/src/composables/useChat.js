@@ -53,6 +53,7 @@ export function useChat(initialUserId) {
 
         ws.value.onmessage = (e) => {
             const data = JSON.parse(e.data)
+            // console.log(data)
             if (data.type !== "message_read") {
                 messages.value.push(data)
             } else {

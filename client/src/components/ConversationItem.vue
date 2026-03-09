@@ -5,7 +5,7 @@
                 <a-flex align="center" gap="10" class="partner_info">
                     <div class="avatar">
                         <img :src="avatar" :alt="props.partner_name">
-                        <span class="is_online" :class="!true ? 'online' : ''"></span>
+                        <span class="is_online" :class="props.is_online ? 'online' : ''"></span>
                     </div>
                     <div class="partner">
                         <p class="partner_name">{{ props.partner_name }}</p>
@@ -45,7 +45,11 @@ const props = defineProps({
     },
     last_sent_me : Boolean,
     unread_count: Number,
-    mute: Boolean
+    mute: Boolean, 
+    is_online : {
+        Type : Boolean, 
+        default : false,
+    }
 })
 
 const avatar = computed(() => {

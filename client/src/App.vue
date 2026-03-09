@@ -3,12 +3,14 @@ import { RouterView } from 'vue-router'
 import axios from 'axios'
 import { onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from './store/useUserStore'
+import { PresenceOnline } from './composables/PresenceOnline'
 import { useRouter } from 'vue-router'
 
 ////////////////// Conversations ///////////////////////////
 import { useConversations } from './composables/useConversations'
 
 const {connect ,  disconnect, fetchConversation} = useConversations()
+const {connect : SetOnline , disconnect : disOnline} = PresenceOnline()
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -48,9 +50,10 @@ const stopTokenRefreshTimer = () => {
   if (intervalId) clearInterval(intervalId)
 }
 
-onMounted(() => {
+onMounted(async() => {
+  await fetchConversation()
   connect()
-  fetchConversation()
+  SetOnline()
   refreshAccessToken() 
   startTokenRefreshTimer() 
   const splash = document.getElementById('splash')
@@ -59,6 +62,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   disconnect()
+  disOnline()
   stopTokenRefreshTimer()
 })
 </script>

@@ -20,11 +20,12 @@ export const useConversationStore = defineStore('conversations', {
                 const partner_id = message.partner_id
                 const partner_index = this.conversations.findIndex(c => c.partner_id === partner_id)
                 let unread_count = this.conversations[partner_index]?.unread_count || 0
-                if(!message.last_sent_me && !message.is_read){
+                const is_online = this.conversations[partner_index]?.is_online
+                if (!message.last_sent_me && !message.is_read) {
                     unread_count += 1
                 }
                 this.conversations.splice(partner_index, 1)
-                this.conversations.unshift({ ...message, unread_count: unread_count })
+                this.conversations.unshift({ ...message, unread_count: unread_count  , is_online})
             }
         },
         onread(userId) {
@@ -34,6 +35,12 @@ export const useConversationStore = defineStore('conversations', {
                 last_message.is_read = true
                 last_message.unread_count = 0
             }
+        },
+        set_online(partner_id , is_online) {
+            const index = this.conversations.findIndex(c => c.partner_id === partner_id)
+            if(index !== -1){
+                this.conversations[index] = {...this.conversations[index] , is_online }
+            } 
         }
     }
 })

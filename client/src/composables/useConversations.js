@@ -36,24 +36,34 @@ export function useConversations() {
         ws.value = new WebSocket(`ws://localhost:8000/ws/conversations/?token=${token}`)
 
         ws.value.onopen = () => {
+
             console.log("ulandi")
         }
 
         ws.value.onmessage = (e) => {
             const data = JSON.parse(e.data)
-            conversationStore.on_message(data)
-            // console.log(data)
-            if (route.params.userId !== data.partner_id && route.params.username !== data.partner) {
-                notification.info({
-                    message: `${data.partner}`,
-                    description: data.last_message,
-                    placement: "bottomRight",
-                    style: { cursor: "pointer" },
-                    onClick: async () => {
-                        router.push(`/chat/${data.partner_id}/${data.partner}`)
-                    }, 
-                    
-                });
+            if (data.type === "conversation") {
+                // console.log(data)
+                conversationStore.on_message(data)
+                if (route.params.userId !== data.partner_id && route.params.username !== data.partner) {
+                    notification.info({
+                        message: `${data.partner}`,
+                        description: data.last_message,
+                        placement: "bottomRight",
+                        style: { cursor: "pointer" },
+                        onClick: async () => {
+                            router.push(`/chat/${data.partner_id}/${data.partner}`)
+                        },
+                    });
+                }
+            } else if (data.type === "online_statuses") {
+                // console.log(data.statuses)
+                for (let user_id in data.statuses) {
+                    conversationStore.set_online(user_id , data.statuses[user_id])
+                }
+            } else if (data.type === "partner_online") {
+                conversationStore.set_online(data.user_id , data.is_online)
+                // console.log(data)
             }
         }
 
