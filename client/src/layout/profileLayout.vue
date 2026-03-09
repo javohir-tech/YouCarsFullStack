@@ -4,7 +4,8 @@
             <a-row :gutter="[16, 24]" class="profile_container">
 
                 <!-- Sidebar -->
-                <a-col v-if="!isMobileFullPage" class="gutter-row desktop_sidebar" :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
+                <a-col v-if="!isMobileFullPage" class="gutter-row desktop_sidebar" :xs="24" :sm="24" :md="6" :lg="6"
+                    :xl="6">
                     <div class="side_bar_sticy">
                         <div class="gutter-box profile_sidebar">
                             <div class="profile_info">
@@ -92,14 +93,13 @@
                         </div>
                     </div>
                 </a-col>
-
-            </a-row>
-            <a-row v-if="isMobileFullPage" class="profile_desktop">
-                <a-col class="gutter-row" :xs="24" :sm="24" :md="0">
-                    <RouterView/>
-                </a-col>
             </a-row>
         </div>
+        <a-row v-if="isMobileFullPage" class="profile_desktop">
+            <a-col class="gutter-row" :xs="24" :sm="24" :md="0">
+                <RouterView />
+            </a-col>
+        </a-row>
     </div>
 </template>
 
@@ -164,7 +164,7 @@ onUnmounted(() => {
     min-height: 100vh;
 }
 
-.profile_desktop{
+.profile_desktop {
     background-color: #F5F5F5;
     min-height: 100vh;
 }
@@ -286,7 +286,7 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-    .profile_layout_box{
+    .profile_layout_box {
         min-height: 0;
     }
 

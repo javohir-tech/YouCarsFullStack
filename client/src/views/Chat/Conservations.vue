@@ -2,6 +2,10 @@
     <div class="container">
         <h1 v-if="loading">loading....</h1>
         <div v-if="!loading">
+            <a-flex class="header" align="center" gap="10">
+                <LeftOutlined class="back" @click="toback"/>
+                <h1 class="header">Сообщения</h1>
+            </a-flex>
             <div v-for="partner in conversationStore.conversations" :key="partner.partner_id" class="conversations">
                 <ConversationItem :partner_id="partner.partner_id" :avatar="partner.avatar"
                     :partner_name="partner.partner" :last_message="partner.last_message"
@@ -14,18 +18,47 @@
 </template>
 
 <script setup>
+import router from '@/router';
 import { useConversations } from '@/composables/useConversations';
 import { useConversationStore } from '@/store/useConversationStore';
 
 ////////////////////// COMPONENTS //////////////////////////////
 import { ConversationItem } from '@/components';
+import { LeftOutlined } from '@ant-design/icons-vue';
 
 const conversationStore = useConversationStore()
 const { loading } = useConversations()
+
+function toback(){
+    router.push("/profile")
+}
 </script>
 
 <style scoped>
 .conversations {
     margin-bottom: 15px;
+}
+
+.back{
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.header{
+    padding-bottom: 10px;
+    color: rgba(41, 56, 67, 1);
+}
+
+.header h1{
+    font-weight: 700;
+    font-size: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+@media (min-width: 576px) {
+    .back{
+        display: none;
+    }
 }
 </style>
