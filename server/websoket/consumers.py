@@ -219,6 +219,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(
             text_data=json.dumps(
                 {
+                    "type" : "chat_send",
                     "id": event["id"],
                     "content": event["content"],
                     "sender": event["sender"],

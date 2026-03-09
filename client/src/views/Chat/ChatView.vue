@@ -10,8 +10,8 @@
                 <div class="avatar">{{ route.params.username?.charAt(0).toUpperCase() }}</div>
                 <div>
                     <p class="username">{{ route.params.username }}</p>
-                    <p class="status" :class="{ online: isConnect }">
-                        {{ isConnect ? "Online" : "Offline" }}
+                    <p class="status" :class="{ online: partner_is_online }">
+                        {{ partner_is_online ? "Online" : "Offline" }}
                     </p>
                 </div>
             </div>
@@ -63,16 +63,20 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { useChat } from '@/composables/useChat'
-import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue'
+import { onMounted, onUnmounted, ref, watch, nextTick, computed } from 'vue'
 import { LeftOutlined } from '@ant-design/icons-vue'
 import { useConversationStore } from '@/store/useConversationStore'
 
 const route = useRoute()
-const { messages, isConnect, isLoading, connect, SendMessage, disconnect, getChatHistory } = useChat(route.params.userId)
-const { onread  } = useConversationStore()
+const { messages, isConnect, isLoading, partner_online, connect, SendMessage, disconnect, getChatHistory } = useChat(route.params.userId)
+const { onread } = useConversationStore()
 
 const inputText = ref("")
 const messagesContainer = ref(null)
+
+const partner_is_online = computed(() => {
+    return partner_online.value
+})
 
 async function initChat() {
     const userId = route.params.userId

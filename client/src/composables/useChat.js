@@ -7,7 +7,8 @@ export function useChat(initialUserId) {
     const ws = ref(null)
     const isConnect = ref(false)
     const currentUserId = ref(initialUserId)
-    const {onread} = useConversationStore()
+    const partner_online = ref(false)
+    const { onread } = useConversationStore()
 
     async function getChatHistory(userId = currentUserId.value) {
         currentUserId.value = userId
@@ -54,9 +55,11 @@ export function useChat(initialUserId) {
         ws.value.onmessage = (e) => {
             const data = JSON.parse(e.data)
             // console.log(data)
-            if (data.type !== "message_read") {
+            if (data.type === "chat_send") {
                 messages.value.push(data)
-            } else {
+            } else if (data.type === "partner_online") {
+                is_online(data)
+            } else if (data.type === "message_read") {
                 // console.log(data)
                 onread(data.reader_id)
                 messages.value = messages.value.map(msg => {
@@ -71,6 +74,11 @@ export function useChat(initialUserId) {
         ws.value.onerror = (e) => {
             console.error("WebSocket xatosi:", e)
         }
+    }
+
+    function is_online(data) {
+        partner_online.value = data.is_online
+        return data.value
     }
 
     function SendMessage(text) {
@@ -88,5 +96,5 @@ export function useChat(initialUserId) {
         ws.value = null
     }
 
-    return { messages, isConnect, connect, SendMessage, disconnect, getChatHistory }
+    return { messages, isConnect, partner_online, connect, SendMessage, disconnect, getChatHistory, is_online }
 }
