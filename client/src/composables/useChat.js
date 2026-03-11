@@ -18,7 +18,7 @@ export function useChat(initialUserId) {
                     page_size: 100,
                 }
             })
-            // console.log(data)
+            //  console.log(data)
             messages.value = data.data.result.reverse()
         } catch (error) {
             console.log(error.reponse || error)

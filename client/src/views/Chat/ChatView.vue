@@ -43,7 +43,8 @@
                             <!-- O'qilgan belgisi faqat o'z xabarlarimizda -->
                             <span v-if="msg.sender_id !== route.params.userId" class="read-status"
                                 :class="{ read: msg.is_read }">
-                                {{ msg.is_read ? "✓✓" : "✓" }}
+                                <i v-if="msg.is_read" class="fa-solid fa-check-double"></i>
+                                <i v-else class="fa-solid fa-check"></i>
                             </span>
                         </div>
                     </div>
@@ -278,7 +279,7 @@ onUnmounted(() => {
 }
 
 .sent .bubble {
-    background: #4f46e5;
+    background: rgba(22, 106, 255, 1);
     color: white;
     border-bottom-right-radius: 4px;
 }
@@ -320,7 +321,7 @@ onUnmounted(() => {
 .input-area {
     display: flex;
     gap: 10px;
-    padding: 14px 16px;
+    padding: 14px 0;
     background: white;
     border-top: 1px solid #e5e7eb;
 }
@@ -329,7 +330,7 @@ onUnmounted(() => {
     flex: 1;
     padding: 10px 18px;
     border: 1px solid #e5e7eb;
-    border-radius: 24px;
+    border-radius: 10px;
     outline: none;
     font-size: 14px;
     background: #f9fafb;
@@ -337,7 +338,7 @@ onUnmounted(() => {
 }
 
 .input-area input:focus {
-    border-color: #4f46e5;
+    border-color: rgba(22, 106, 255, 1);
     background: white;
 }
 
@@ -349,10 +350,10 @@ onUnmounted(() => {
 .input-area button {
     width: 44px;
     height: 44px;
-    background: #4f46e5;
+    background: rgba(22, 106, 255, 1);
     color: white;
     border: none;
-    border-radius: 50%;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 18px;
     display: flex;
