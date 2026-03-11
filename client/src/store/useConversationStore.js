@@ -6,7 +6,14 @@ export const useConversationStore = defineStore('conversations', {
         isConnect: false
     }),
     getters: {
-
+        userAvatar: (state) => (userId) => {
+            const conversation = state.conversations.find(c => c.partner_id === userId)
+            if (conversation?.avatar) {
+                return conversation?.avatar
+            } else {
+                return `https://api.dicebear.com/9.x/initials/svg?seed=${conversation?.partner}`
+            }
+        }
     },
     actions: {
         add_converstions(conversations) {
@@ -25,7 +32,7 @@ export const useConversationStore = defineStore('conversations', {
                     unread_count += 1
                 }
                 this.conversations.splice(partner_index, 1)
-                this.conversations.unshift({ ...message, unread_count: unread_count  , is_online})
+                this.conversations.unshift({ ...message, unread_count: unread_count, is_online })
             }
         },
         onread(userId) {
@@ -36,11 +43,11 @@ export const useConversationStore = defineStore('conversations', {
                 last_message.unread_count = 0
             }
         },
-        set_online(partner_id , is_online) {
+        set_online(partner_id, is_online) {
             const index = this.conversations.findIndex(c => c.partner_id === partner_id)
-            if(index !== -1){
-                this.conversations[index] = {...this.conversations[index] , is_online }
-            } 
+            if (index !== -1) {
+                this.conversations[index] = { ...this.conversations[index], is_online }
+            }
         }
     }
 })

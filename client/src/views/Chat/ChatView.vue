@@ -7,7 +7,10 @@
                 <div>
                     <LeftOutlined />
                 </div>
-                <div class="avatar">{{ route.params.username?.charAt(0).toUpperCase() }}</div>
+                <div class="avatar">
+                    <img :src="userAvatar(route.params.userId)" alt="user  image">
+                    <!-- {{ route.params.username?.charAt(0).toUpperCase() }} -->
+                </div>
                 <div>
                     <p class="username">{{ route.params.username }}</p>
                     <p class="status" :class="{ online: partner_is_online }">
@@ -66,10 +69,11 @@ import { useChat } from '@/composables/useChat'
 import { onMounted, onUnmounted, ref, watch, nextTick, computed } from 'vue'
 import { LeftOutlined } from '@ant-design/icons-vue'
 import { useConversationStore } from '@/store/useConversationStore'
+import router from '@/router'
 
 const route = useRoute()
 const { messages, isConnect, isLoading, partner_online, connect, SendMessage, disconnect, getChatHistory } = useChat(route.params.userId)
-const { onread } = useConversationStore()
+const { onread , userAvatar } = useConversationStore()
 
 const inputText = ref("")
 const messagesContainer = ref(null)
@@ -156,15 +160,13 @@ onUnmounted(() => {
 .avatar {
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    background: #4f46e5;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 18px;
-    flex-shrink: 0;
+    border-radius: 100%;
+    img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 100%;
+    }
 }
 
 .username {
