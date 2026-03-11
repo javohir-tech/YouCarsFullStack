@@ -4,7 +4,7 @@
             <a-flex justify="space-between" align="center" class="partner_box">
                 <a-flex align="center" gap="10" class="partner_info">
                     <div class="avatar">
-                        <a-skeleton-avatar  v-if="loading" :active="true" size="default" :shape="circle" /> 
+                        <a-skeleton-avatar  v-if="loading" :active="true" size="large" shape="circle" /> 
                         <img v-show="!loading" @load="onLoad" @error="onError" :src="avatar" :alt="props.partner_name">
                         <span class="is_online" :class="props.is_online ? 'online' : ''"></span>
                     </div>

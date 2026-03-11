@@ -143,6 +143,10 @@ const getUserDraftCars = async (page) => {
         })
         total.value = data.count
         cars_data.value = data.result
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     } catch (err) {
         error.value = true
         console.log(err.response || err)
@@ -382,6 +386,15 @@ function capitalizeWords(text) {
 @media (max-width: 768px) {
     .my_car {
         padding: 12px;
+    }
+
+     .header h1 {
+        font-weight: 500;
+        font-size: 22px;
+    }
+
+    .back{
+        font-size: 22px;
     }
 
     .car_left {

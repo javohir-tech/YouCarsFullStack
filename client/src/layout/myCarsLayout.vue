@@ -1,24 +1,21 @@
 <template>
     <div class="my-cars-container">
-        <h1 class="my_cars_header">Мои объявления</h1>
-        
+        <a-flex class="header" align="center" gap="10">
+            <div class="back">
+                <i class="fa-solid fa-angle-left" @click="toBack"></i>
+            </div>
+            <h1>Мои объявления</h1>
+        </a-flex>
+
         <div class="tabs">
-            <router-link 
-                to="/profile/mycars" 
-                class="tab-link"
-                :class="{ active: isActive }"
-            >
+            <router-link to="/profile/mycars" class="tab-link" :class="{ active: isActive }">
                 Активные
             </router-link>
-            <router-link 
-                to="/profile/mycars/my_cars_arxiv" 
-                class="tab-link"
-                :class="{ active: isArchive }"
-            >
+            <router-link to="/profile/mycars/my_cars_arxiv" class="tab-link" :class="{ active: isArchive }">
                 Архив
             </router-link>
         </div>
-        
+
         <div class="tab-content">
             <router-view />
         </div>
@@ -26,6 +23,7 @@
 </template>
 
 <script setup>
+import router from '@/router'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -38,11 +36,33 @@ const isActive = computed(() => {
 const isArchive = computed(() => {
     return route.path === '/profile/mycars/my_cars_arxiv'
 })
+
+function toBack() {
+    router.push("/profile")
+}
 </script>
 
 <style scoped>
+.header {
+    padding-bottom: 10px;
+    color: rgba(41, 56, 67, 1);
+}
+
+.header h1 {
+    font-weight: 700;
+    font-size: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+
+.back i {
+    font-size: 24px;
+    color: rgba(41, 56, 67, 1);
+}
+
 .my-cars-container {
-    padding: 20px;
+    padding: 0;
 }
 
 .my_cars_header {
@@ -76,11 +96,33 @@ const isArchive = computed(() => {
 }
 
 .tab-link.active {
-    color: #4f46e5;
-    border-bottom-color: #4f46e5;
+    color: rgba(38, 132, 229, 1);
+    border-bottom-color: rgba(38, 132, 229, 1);
 }
 
 .tab-content {
     margin-top: 20px;
+}
+
+@media(max-width: 768px) {
+    .my-cars-container {
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-weight: 500;
+        font-size: 22px;
+    }
+
+    .back {
+        font-size: 22px;
+    }
+}
+
+@media(min-width : 768px) {
+
+    .back {
+        display: none;
+    }
 }
 </style>

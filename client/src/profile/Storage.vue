@@ -1,6 +1,11 @@
 <template>
     <div class="car_container">
-        <h1>Избранное</h1>
+        <a-flex class="header" align="center" gap="10">
+            <div class="back">
+                <i class="fa-solid fa-angle-left" @click="toBack"></i>
+            </div>
+            <h1>Избранное</h1>
+        </a-flex>
         <div v-if="loading" class="loading">
             <a-spin clas="spin" size="large" tip="loading..." />
         </div>
@@ -32,7 +37,9 @@
 
 <script setup>
 import { CarCard } from '@/components';
+import router from '@/router';
 import api from '@/utils/axios';
+import { LeftOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 
 const cars = ref([])
@@ -43,6 +50,10 @@ const total = ref(0);
 
 const handlePagination = (value) => {
     getMeLikedcars(value)
+}
+
+const toBack = () => {
+    router.push("/profile")
 }
 
 
@@ -81,6 +92,25 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.header {
+    padding-bottom: 10px;
+    color: rgba(41, 56, 67, 1);
+}
+
+.header h1 {
+    font-weight: 700;
+    font-size: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+
+.back i {
+    font-size: 24px;
+    color: rgba(41, 56, 67, 1);
+}
+
+
 .loading,
 .empty,
 .error {
@@ -98,13 +128,10 @@ onMounted(() => {
 }
 
 .car_container {
-    padding: 20px;
-
     h1 {
         font-size: 30px;
-        font-weight: 600;
+        font-weight: 700;
         color: #293843;
-        margin-bottom: 20px;
     }
 }
 
@@ -113,7 +140,25 @@ onMounted(() => {
     margin: 15px 0px;
 }
 
-@media(max-media : 768px){
-    
+@media(max-width : 768px) {
+    .car_container {
+        padding: 15px;
+    }
+
+     .header h1 {
+        font-weight: 500;
+        font-size: 22px;
+    }
+
+    .back{
+        font-size: 22px;
+    }
+}
+
+@media(min-width : 768px) {
+
+    .back {
+        display: none;
+    }
 }
 </style>

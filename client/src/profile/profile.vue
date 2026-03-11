@@ -1,24 +1,25 @@
 <template>
     <div class="container">
         <div v-if="!getUserLoading">
-            <h1>Profile</h1>
+            <a-flex class="header" align="center" gap="10">
+                <div class="back">
+                    <i class="fa-solid fa-angle-left" @click="toBack"></i>
+                </div>
+                <h1>Настройки</h1>
+            </a-flex>
 
             <!-- Rasm Upload Qismi -->
             <div class="user-image-section">
                 <div class="avatar-container">
                     <div class="avatar-wrapper">
-                        <img :src="photo || userStore.avatarUrl || defaultAvatar" alt="User Avatar" class="avatar-image">
+                        <img :src="photo || userStore.avatarUrl || defaultAvatar" alt="User Avatar"
+                            class="avatar-image">
                         <div class="avatar-overlay">
                             <label for="file-input" class="upload-label">
                                 <CameraOutlined :style="{ fontSize: '24px', color: '#fff' }" />
                             </label>
-                            <input 
-                                id="file-input" 
-                                type="file" 
-                                accept="image/jpeg,image/png,image/heic,image/heif" 
-                                @change="onFileChange"
-                                style="display: none;"
-                            >
+                            <input id="file-input" type="file" accept="image/jpeg,image/png,image/heic,image/heif"
+                                @change="onFileChange" style="display: none;">
                         </div>
                     </div>
                     <div class="avatar-actions" v-if="image">
@@ -333,7 +334,7 @@ const onFileChange = (e) => {
             photo.value = event.target.result;
         };
         reader.readAsDataURL(file);
-        
+
         URL.revokeObjectURL(objectUrl);
     };
 
@@ -473,7 +474,7 @@ const getUserInfo = async () => {
         UserInfoState.first_name = data.first_name;
         UserInfoState.last_name = data.last_name;
         userID.value = data.id;
-        
+
         if (data.photo) {
             photo.value = data.photo;
             userStore.updateAvatar(data.photo);
@@ -485,12 +486,34 @@ const getUserInfo = async () => {
     }
 };
 
+function toBack() {
+    router.push("/profile")
+}
+
 onMounted(() => {
     getUserInfo();
 });
 </script>
 
 <style scoped>
+.header {
+    padding-bottom: 10px;
+    color: rgba(41, 56, 67, 1);
+}
+
+.header h1 {
+    font-weight: 700;
+    font-size: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+
+.back i {
+    font-size: 24px;
+    color: rgba(41, 56, 67, 1);
+}
+
 .user_loading {
     display: flex;
     align-items: center;
@@ -585,6 +608,13 @@ onMounted(() => {
     width: 100%;
 }
 
+@media(min-width : 768px) {
+
+    .back {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     .user_info {
         flex-direction: column;
@@ -602,6 +632,15 @@ onMounted(() => {
 
     .avatar-actions button {
         width: 100%;
+    }
+
+    .header h1 {
+        font-weight: 500;
+        font-size: 22px;
+    }
+
+    .back {
+        font-size: 22px;
     }
 }
 </style>
