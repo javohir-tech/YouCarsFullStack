@@ -5,11 +5,11 @@
         <div class="chat-header">
             <div class="user-info">
                 <div>
-                    <LeftOutlined />
+                    <LeftOutlined class="back" @click="toBack" />
                 </div>
                 <div class="avatar">
-                    <img :src="userAvatar(route.params.userId)" alt="user  image">
-                    <!-- {{ route.params.username?.charAt(0).toUpperCase() }} -->
+                    <a-skeleton-avatar v-if="loading" :active="true" />
+                    <img v-show="!loading" :src="avatar" @load="onLoad" @error="onError" alt="user  image">
                 </div>
                 <div>
                     <p class="username">{{ route.params.username }}</p>
@@ -73,10 +73,21 @@ import router from '@/router'
 
 const route = useRoute()
 const { messages, isConnect, isLoading, partner_online, connect, SendMessage, disconnect, getChatHistory } = useChat(route.params.userId)
-const { onread , userAvatar } = useConversationStore()
+const { onread, userAvatar } = useConversationStore()
 
 const inputText = ref("")
 const messagesContainer = ref(null)
+const loading = ref(true)
+
+
+const avatar = computed(() => {
+    const current_avatar = userAvatar(route.params.userId)
+    if(current_avatar){
+        return current_avatar
+    }else{
+        return `https://api.dicebear.com/9.x/initials/svg?seed=${route.params.username}`
+    }
+})
 
 const partner_is_online = computed(() => {
     return partner_online.value
@@ -111,6 +122,18 @@ function scrollToBottom() {
     })
 }
 
+const toBack = () => {
+    router.push("/profile/conversations")
+}
+
+const onLoad = () => {
+    loading.value = false
+}
+
+const onError = () => {
+    loading.value = false
+}
+
 // Yangi xabar kelsa pastga scroll
 watch(messages, () => {
     scrollToBottom()
@@ -133,6 +156,10 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.back {
+    font-size: 18px;
+}
+
 .chat-wrapper {
     display: flex;
     flex-direction: column;
@@ -161,7 +188,8 @@ onUnmounted(() => {
     width: 44px;
     height: 44px;
     border-radius: 100%;
-    img{
+
+    img {
         width: 100%;
         height: 100%;
         object-fit: cover;

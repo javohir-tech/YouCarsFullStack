@@ -4,7 +4,8 @@
             <a-flex justify="space-between" align="center" class="partner_box">
                 <a-flex align="center" gap="10" class="partner_info">
                     <div class="avatar">
-                        <img :src="avatar" :alt="props.partner_name">
+                        <a-skeleton-avatar  v-if="loading" :active="true" size="default" :shape="circle" /> 
+                        <img v-show="!loading" @load="onLoad" @error="onError" :src="avatar" :alt="props.partner_name">
                         <span class="is_online" :class="props.is_online ? 'online' : ''"></span>
                     </div>
                     <div class="partner">
@@ -14,7 +15,7 @@
                 </a-flex>
                 <div class="time_unread">
                     <a-flex align="center" gap="15">
-                        <AudioOutlined  v-if="props.mute" class="call"/>
+                        <AudioOutlined v-if="props.mute" class="call" />
                         <AudioMutedOutlined v-else class="call" />
                         <p>{{ last_message_time }}</p>
                     </a-flex>
@@ -30,7 +31,7 @@
 
 <script setup>
 import { AudioMutedOutlined, AudioOutlined, CheckOutlined } from '@ant-design/icons-vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 
 const props = defineProps({
@@ -40,17 +41,19 @@ const props = defineProps({
     last_message: String,
     last_message_time: String,
     is_read: {
-        type: Boolean, 
-        default : false
+        type: Boolean,
+        default: false
     },
-    last_sent_me : Boolean,
+    last_sent_me: Boolean,
     unread_count: Number,
-    mute: Boolean, 
-    is_online : {
-        Type : Boolean, 
-        default : false,
+    mute: Boolean,
+    is_online: {
+        Type: Boolean,
+        default: false,
     }
 })
+
+const loading = ref(true)
 
 const avatar = computed(() => {
     if (props.avatar) {
@@ -65,6 +68,14 @@ const last_message_time = computed(() => {
     const date = new Date(props.last_message_time)
     return date.toLocaleTimeString("uz-Uz", { hour: "2-digit", minute: "2-digit" })
 })
+
+const onLoad = () => {
+    loading.value = false
+}
+
+const onError = () => {
+    loading.value = false
+}
 
 </script>
 
@@ -126,7 +137,7 @@ p {
     text-align: end;
 }
 
-.read{
+.read {
     color: rgba(38, 132, 229, 1);
 }
 
@@ -146,7 +157,7 @@ p {
     right: 10px;
 }
 
-.call{
+.call {
     font-size: 16px;
 }
 

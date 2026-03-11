@@ -8,11 +8,7 @@ export const useConversationStore = defineStore('conversations', {
     getters: {
         userAvatar: (state) => (userId) => {
             const conversation = state.conversations.find(c => c.partner_id === userId)
-            if (conversation?.avatar) {
-                return conversation?.avatar
-            } else {
-                return `https://api.dicebear.com/9.x/initials/svg?seed=${conversation?.partner}`
-            }
+            return conversation?.avatar || null
         }
     },
     actions: {
