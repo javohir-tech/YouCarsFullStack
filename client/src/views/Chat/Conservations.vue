@@ -15,6 +15,9 @@
                     :unread_count="partner.unread_count" :is_online="partner.is_online"
                     :last_sent_me="partner.last_sent_me" :mute="true" />
             </div>
+            <div v-if="conversationStore.conversations.length === 0">
+                <a-empty />
+            </div>
         </div>
     </div>
 </template>
@@ -60,7 +63,7 @@ function toBack() {
 }
 
 @media(max-width: 768px) {
-    .header{
+    .header {
         padding-top: 20px;
     }
 
@@ -69,7 +72,7 @@ function toBack() {
         font-size: 22px;
     }
 
-    .back{
+    .back {
         font-size: 22px;
     }
 }

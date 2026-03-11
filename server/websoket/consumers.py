@@ -356,7 +356,7 @@ class ConversationsConsumer(AsyncWebsocketConsumer):
             ids.add(str(sender_id))
             ids.add(str(receiver_id))
 
-        ids.remove(str(self.me.id))
+        ids.discard(str(self.me.id))
 
         return ids
 

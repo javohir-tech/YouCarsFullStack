@@ -22,6 +22,11 @@ export const useConversationStore = defineStore('conversations', {
             } else {
                 const partner_id = message.partner_id
                 const partner_index = this.conversations.findIndex(c => c.partner_id === partner_id)
+
+                if (partner_index === -1) {
+                    this.conversations.unshift({ ...message, unread_count: 1 })
+                    return
+                }
                 let unread_count = this.conversations[partner_index]?.unread_count || 0
                 const is_online = this.conversations[partner_index]?.is_online
                 if (!message.last_sent_me && !message.is_read) {

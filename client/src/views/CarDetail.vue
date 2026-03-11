@@ -120,7 +120,7 @@
                                         </div>
                                     </div>
                                     <div class="message">
-                                        <router-link :to="`/chat/${author_id}/${car_data.author}`">
+                                        <router-link :to="`/profile/chat/${author_id}/${car_data.author}`">
                                             <MessageOutlined class="message_icon" />
                                             <p class="subtitle">Написать</p>
                                         </router-link>

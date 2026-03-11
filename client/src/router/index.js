@@ -50,10 +50,6 @@ const router = createRouter({
         },
         //////////// CHat ///////////////
         {
-          path: "chat/:userId/:username",
-          component: ChatView,
-        },
-        {
           path: "conservations",
           component: Conservations
         },
@@ -146,7 +142,11 @@ const router = createRouter({
           meta: { requiresAuth: true }
         },
       ]
-    }
+    },
+    {
+      path: "/chat/:userId/:username",
+      component: ChatView,
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     // back / forward bosilganda
