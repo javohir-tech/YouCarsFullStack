@@ -6,6 +6,7 @@ from django.db.models import Q
 from .models import Message
 from users.models import User
 from django.core.cache import cache
+from django.conf import settings
 
 ONLINE_KEY = "user_online_{user_id}"
 ONLINE_TIMEOUT = 86400
@@ -362,8 +363,10 @@ class ConversationsConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_sender_avatar(self, id):
         user = User.objects.get(id=id)
+        
+        base_url = settings.BASE_URL
 
         if user.photo:
-            return user.photo.url
+            return f"{base_url}{user.photo.url}"
 
         return None
