@@ -157,7 +157,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.back i{
+.back i {
     font-size: 24px;
     color: rgba(41, 56, 67, 1);
 }
@@ -370,5 +370,11 @@ onUnmounted(() => {
 .input-area button:disabled {
     background: #d1d5db;
     cursor: not-allowed;
+}
+
+@media(max-width:768px) {
+    .chat-wrapper {
+        height: 100vh;
+    }
 }
 </style>

@@ -60,6 +60,10 @@ function toBack() {
 }
 
 @media(max-width: 768px) {
+    .header{
+        padding-top: 20px;
+    }
+
     .header h1 {
         font-weight: 500;
         font-size: 22px;

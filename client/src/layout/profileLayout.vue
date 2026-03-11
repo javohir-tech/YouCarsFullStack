@@ -1,7 +1,7 @@
 <template>
     <div class="profile_layout_box">
         <div class="container">
-            <a-row :gutter="[16, 24]" class="profile_container">
+            <a-row v-if="!isMobileFullPage" :gutter="[16, 24]" class="profile_container">
 
                 <!-- Sidebar -->
                 <a-col v-if="!isMobileFullPage" class="gutter-row desktop_sidebar" :xs="24" :sm="24" :md="6" :lg="6"
