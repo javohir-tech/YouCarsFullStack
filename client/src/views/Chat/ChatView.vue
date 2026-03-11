@@ -4,8 +4,8 @@
         <!-- Header -->
         <div class="chat-header">
             <div class="user-info">
-                <div>
-                    <LeftOutlined class="back" @click="toBack" />
+                <div class="back">
+                    <i class="fa-solid fa-angle-left" @click="toBack"></i>
                 </div>
                 <div class="avatar">
                     <a-skeleton-avatar v-if="loading" :active="true" />
@@ -82,9 +82,9 @@ const loading = ref(true)
 
 const avatar = computed(() => {
     const current_avatar = userAvatar(route.params.userId)
-    if(current_avatar){
+    if (current_avatar) {
         return current_avatar
-    }else{
+    } else {
         return `https://api.dicebear.com/9.x/initials/svg?seed=${route.params.username}`
     }
 })
@@ -156,8 +156,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.back {
-    font-size: 18px;
+.back i{
+    font-size: 24px;
+    color: rgba(41, 56, 67, 1);
 }
 
 .chat-wrapper {

@@ -15,8 +15,7 @@
                 </a-flex>
                 <div class="time_unread">
                     <a-flex align="center" gap="15">
-                        <AudioOutlined v-if="props.mute" class="call" />
-                        <AudioMutedOutlined v-else class="call" />
+                        <i class="fa-regular fa-bell" v-if="props.mute"></i>
                         <p>{{ last_message_time }}</p>
                     </a-flex>
                     <p v-if="props.last_sent_me" class="is_read" :class="props.is_read ? 'read' : ''">
