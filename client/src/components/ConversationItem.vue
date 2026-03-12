@@ -1,36 +1,48 @@
 <template>
-    <div>
-        <router-link :to="`/profile/chat/${props.partner_id}/${props.partner_name}`">
-            <a-flex justify="space-between" align="center" class="partner_box">
-                <a-flex align="center" gap="10" class="partner_info">
-                    <div class="avatar">
-                        <a-skeleton-avatar  v-if="loading" :active="true" size="large" shape="circle" /> 
-                        <img v-show="!loading" @load="onLoad" @error="onError" :src="avatar" :alt="props.partner_name">
-                        <span class="is_online" :class="props.is_online ? 'online' : ''"></span>
-                    </div>
-                    <div class="partner">
-                        <p class="partner_name">{{ props.partner_name }}</p>
-                        <p class="last_message">{{ props.last_message }}</p>
-                    </div>
-                </a-flex>
-                <div class="time_unread">
-                    <a-flex align="center" gap="15">
-                        <i class="fa-regular fa-bell" v-if="props.mute"></i>
-                        <p>{{ last_message_time }}</p>
-                    </a-flex>
-                    <p v-if="props.last_sent_me" class="is_read" :class="props.is_read ? 'read' : ''">
-                        <CheckOutlined />
-                    </p>
-                    <p v-if="props.unread_count !== 0" class="unread_count">{{ props.unread_count }}</p>
+    <div class="navigate" @click="navigate">
+        <a-flex justify="space-between" align="center" class="partner_box">
+            <a-flex align="center" gap="10" class="partner_info">
+                <div class="avatar">
+                    <a-skeleton-avatar v-if="loading" :active="true" size="large" shape="circle" />
+                    <img v-show="!loading" @load="onLoad" @error="onError" :src="avatar" :alt="props.partner_name">
+                    <span class="is_online" :class="props.is_online ? 'online' : ''"></span>
+                </div>
+                <div class="partner">
+                    <p class="partner_name">{{ props.partner_name }}</p>
+                    <p class="last_message">{{ props.last_message }}</p>
                 </div>
             </a-flex>
-        </router-link>
+            <div class="time_unread">
+                <a-flex align="center" gap="15">
+                    <i class="fa-regular fa-bell" v-if="props.mute"></i>
+                    <p>{{ last_message_time }}</p>
+                </a-flex>
+                <p v-if="props.last_sent_me" class="is_read" :class="props.is_read ? 'read' : ''">
+                    <CheckOutlined />
+                </p>
+                <p v-if="props.unread_count !== 0" class="unread_count">{{ props.unread_count }}</p>
+            </div>
+        </a-flex>
     </div>
 </template>
 
 <script setup>
-import { AudioMutedOutlined, AudioOutlined, CheckOutlined } from '@ant-design/icons-vue';
+import { CheckOutlined } from '@ant-design/icons-vue';
 import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+
+const route = useRoute()
+const router = useRouter()
+const isDesktop = ref(window.innerWidth > 768)
+
+const navigate = () => {
+    if (!isDesktop.value && route.meta.isMobileFullPage) {
+        router.push(`/chat/${props.partner_id}/${props.partner_name}`)
+    } else {
+        router.push(`/profile/chat/${props.partner_id}/${props.partner_name}`)
+    }
+}
 
 
 const props = defineProps({
@@ -79,6 +91,10 @@ const onError = () => {
 </script>
 
 <style scoped>
+.navigate{
+    cursor: pointer;
+}
+
 p {
     margin-bottom: 8px;
 }

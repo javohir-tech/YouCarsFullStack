@@ -56,7 +56,9 @@
                                             <EyeOutlined />
                                         </p>
                                         <p>
-                                            <HeartFilled @click="like ? handleDisLike(route.params.id) : handleLike(route.params.id) " class="car_like" :class="like ? 'car_liked' : '' " />
+                                            <HeartFilled
+                                                @click="like ? handleDisLike(route.params.id) : handleLike(route.params.id)"
+                                                class="car_like" :class="like ? 'car_liked' : ''" />
                                         </p>
                                     </div>
                                     <div class="car_aviability" v-if="car_data.availability === 'in_stock'">
@@ -119,11 +121,11 @@
                                             <p class="title">Рейтинг 5.0</p>
                                         </div>
                                     </div>
-                                    <div class="message">
-                                        <router-link :to="`/profile/chat/${author_id}/${car_data.author}`">
+                                    <div class="message" @click="navigate(author_id, car_data.author)">
+                                        <div>
                                             <MessageOutlined class="message_icon" />
                                             <p class="subtitle">Написать</p>
-                                        </router-link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -239,7 +241,7 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -258,11 +260,13 @@ import api from '@/utils/axios';
 import { CallCard, CarCard } from '@/components';
 import LikeManager from '@/Hooks/LikeManager';
 
-const { like , handleLike , handleDisLike } = LikeManager()
+const { like, handleLike, handleDisLike } = LikeManager()
 
 const modules = [FreeMode, Navigation, Thumbs]
 
 const route = useRoute()
+const router = useRouter()
+const isDektop = ref(window.innerWidth > 768)
 // refs
 const thumbsSwiper = ref(null)
 const car_data = ref([])
@@ -339,6 +343,14 @@ const handleGetCar = async () => {
 const handleNavigate = () => {
     handleGetCar()
     image_loader.value = true
+}
+
+const navigate = (author_id, author_name) => {
+    if (!isDektop.value) {
+        router.push(`/chat/${author_id}/${author_name}`)
+    } else {
+        router.push(`/profile/chat/${author_id}/${author_name}`)
+    }
 }
 
 
@@ -460,7 +472,7 @@ onMounted(() => {
 }
 
 .car_liked {
-    color : #FF0000;
+    color: #FF0000;
 }
 
 /*  car style */
@@ -620,8 +632,9 @@ onMounted(() => {
     height: 100%;
 }
 
-.message a {
+.message div {
     display: flex;
+    cursor: pointer;
     align-items: center;
     height: 100%;
     padding-left: 30px;

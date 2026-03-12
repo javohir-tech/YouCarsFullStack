@@ -321,7 +321,7 @@ onUnmounted(() => {
 .input-area {
     display: flex;
     gap: 10px;
-    padding: 14px 0;
+    padding: 14px 15px;
     background: white;
     border-top: 1px solid #e5e7eb;
 }
