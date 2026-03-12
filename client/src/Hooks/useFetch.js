@@ -11,7 +11,8 @@ export default function useFetch() {
     const getData = async (apiUrl) => {
         loading.value = true
         try {
-            const response = await axios.get(apiUrl)
+            const response = await api.get(apiUrl)
+            console.log(response.data)
             data.value = response.data
         } catch (err) {
             error.value = err

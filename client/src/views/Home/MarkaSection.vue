@@ -26,6 +26,7 @@ const capitalize = (text) => {
 
 onMounted(() => {
     getData("https://api.youcarrf.ru/marks")
+    // getData("/cars/marka/all/")
 })
 </script>
 
