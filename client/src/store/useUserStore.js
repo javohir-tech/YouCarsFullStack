@@ -11,12 +11,12 @@ export const useUserStore = defineStore('user', {
             edit_password_token: localStorage.getItem("edit_password_token") || "",
             email_edit_token: localStorage.getItem("email_edit_token") || "",
             new_email: localStorage.getItem("new_email") || "",
-            user_image: localStorage.getItem("profile") || undefined,
+            user_image: localStorage.getItem("profile") ?? "",
         }
     ),
     getters: {
         get_user: (state) => state.username,
-        avatarUrl: (state) => state.user_image ? state.user_image : `https://api.dicebear.com/9.x/initials/svg?seed=${state.username}`
+        avatarUrl: (state) => state.user_image && state.user_image !== "null" ? state.user_image : `https://api.dicebear.com/9.x/initials/svg?seed=${state.username}`
     },
     actions: {
         add_user(username, email, access_token, id) {

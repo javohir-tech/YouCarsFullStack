@@ -113,8 +113,9 @@
                                 <div class="user_card">
                                     <div class="user">
                                         <div class="author_profile">
-                                            <img
-                                                :src="`https://api.dicebear.com/9.x/initials/svg?seed=${car_data.author}}`">
+                                            <a-image class="author_avatar"
+                                                :src="car_data.author_avatar ? car_data.author_avatar :
+                                                        `https://api.dicebear.com/9.x/initials/svg?seed=${car_data.author}}`" />
                                         </div>
                                         <div class="author">
                                             <p class="author_name">{{ car_data.author }}</p>
@@ -331,6 +332,7 @@ const handleGetCar = async () => {
     car_data_loader.value = true
     try {
         const { data } = await api.get(`/cars/car/${route.params.id}/`)
+        console.log(data)
         author_id.value = data.author_id
         like.value = data.data.me_liked
         car_data.value = data.data
@@ -350,9 +352,9 @@ const navigate = (author_id, author_name) => {
     const userId = localStorage.getItem("userId")
     const userName = localStorage.getItem("username")
 
-    if(author_id ===  userId || author_name === userName){
+    if (author_id === userId || author_name === userName) {
         message.warning("ozizga yoza olmaysiz")
-        return 
+        return
     }
     if (!isDektop.value) {
         router.push(`/chat/${author_id}/${author_name}`)
@@ -621,10 +623,19 @@ onMounted(() => {
 .author_profile {
     width: 48px;
     height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+}
 
-    img {
-        border-radius: 100%;
-    }
+.author_avatar {
+    width: 100%;
+    height: 100%;
+}
+
+.author_profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .author_name {
@@ -660,6 +671,7 @@ onMounted(() => {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     margin-top: 20px;
+    overflow-wrap: break-word;
 
     h2 {
         font-weight: 500;

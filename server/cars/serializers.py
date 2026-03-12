@@ -21,6 +21,7 @@ from .models import (
     CarImage,
     Like,
 )
+from users.models import User
 
 
 # ///////////////////////////////////////////////////////
@@ -468,6 +469,8 @@ class GetCarSerializer(serializers.ModelSerializer):
     images = GetCarImagesSerializer(many=True)
     car_likes_count = serializers.SerializerMethodField("get_car_likes_count")
     me_liked = serializers.SerializerMethodField()
+    author_avatar = serializers.SerializerMethodField()
+    
     class Meta:
         model = Car
         fields = [
@@ -496,12 +499,26 @@ class GetCarSerializer(serializers.ModelSerializer):
             "updated_time",
             "car_likes_count",
             "me_liked",
+            "author_avatar",
             "views",
             "images",
         ]
 
     def get_car_likes_count(self, obj):
         return obj.likes.count()
+    
+    def get_author_avatar(self , obj):
+        request = self.context.get("request")
+        author = obj.author
+        if author.photo and hasattr(author.photo , "url"):
+            if request is not None:
+                return request.build_absolute_uri(author.photo.url)
+            return author.photo.url
+        return None
+        
+        
+            
+        
 
     def get_me_liked(self, obj):
         request = self.context.get("request")
