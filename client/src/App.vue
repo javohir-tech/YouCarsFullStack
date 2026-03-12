@@ -9,8 +9,8 @@ import { useRouter } from 'vue-router'
 ////////////////// Conversations ///////////////////////////
 import { useConversations } from './composables/useConversations'
 
-const {connect ,  disconnect, fetchConversation} = useConversations()
-const {connect : SetOnline , disconnect : disOnline} = PresenceOnline()
+const { connect, disconnect, fetchConversation } = useConversations()
+const { connect: SetOnline, disconnect: disOnline } = PresenceOnline()
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -50,19 +50,19 @@ const stopTokenRefreshTimer = () => {
   if (intervalId) clearInterval(intervalId)
 }
 
-onMounted(async() => {
+onMounted(async () => {
   await fetchConversation()
-  connect()
-  SetOnline()
-  refreshAccessToken() 
-  startTokenRefreshTimer() 
+    connect()
+    SetOnline()
+  refreshAccessToken()
+  startTokenRefreshTimer()
   const splash = document.getElementById('splash')
-  if(splash) splash.remove()
+  if (splash) splash.remove()
 })
 
 onBeforeUnmount(() => {
-  disconnect()
-  disOnline()
+    disconnect()
+    disOnline()
   stopTokenRefreshTimer()
 })
 </script>

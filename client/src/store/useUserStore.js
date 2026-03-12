@@ -5,29 +5,32 @@ export const useUserStore = defineStore('user', {
         {
             username: localStorage.getItem('username') || "",
             access_token: localStorage.getItem("access_token") || "",
+            id: localStorage.getItem("userId") || "",
             email: localStorage.getItem("email") || "",
             verify_token: localStorage.getItem("verify_token") || "",
             edit_password_token: localStorage.getItem("edit_password_token") || "",
             email_edit_token: localStorage.getItem("email_edit_token") || "",
             new_email: localStorage.getItem("new_email") || "",
-            user_image : localStorage.getItem("profile" ) || undefined , 
+            user_image: localStorage.getItem("profile") || undefined,
         }
     ),
     getters: {
         get_user: (state) => state.username,
-        avatarUrl: (state) =>state.user_image ? state.user_image : `https://api.dicebear.com/9.x/initials/svg?seed=${state.username}`
+        avatarUrl: (state) => state.user_image ? state.user_image : `https://api.dicebear.com/9.x/initials/svg?seed=${state.username}`
     },
     actions: {
-        add_user(username, email, access_token) {
+        add_user(username, email, access_token, id) {
             this.username = username
             this.email = email
+            this.id = id
             this.access_token = access_token
+            localStorage.setItem("userId", id)
             localStorage.setItem("username", username)
             localStorage.setItem("email", email)
         },
-        updateAvatar(photo){
+        updateAvatar(photo) {
             this.user_image = photo
-            localStorage.setItem('profile' , photo)
+            localStorage.setItem('profile', photo)
         },
         add_email(email) {
             this.email = email
@@ -65,7 +68,7 @@ export const useUserStore = defineStore('user', {
             this.email_edit_token = ""
             localStorage.removeItem("email_edit_token")
         },
-        add_access_token(access_token){
+        add_access_token(access_token) {
             this.access_token = access_token
         },
         clear() {

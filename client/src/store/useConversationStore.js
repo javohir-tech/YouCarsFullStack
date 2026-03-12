@@ -9,6 +9,9 @@ export const useConversationStore = defineStore('conversations', {
         userAvatar: (state) => (userId) => {
             const conversation = state.conversations.find(c => c.partner_id === userId)
             return conversation?.avatar || null
+        },
+        connected: (state) => {
+            return state.isConnect
         }
     },
     actions: {

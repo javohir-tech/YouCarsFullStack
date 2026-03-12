@@ -104,11 +104,14 @@
 </template>
 
 <script setup>
-import { RouterView, useRouter, useRoute } from 'vue-router'
-import { useUserStore } from '@/store/useUserStore'
-import { message } from 'ant-design-vue'
 import api from '@/utils/axios'
-
+//////////////////// VUE /////////////////////////////
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { RouterView, useRouter, useRoute } from 'vue-router'
+////////////////// STORE ///////////////////////////
+import { useUserStore } from '@/store/useUserStore'
+//////////////// ANTD ////////////////////////
+import { message } from 'ant-design-vue'
 import {
     DownOutlined,
     InfoCircleOutlined,
@@ -118,12 +121,17 @@ import {
     ThunderboltOutlined,
     ToolOutlined,
 } from "@ant-design/icons-vue"
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+/////////////////////// WEBSOCKET //////////////////
+import { useConversations } from '@/composables/useConversations'
+import { PresenceOnline } from '@/composables/PresenceOnline'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const isDesktop = ref(window.innerWidth > 768)
+const { disconnect } = useConversations()
+const { disconnect: onlineDis } = PresenceOnline()
+
 
 const isMobileFullPage = computed(() => {
     return !isDesktop.value && route.meta.isMobileFullPage
@@ -137,6 +145,8 @@ async function handleLogOut() {
     try {
         const refresh_token = localStorage.getItem('refresh_token')
         const { data } = await api.post('auth/logout/', { refresh: refresh_token })
+        disconnect()
+        onlineDis()
 
         if (data.success) {
             localStorage.clear()

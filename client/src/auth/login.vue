@@ -59,7 +59,12 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 // STORES
 import { useUserStore } from '@/store/useUserStore';
+// webSocket
+import { useConversations } from '@/composables/useConversations';
+import { PresenceOnline } from '@/composables/PresenceOnline';
 
+const { connect: onlineConnect } = PresenceOnline()
+const { connect, fetchConversation } = useConversations()
 const userStore = useUserStore()
 const router = useRouter()
 
@@ -114,14 +119,18 @@ const onFinish = async (values) => {
         // console.log(data)
         const email = data.data.email
         const username = data.data.username
+        const id = data.data.id
         const access_token = data.data.tokens.access_token
         const refresh_token = data.data.tokens.refresh_token
         if (values.remember) {
             localStorage.setItem("access_token", access_token)
             localStorage.setItem("refresh_token", refresh_token)
         }
+        onlineConnect()
+        connect()
+        await fetchConversation()
         userStore.updateAvatar(data.data.profile)
-        userStore.add_user(username, email, access_token)
+        userStore.add_user(username, email, access_token, id)
 
         message.success(data.message)
         router.push("/")

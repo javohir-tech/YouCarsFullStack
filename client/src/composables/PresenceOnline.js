@@ -1,8 +1,8 @@
 import { ref } from "vue";
 
+const ws = ref(null)
 export function PresenceOnline() {
 
-    const ws = ref(null)
 
     function connect() {
 

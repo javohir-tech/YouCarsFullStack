@@ -60,7 +60,14 @@ import { message } from 'ant-design-vue';
 import api from '@/utils/axios';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+///////////////////   STORE ////////////////////
 import { useUserStore } from '@/store/useUserStore';
+///////////////////// WEBSOCKET ////////////////////////
+import { useConversations } from '@/composables/useConversations';
+import { PresenceOnline } from '@/composables/PresenceOnline';
+
+const { connect  } = useConversations()
+const { connect: onlineConnect } = PresenceOnline()
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -152,7 +159,7 @@ const onFinish = async (values) => {
             password: values.password,
             confirm_password: values.confirmPassword
         })
-        // console.log(data)
+        console.log(data)
         const access_token = data.data.tokens.access_token
         const refresh_token = data.data.tokens.refresh_token
 
@@ -160,8 +167,11 @@ const onFinish = async (values) => {
         localStorage.setItem("refresh_token", refresh_token)
         localStorage.setItem("username", data.data.username)
         localStorage.setItem("useremail", data.data.email)
-        userStore.add_user(data.data.username, data.data.email, access_token)
+        localStorage.setItem("userId", data.data.id)
+        userStore.add_user(data.data.username, data.data.email, access_token, data.data.id)
         message.success(data.message)
+        connect()
+        onlineConnect()
         formState.name = ""
         formState.email = ""
         formState.password = ""

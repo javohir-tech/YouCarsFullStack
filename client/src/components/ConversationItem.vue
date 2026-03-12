@@ -28,6 +28,7 @@
 
 <script setup>
 import { CheckOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -37,6 +38,13 @@ const router = useRouter()
 const isDesktop = ref(window.innerWidth > 768)
 
 const navigate = () => {
+    const userId = localStorage.getItem("userId")
+    const userName = localStorage.getItem("username")
+    if(userId===props.partner_id || userName === props.partner_name){
+        message.warning("ozizga yoza olmaaysiz")
+        return
+    }  
+
     if (!isDesktop.value && route.meta.isMobileFullPage) {
         router.push(`/chat/${props.partner_id}/${props.partner_name}`)
     } else {
@@ -91,7 +99,7 @@ const onError = () => {
 </script>
 
 <style scoped>
-.navigate{
+.navigate {
     cursor: pointer;
 }
 

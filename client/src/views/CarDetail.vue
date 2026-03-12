@@ -259,6 +259,7 @@ import { ArrowLeftOutlined, ArrowRightOutlined, CheckOutlined, ExclamationOutlin
 import api from '@/utils/axios';
 import { CallCard, CarCard } from '@/components';
 import LikeManager from '@/Hooks/LikeManager';
+import { message } from 'ant-design-vue';
 
 const { like, handleLike, handleDisLike } = LikeManager()
 
@@ -346,6 +347,13 @@ const handleNavigate = () => {
 }
 
 const navigate = (author_id, author_name) => {
+    const userId = localStorage.getItem("userId")
+    const userName = localStorage.getItem("username")
+
+    if(author_id ===  userId || author_name === userName){
+        message.warning("ozizga yoza olmaysiz")
+        return 
+    }
     if (!isDektop.value) {
         router.push(`/chat/${author_id}/${author_name}`)
     } else {

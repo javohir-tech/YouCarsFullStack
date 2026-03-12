@@ -4,16 +4,22 @@ import { useConversationStore } from "@/store/useConversationStore";
 import { notification } from 'ant-design-vue';
 import { useRouter, useRoute } from "vue-router";
 
+const ws = ref(null)
+const loading = ref(false)
+const isConnect = ref(false)
+
 export function useConversations() {
 
-    const ws = ref(null)
-    const isConnect = ref(false)
-    const loading = ref(false)
     const conversationStore = useConversationStore()
     const router = useRouter()
     const route = useRoute()
 
     async function fetchConversation() {
+        const token = localStorage.getItem("access_token")
+        if(!token){
+            console.log("token topilmadi")
+            return  
+        }
         loading.value = true
         try {
             const { data } = await api.get("/api/conversations")
@@ -36,7 +42,7 @@ export function useConversations() {
         ws.value = new WebSocket(`ws://localhost:8000/ws/conversations/?token=${token}`)
 
         ws.value.onopen = () => {
-
+            conversationStore.isConnect = true
             console.log("ulandi")
         }
 
@@ -59,16 +65,16 @@ export function useConversations() {
             } else if (data.type === "online_statuses") {
                 // console.log(data.statuses)
                 for (let user_id in data.statuses) {
-                    conversationStore.set_online(user_id , data.statuses[user_id])
+                    conversationStore.set_online(user_id, data.statuses[user_id])
                 }
             } else if (data.type === "partner_online") {
-                conversationStore.set_online(data.user_id , data.is_online)
+                conversationStore.set_online(data.user_id, data.is_online)
                 // console.log(data)
             }
         }
 
         ws.value.onclose = () => {
-            console.log("uzildi")
+            console.log("uzildi con")
         }
 
         ws.value.onerror = (err) => {

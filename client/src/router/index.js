@@ -121,7 +121,7 @@ const router = createRouter({
             {
               path: "chat/:userId/:username",
               component: ChatView,
-              meta: { requiresAuth: true, isMobileFullPage: true }
+              meta: { requiresAuth: true, isMobileFullPage: true, me: true }
             },
           ]
         },
@@ -146,6 +146,7 @@ const router = createRouter({
     {
       path: "/chat/:userId/:username",
       component: ChatView,
+      meta: { me: true, requiresAuth: true }
     },
   ],
   scrollBehavior(to, from, savedPosition) {

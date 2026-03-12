@@ -90,6 +90,7 @@ class SingUpView(APIView):
                     "data": {
                         "username": user.username,
                         "email": user.email,
+                        "id": user.id,
                         "tokens": {
                             "access_token": token.get("access_token"),
                             "refresh_token": token.get("refresh"),
@@ -131,7 +132,7 @@ class LoginView(APIView):
             if user.photo:
                 photo = request.build_absolute_uri(user.photo.url)
             else:
-                photo = ''
+                photo = ""
             user.auth_status = Auth_STATUS.DONE
             user.save()
             token = user.token()
@@ -143,7 +144,8 @@ class LoginView(APIView):
                     "data": {
                         "username": user.username,
                         "email": user.email,
-                        "profile" : str(photo),
+                        "id": user.id,
+                        "profile": str(photo),
                         "tokens": {
                             "access_token": token["access_token"],
                             "refresh_token": token["refresh"],
@@ -557,24 +559,22 @@ class GetUserView(APIView):
 # ////////////////////////////////////////////////////////
 class LoginRefreshView(TokenRefreshView):
     serializer_class = LoginRefreshSerializer
-    
-    
+
+
 # ////////////////////////////////////////////////////////
 # ////////////  DELETE USER IMAGE     ////////////////////
 # ////////////////////////////////////////////////////////
 class UserImageDelete(DestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
-    
+
     def destroy(self, request, *args, **kwargs):
         user = self.get_object()
-        if user.photo :
+        if user.photo:
             user.photo.delete(save=True)
-            return Response({
-                "success":  True, 
-                "message": "rasm ochirildi"
-            } , status=status.HTTP_200_OK)    
-        else :
-            return Response({
-                "message" : "rasmni ozi yoqku uka"
-            })
+            return Response(
+                {"success": True, "message": "rasm ochirildi"},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response({"message": "rasmni ozi yoqku uka"})
