@@ -5,68 +5,23 @@
             nextEl: '.custom-next',
             prevEl: '.custom-prev'
         }" :spaceBetween="30" :loop="true" :modules="modules" class="mySwiper">
-            <SwiperSlide>
+            <SwiperSlide v-for="banner in data" :key="banner.id">
                 <a-row class="hero_section_row">
                     <a-col :md="12">
                         <div class="hero_section_info">
-                            <h1 class="hero_section_header">Новый Geely Monjaro!</h1>
+                            <h1 class="hero_section_header">Новый {{ banner.marka }} {{ banner.model }}!</h1>
                             <p class="hero_section_subtitle">
-                                Кроссовер Monjaro - премиальная модель Geely по уровню дизайна, материалов и
-                                технологий.
+                                {{ banner.subtitle }}
                             </p>
                             <div class="her_section_btn">
-                                <a-button type="primary" block size="large">Подробнее</a-button>
+                                <a-button @click="toNavigate(banner.car_id)" type="primary" block
+                                    size="large">Подробнее</a-button>
                             </div>
                         </div>
                     </a-col>
                     <a-col class="hero_section_col" :md="12">
                         <div class="hero_section_image">
-                            <img src="./../../../public/23a119dc1551a0b9b7c880ef67fed15b332f02b4 (1).png"
-                                alt="reclam car  image">
-                        </div>
-                    </a-col>
-                </a-row>
-            </SwiperSlide>
-            <SwiperSlide>
-                <a-row class="hero_section_row">
-                    <a-col :md="12">
-                        <div class="hero_section_info">
-                            <h1 class="hero_section_header">Новый Geely Monjaro!</h1>
-                            <p class="hero_section_subtitle">
-                                Кроссовер Monjaro - премиальная модель Geely по уровню дизайна, материалов и
-                                технологий.
-                            </p>
-                            <div class="her_section_btn">
-                                <a-button type="primary" block size="large">Подробнее</a-button>
-                            </div>
-                        </div>
-                    </a-col>
-                    <a-col class="hero_section_col" :md="12">
-                        <div class="hero_section_image">
-                            <img src="./../../../public/23a119dc1551a0b9b7c880ef67fed15b332f02b4 (1).png"
-                                alt="reclam car  image">
-                        </div>
-                    </a-col>
-                </a-row>
-            </SwiperSlide>
-            <SwiperSlide>
-                <a-row class="hero_section_row">
-                    <a-col :md="12">
-                        <div class="hero_section_info">
-                            <h1 class="hero_section_header">Новый Geely Monjaro!</h1>
-                            <p class="hero_section_subtitle">
-                                Кроссовер Monjaro - премиальная модель Geely по уровню дизайна, материалов и
-                                технологий.
-                            </p>
-                            <div class="her_section_btn">
-                                <a-button type="primary" block size="large">Подробнее</a-button>
-                            </div>
-                        </div>
-                    </a-col>
-                    <a-col class="hero_section_col" :md="12">
-                        <div class="hero_section_image">
-                            <img src="./../../../public/23a119dc1551a0b9b7c880ef67fed15b332f02b4 (1).png"
-                                alt="reclam car  image">
+                            <img :src="banner.image" @load="onLoad" @error="onError" alt="reclam car  image">
                         </div>
                     </a-col>
                 </a-row>
@@ -96,8 +51,33 @@ import 'swiper/css/pagination'
 // modules
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
+// fetch
+import useFetch from '@/Hooks/useFetch'
+import { onMounted, ref } from 'vue'
+import router from '@/router'
 
 const modules = [Navigation, Pagination, Autoplay]
+
+const { data, loading, error, getData } = useFetch()
+
+const imageLoading = ref(true)
+
+const onLoad = () => {
+    imageLoading.value = false
+}
+
+const onError = () => {
+    imageLoading.value = false
+}
+
+
+const toNavigate = (car_id) => {
+    router.push(`/cars/detail/${car_id}`)
+}
+
+onMounted(async () => {
+    await getData("/cars/car/banner/")
+})
 </script>
 
 <style scoped>
@@ -106,6 +86,7 @@ const modules = [Navigation, Pagination, Autoplay]
     margin-top: 20px;
     padding: 20px 30px;
     border-radius: 10px;
+    min-height: 500px;
 }
 
 .her_section_btn {
@@ -116,6 +97,7 @@ const modules = [Navigation, Pagination, Autoplay]
 .hero_section_header {
     font-weight: 500;
     font-size: 35px;
+    text-transform: uppercase;
     color: #000000;
 }
 

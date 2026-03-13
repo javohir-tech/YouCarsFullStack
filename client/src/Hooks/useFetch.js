@@ -12,7 +12,7 @@ export default function useFetch() {
         loading.value = true
         try {
             const response = await api.get(apiUrl)
-            console.log(response.data)
+            // console.log(response.data)
             data.value = response.data
         } catch (err) {
             error.value = err

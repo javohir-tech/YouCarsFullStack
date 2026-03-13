@@ -20,6 +20,7 @@ from .models import (
     Car,
     CarImage,
     Like,
+    Banner,
 )
 from users.models import User
 
@@ -87,14 +88,16 @@ class AvtoTypeMarkaSerializer(serializers.ModelSerializer):
         model = AvtoTypeMarka
         fields = ["id", "marka", "photo"]
 
+
 # /////////////////////////////////////////////////////////
 # //////////// GET MARKAS WITH MODELS        //////////////
 # /////////////////////////////////////////////////////////
 class GetMarkasWithModels(serializers.ModelSerializer):
-    
-    class Meta :
+
+    class Meta:
         model = Marka
-        fields = ['id' , 'marka']
+        fields = ["id", "marka"]
+
 
 # /////////////////////////////////////////////////////////
 # //////////// GET MODELS WITH MARKA    ///////////////////
@@ -221,7 +224,7 @@ class CarSerializer(serializers.Serializer):
         return data
 
     def validate(self, data):
-        if "avto_type" in data or "marka" in data or "car_model" in data :
+        if "avto_type" in data or "marka" in data or "car_model" in data:
             auto_type = data.get("avto_type", None)
             marka = data.get("marka", None)
             car_model = data.get("car_model", None)
@@ -470,7 +473,7 @@ class GetCarSerializer(serializers.ModelSerializer):
     car_likes_count = serializers.SerializerMethodField("get_car_likes_count")
     me_liked = serializers.SerializerMethodField()
     author_avatar = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Car
         fields = [
@@ -506,19 +509,15 @@ class GetCarSerializer(serializers.ModelSerializer):
 
     def get_car_likes_count(self, obj):
         return obj.likes.count()
-    
-    def get_author_avatar(self , obj):
+
+    def get_author_avatar(self, obj):
         request = self.context.get("request")
         author = obj.author
-        if author.photo and hasattr(author.photo , "url"):
+        if author.photo and hasattr(author.photo, "url"):
             if request is not None:
                 return request.build_absolute_uri(author.photo.url)
             return author.photo.url
         return None
-        
-        
-            
-        
 
     def get_me_liked(self, obj):
         request = self.context.get("request")
@@ -575,29 +574,62 @@ class GetCarsSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return Like.objects.filter(car=obj, author=request.user).exists()
         return False
-    
+
+
 class CarDeletionSerializer(serializers.Serializer):
     reason = serializers.IntegerField()
-    
-    def validate_reason(self , value):
+
+    def validate_reason(self, value):
         if not value in [1, 2, 3]:
             raise serializers.ValidationError("Noto'g'ri sabab kodi")
         return value
-    
+
+
 # /////////////////////////////////////////////////////////
 # ////////////       GET ALL MARKAS       /////////////////
 # /////////////////////////////////////////////////////////
 class GetAllMarkasSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
-        model = Marka    
-        fields = ['id' , 'marka' , 'photo']
-        
+        model = Marka
+        fields = ["id", "marka", "photo"]
+
+
 # /////////////////////////////////////////////////////////
 # ////////////       GET ALL MODELS       /////////////////
 # /////////////////////////////////////////////////////////
 class getAllModelsSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model =  CarModel
-        fields = ['id' , 'name']
+        model = CarModel
+        fields = ["id", "name"]
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       Banner Serializer          ///////////
+# /////////////////////////////////////////////////////////
+class BannerSerializer(serializers.ModelSerializer):
+
+    model = serializers.SerializerMethodField()
+    marka = serializers.SerializerMethodField()
+    car_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Banner
+        fields = [
+            "id",
+            "model",
+            "image",
+            "subtitle",
+            "marka",
+            "car_id",
+        ]
+
+    def get_car_id(self, obj):
+        return obj.car.id
+
+    def get_model(self, obj):
+        return obj.car.car_model.name
+
+    def get_marka(self, obj):
+        return obj.car.marka.marka

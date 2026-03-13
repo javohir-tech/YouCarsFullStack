@@ -275,19 +275,34 @@ class Like(BaseModel):
 
 class DeletionStatistics(models.Model):
     sold_on_youcar = models.IntegerField(default=0, verbose_name="YouCar da sotilgan")
-    sold_elsewhere = models.IntegerField(default=0, verbose_name="Boshqa joyda sotilgan")
+    sold_elsewhere = models.IntegerField(
+        default=0, verbose_name="Boshqa joyda sotilgan"
+    )
     other_reason = models.IntegerField(default=0, verbose_name="Boshqa sabab")
-    
+
     @classmethod
     def increment_reason(cls, reason):
         stats, created = cls.objects.get_or_create(id=1)
-        
+
         if reason == 1:
             stats.sold_on_youcar += 1
         elif reason == 2:
             stats.sold_elsewhere += 1
         elif reason == 3:
             stats.other_reason += 1
-        
+
         stats.save()
         return stats
+
+
+class Banner(BaseModel):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name="banners")
+    image = models.ImageField(
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=["jpg", "png", "heic", "heif"],
+            )
+        ],
+        upload_to="cars/bannner",
+    )
+    subtitle = models.CharField(max_length=240)

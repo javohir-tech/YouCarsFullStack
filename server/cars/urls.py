@@ -18,7 +18,8 @@ from .views import (
     GetAllMarkasView,
     getAllModelsView,
     GetMarkasWithModelsView,
-    GetSimilarCarsView
+    GetSimilarCarsView, 
+    BannerView
 )
 
 urlpatterns = [
@@ -42,5 +43,6 @@ urlpatterns = [
     path("user/cars/published/", GetUserCarsPublished.as_view()),
     path("car/like/<uuid:pk>/", LikeAndDislikeView.as_view()),
     path("cars/meliked/", MeLikedCarGet.as_view()),
-    path("car/similar/<uuid:pk>/" , GetSimilarCarsView.as_view())
+    path("car/similar/<uuid:pk>/" , GetSimilarCarsView.as_view()),
+    path("car/banner/" , BannerView.as_view())
 ]

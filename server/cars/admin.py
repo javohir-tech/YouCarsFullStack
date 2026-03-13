@@ -12,7 +12,8 @@ from .models import (
     AvtoMobileType,
     AvtoTypeMarka,
     DeletionStatistics,
-    Like, 
+    Like,
+    Banner,
 )
 
 
@@ -100,13 +101,20 @@ class CarImageAdmin(admin.ModelAdmin):
 @admin.register(DeletionStatistics)
 class DeletionStatistics(admin.ModelAdmin):
     list_display = ["sold_on_youcar", "sold_elsewhere", "other_reason"]
-    
+
+
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
-    list_display = ['author' , "car"]
-    list_filter = ['author' , 'car']
-    search_fields = ['author' , 'car']
+    list_display = ["author", "car"]
+    list_filter = ["author", "car"]
+    search_fields = ["author", "car"]
     list_per_page = 20
+
+
+@admin.register(Banner)
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ["subtitle", "car"]
+    
 
 
 # Register your models here.

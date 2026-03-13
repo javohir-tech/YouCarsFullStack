@@ -6,7 +6,11 @@ from .filters import CarFilter, GetMarkasWithModelsFilter, GetModelsWithAvtoType
 
 # //////////////// REST FRAMEWORK ////////////////
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -25,10 +29,11 @@ from .models import (
     DeletionStatistics,
     Marka,
     CarModel,
+    Banner,
 )
 
 # ////////////////////// Permissions /////////////////////
-from .permissions import IsAuthor , IsAuthorImage
+from .permissions import IsAuthor, IsAuthorImage
 
 # //////////// SERIALIZERS  /////////////////////////////
 from .serializers import (
@@ -48,6 +53,7 @@ from .serializers import (
     GetAllMarkasSerializer,
     getAllModelsSerializer,
     GetMarkasWithModels,
+    BannerSerializer,
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -267,7 +273,7 @@ class CarView(APIView):
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
-        return [IsAuthenticated() , IsAuthor()]
+        return [IsAuthenticated(), IsAuthor()]
 
     @swagger_auto_schema(
         operation_description="Yangi mashina e'lonini yaratish",
@@ -520,8 +526,8 @@ class CarView(APIView):
     )
     def put(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        
-        self.check_object_permissions(request , car)
+
+        self.check_object_permissions(request, car)
         serializer = CarSerializer(car, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -594,8 +600,8 @@ class CarView(APIView):
     )
     def patch(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        
-        self.check_object_permissions(request , car)
+
+        self.check_object_permissions(request, car)
         serializer = CarSerializer(car, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -655,8 +661,8 @@ class CarView(APIView):
     )
     def delete(self, request, pk):
         car = get_object_or_404(Car, id=pk)
-        
-        self.check_object_permissions(request , car)
+
+        self.check_object_permissions(request, car)
         deletion_serializer = CarDeletionSerializer(data=request.data)
         deletion_serializer.is_valid(raise_exception=True)
         reason = deletion_serializer.validated_data["reason"]
@@ -717,7 +723,7 @@ class CarView(APIView):
         data = {
             "success": True,
             "message": "yuklandi",
-            "author_id" : author_id,
+            "author_id": author_id,
             "data": carSerializer.data,
         }
         return Response(data)
@@ -731,7 +737,7 @@ class CarImageView(APIView):
     moshina rasmlarini joylash
     """
 
-    permission_classes = [IsAuthenticated , IsAuthorImage]
+    permission_classes = [IsAuthenticated, IsAuthorImage]
 
     def post(self, request):
         serializer = CarImageUploadSerializer(data=request.data)
@@ -747,7 +753,7 @@ class CarImageView(APIView):
 
     def delete(self, request, pk):
         car_image = get_object_or_404(CarImage, id=pk)
-        
+
         # self.check_object_permissions(request , car_image)
         car_image.delete()
         return Response(
@@ -935,7 +941,10 @@ class MeLikedCarGet(ListAPIView):
         user_liked_ids = Like.objects.filter(author=self.request.user).values_list(
             "car_id", flat=True
         )
-        return Car.objects.filter(id__in=user_liked_ids).order_by("-likes__created_time")
+        return Car.objects.filter(id__in=user_liked_ids).order_by(
+            "-likes__created_time"
+        )
+
 
 # /////////////////////////////////////////////////////////
 # ////////////       GET All MARKAS       /////////////////
@@ -957,3 +966,12 @@ class getAllModelsView(ListAPIView):
     serializer_class = getAllModelsSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = GetModelsWithAvtoTypeFilter
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       GET All MODELS       /////////////////
+# /////////////////////////////////////////////////////////
+class BannerView(ListAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
