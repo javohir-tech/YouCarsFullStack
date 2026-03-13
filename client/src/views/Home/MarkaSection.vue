@@ -6,8 +6,8 @@
             </a-col>
             <a-col v-else class="marka_col" :xs="12" :sm="8" :md="6" :lg="4" v-for="marka in data" :key="marka.id">
                 <div class="marka_box">
-                    <img :src="marka.image" :alt="marka.name">
-                    <p>{{ capitalize(marka.name) }}</p>
+                    <img :src="marka.photo" :alt="marka.marka">
+                    <p>{{ capitalize(marka.marka) }}</p>
                 </div>
             </a-col>
         </a-row>
@@ -25,8 +25,8 @@ const capitalize = (text) => {
 }
 
 onMounted(() => {
-    getData("https://api.youcarrf.ru/marks")
-    // getData("/cars/marka/all/")
+    // getData("https://api.youcarrf.ru/marks")
+    getData("/cars/marka/all/")
 })
 </script>
 

@@ -57,7 +57,7 @@
 
         <!-- =========================== BLog Section ========================================= -->
         <BlogSec />
-        
+
     </div>
 </template>
 
@@ -70,7 +70,7 @@ import { ArrowRightOutlined } from '@ant-design/icons-vue'
 
 //////////////////// COMPONENTS /////////////////////
 import { CallCard, CarCard, Filter } from '@/components'
-import { BannerSection, ServicesSection, AboutSection , BlogSec, MarkaSection } from './Home'
+import { BannerSection, ServicesSection, AboutSection, BlogSec, MarkaSection } from '.'
 
 const carsLoading = ref(false)
 const carsData = ref([])

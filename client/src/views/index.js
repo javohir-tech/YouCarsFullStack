@@ -1,9 +1,9 @@
-import Home from "./Home.vue";
-import CarDetail from "./CarDetail.vue";
-import Katalog from "./Katalog.vue";
-import transport from "./transport.vue";
-import Moto from "./Moto.vue";
-import avtomabile from "./avtomabile.vue";
+import Home from "./Home/Home.vue";
+import CarDetail from "./CarDetail/CarDetail.vue";
+import Katalog from "./Katalog/Katalog.vue";
+import transport from "./Transport/transport.vue";
+import Moto from "./Avtomabil/Moto.vue";
+import avtomabile from "./Avtomabil/avtomabile.vue";
 import BlogDetail from "./BlogDetail/BlogDetail.vue";
 
 ////////////////// Chat ///////////////////////
