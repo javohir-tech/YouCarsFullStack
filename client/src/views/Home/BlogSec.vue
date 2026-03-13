@@ -1,9 +1,11 @@
 <template>
     <section class="blog_section">
         <header>
-            <h2 class="section_header">
-                Новости
-            </h2>
+            <div class="header">
+                <h1>
+                    Новости
+                </h1>
+            </div>
         </header>
 
         <div class="section_blogs">
@@ -16,7 +18,7 @@
                     <BlogCard :id="blog.id" :image="blog.image" :title="blog.title" :text="blog.text" />
                 </a-col>
             </a-row>
-            <div v-if="!loading &&blogs.length === 0" class="empty">
+            <div v-if="!loading && blogs.length === 0" class="empty">
                 <a-empty />
             </div>
         </div>
@@ -33,12 +35,16 @@ const blogs = ref([])
 const loading = ref(false)
 const error = ref(null)
 
+const props = defineProps({
+    page_size: Number
+})
+
 const handleGetBlogs = async () => {
     loading.value = true
     try {
         const { data } = await api.get("/blog/blog/all/", {
             params: {
-                page_size: 3
+                page_size: props.page_size
             }
         })
 
@@ -59,6 +65,6 @@ onMounted(() => {
 
 <style scoped>
 .blog_section {
-    margin-top: 100px;
+    margin-top: 30px;
 }
 </style>

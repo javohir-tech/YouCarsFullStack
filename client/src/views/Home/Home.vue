@@ -56,7 +56,7 @@
         <CallCard />
 
         <!-- =========================== BLog Section ========================================= -->
-        <BlogSec />
+        <BlogSec :page_size="3"/>
 
     </div>
 </template>

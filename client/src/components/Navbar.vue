@@ -9,33 +9,33 @@
                     <Col :xs="24" :sm="24" :md="14" :lg="14">
                         <ul class="menu_list">
                             <li><router-link to="/">Главная</router-link></li>
-                            <li><router-link to="/">Каталог</router-link></li>
+                            <li><router-link to="/katalog">Каталог</router-link></li>
                             <li><router-link to="/">О нас</router-link></li>
-                            <li><router-link to="/">Новости</router-link></li>
-                            <li><router-link to="/">Контакты</router-link></li>
+                            <li><router-link to="/news">Новости</router-link></li>
+                            <li><router-link to="/kontak">Контакты</router-link></li>
                         </ul>
                     </Col>
                     <Col :xs="0" :sm="0" :md="10" :lg="10">
                         <div class="under_rigth">
                             <div class="icons">
-                                <a href="#">
+                                <a target="_blank" href="https://www.instagram.com/suvonov_javohir1/">
                                     <InstagramOutlined class="icon" />
                                 </a>
-                                <a href="#">
-                                    <WhatsAppOutlined class="icon" />
+                                <a target="_blank" href="https://github.com/javohir-tech">
+                                    <GithubOutlined class="icon"/>
                                 </a>
-                                <a href="#">
+                                <a target="_blank" href="http://www.linkedin.com/in/javohir-suvonov-a98925303">
                                     <LinkedinOutlined class="icon" />
                                 </a>
                             </div>
                             <div>
-                                <a href="#">
+                                <a href="tel:+998771232904">
                                     <PhoneOutlined class="icon" />
                                     <span> +77 123 29 04</span>
                                 </a>
                             </div>
                             <div>
-                                <a href="#">
+                                <a target="_blank" href="mailto:suvonovjavohir625@gmail.com?subject=Hello">
                                     <MailOutlined class="icon" />
                                     <span> suvonovjavohir625@gmail.com</span>
                                 </a>
@@ -272,7 +272,8 @@ import {
     CloseOutlined,
     RightOutlined,
     BellOutlined,
-    GlobalOutlined
+    GlobalOutlined,
+    GithubOutlined
 } from "@ant-design/icons-vue"
 import { ref, watch } from 'vue';
 import { useUserStore } from '@/store/useUserStore';

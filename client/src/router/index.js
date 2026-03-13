@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 ///////////// MAIN LAYUOT ////////////
 import mainLayout from '@/layout/mainLayout.vue'
 ///////////////// VIEWS ////////////////
-import { avtomabile, BlogDetail, CarDetail, ChatView, Conservations, Home, Katalog, Moto, transport } from '@/views'
+import { avtomabile, BlogDetail, CarDetail, ChatView, Conservations, Home, Katalog, Kontak, Moto, News, transport } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
@@ -47,6 +47,14 @@ const router = createRouter({
         {
           path: "blog/detail/:id",
           component: BlogDetail
+        },
+        {
+          path: "news",
+          component: News
+        },
+        {
+          path: "kontak",
+          component: Kontak
         },
         //////////// CHat ///////////////
         {

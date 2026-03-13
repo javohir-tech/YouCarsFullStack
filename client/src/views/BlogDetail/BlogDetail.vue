@@ -2,7 +2,7 @@
     <div class="container">
         <a-breadcrumb class="bread_crumb" separator=">">
             <a-breadcrumb-item><router-link to="/">Главная</router-link></a-breadcrumb-item>
-            <a-breadcrumb-item><router-link to="/">Новости</router-link></a-breadcrumb-item>
+            <a-breadcrumb-item><router-link to="/news">Новости</router-link></a-breadcrumb-item>
             <a-breadcrumb-item>{{ blog.title }}</a-breadcrumb-item>
         </a-breadcrumb>
 

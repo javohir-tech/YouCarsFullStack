@@ -115,7 +115,7 @@
                                         <div class="author_profile">
                                             <a-image class="author_avatar"
                                                 :src="car_data.author_avatar ? car_data.author_avatar :
-                                                        `https://api.dicebear.com/9.x/initials/svg?seed=${car_data.author}}`" />
+                                                    `https://api.dicebear.com/9.x/initials/svg?seed=${car_data.author}}`" />
                                         </div>
                                         <div class="author">
                                             <p class="author_name">{{ car_data.author }}</p>
@@ -234,6 +234,9 @@
                             :power="car.power" :fuel="car.fuel" :drive_type="car.drive_type" :country="car.country" />
                     </a-col>
                 </a-row>
+                <div v-if="!similar_loading && similar_cars.length === 0" class="empty">
+                    <a-empty class="empty" description="Аналогичных автомобилей не найдено."/>
+                </div>
             </div>
         </div>
 
@@ -372,6 +375,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.empty {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .bread_crumb {
     margin: 15px 0;
 }
