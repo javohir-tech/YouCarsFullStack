@@ -22,7 +22,7 @@
                                     <InstagramOutlined class="icon" />
                                 </a>
                                 <a target="_blank" href="https://github.com/javohir-tech">
-                                    <GithubOutlined class="icon"/>
+                                    <GithubOutlined class="icon" />
                                 </a>
                                 <a target="_blank" href="http://www.linkedin.com/in/javohir-suvonov-a98925303">
                                     <LinkedinOutlined class="icon" />
@@ -95,8 +95,8 @@
                             </div>
 
                             <div class="message">
-                                <router-link to="/">
-                                    <a-badge count="0">
+                                <router-link to="/profile/conversations">
+                                    <a-badge :count="conversationStore.unread_count">
                                         <CommentOutlined class="messanger" />
                                     </a-badge>
                                 </router-link>
@@ -277,8 +277,11 @@ import {
 } from "@ant-design/icons-vue"
 import { ref, watch } from 'vue';
 import { useUserStore } from '@/store/useUserStore';
+import { useConversationStore } from '@/store/useConversationStore';
 import router from '@/router';
 
+
+const conversationStore = useConversationStore()
 const userStore = useUserStore()
 const value1 = ref('ru');
 const value = ref("")

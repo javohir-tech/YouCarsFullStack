@@ -12,6 +12,9 @@ export const useConversationStore = defineStore('conversations', {
         },
         connected: (state) => {
             return state.isConnect
+        },
+        unread_count: (state) => {
+            return state.conversations.reduce((acc, curr) => acc + curr.unread_count, 0)
         }
     },
     actions: {

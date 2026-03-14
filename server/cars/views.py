@@ -789,9 +789,12 @@ class GetSimilarCarsView(ListAPIView):
     def get_queryset(self):
         id = self.kwargs.get("pk")
         car = get_object_or_404(Car, id=id)
-        marka = car.marka
-        return Car.objects.filter(marka=marka).order_by("-views").exclude(id=id)[:3]
-
+        avto_type = car.avto_type
+        return (
+            Car.objects.filter(avto_type=avto_type)
+            .order_by("-views")
+            .exclude(id=id)[:3]
+        )
 
 # /////////////////////////////////////////////////////////
 # ////////////       GET MY CARS          /////////////////
