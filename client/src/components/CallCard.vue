@@ -4,7 +4,7 @@
             <a-col class="call_section_info" :lg="12">
                 <h2>Не можете определится с выбором?</h2>
                 <p>Оставьте заявку, и наши менеджеры проконсультируют вас!</p>
-                <router-link to="/" class="call_btn"><a-button size="large" block>Оставить
+                <router-link to="/order" class="call_btn"><a-button size="large" block>Оставить
                         заявку</a-button></router-link>
             </a-col>
             <a-col class="call_section_image" :lg="12">

@@ -19,14 +19,17 @@
                     перевозчиками, чтобы обеспечить безопасность и надежность доставки.
                 </p>
                 <div class="about_section_btn">
-                    <a-button type="primary" block size="large">Связаться с нами</a-button>
+                    <a-button @click="router.push('/about')" type="primary" block size="large">Связаться с нами</a-button>
                 </div>
             </a-col>
         </a-row>
     </section>
 </template>
 
-<script setup></script>
+<script setup>
+import router from '@/router';
+
+</script>
 
 <style scoped>
 /* =============================== ABOUT SECTION ============================================== */
