@@ -1,4 +1,4 @@
-import  os
+import os
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
@@ -67,7 +67,10 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter", 
+    ],
 }
 
 SIMPLE_JWT = {

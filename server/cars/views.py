@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
 # /////////////////////// FILTER ///////////////////////////
-from django_filters.rest_framework import DjangoFilterBackend, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from .filters import CarFilter, GetMarkasWithModelsFilter, GetModelsWithAvtoTypeFilter
 
 # //////////////// REST FRAMEWORK ////////////////
@@ -779,8 +780,9 @@ class GetAllCarsView(ListAPIView):
     queryset = Car.objects.filter(status=Car.STATUS_CHOICES.PUBLISHED).order_by(
         "-views"
     )
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend , SearchFilter]
     filterset_class = CarFilter
+    search_fields = ["author__username" , "marka__marka" , "car_model__name"]
     pagination_class = CustomPagination
 
 
