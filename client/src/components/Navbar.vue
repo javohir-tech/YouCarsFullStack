@@ -85,7 +85,7 @@
                                 </div>
                                 <div>
                                     <span><router-link to="/moto">Мотоциклы</router-link></span>
-                                    <SwapRightOutlined class="avto_icon" />
+                                       <SwapRightOutlined class="avto_icon" />
                                 </div>
                             </div>
 

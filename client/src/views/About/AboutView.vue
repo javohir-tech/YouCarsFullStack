@@ -129,7 +129,7 @@ const features = [
 
 <style scoped>
 .about-hero {
-  padding: 56px 0 40px;
+  padding: 30px 0 40px;
   display: flex;
   flex-direction: column;
   gap: 36px;
