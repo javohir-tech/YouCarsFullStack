@@ -9,13 +9,13 @@
                             <span class="car">Car</span>
                         </div>
                         <div class="icons">
-                            <a href="#">
+                            <a target="_blank" href="https://www.instagram.com/suvonov_javohir1/">
                                 <InstagramOutlined class="icon_social" />
                             </a>
-                            <a href="#">
-                                <WhatsAppOutlined class="icon_social" />
+                            <a target="_blank" href="http://www.linkedin.com/in/javohir-suvonov-a98925303">
+                                <LinkedinOutlined class="icon_social" />
                             </a>
-                            <a href="#">
+                            <a target="_blank" href="https://github.com/javohir-tech/YouCarsFullStack">
                                 <GithubOutlined class="icon_social" />
                             </a>
                         </div>
@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { GithubOutlined, InstagramOutlined, WhatsAppOutlined } from '@ant-design/icons-vue';
+import { GithubOutlined, InstagramOutlined, LinkedinOutlined } from '@ant-design/icons-vue';
 
 </script>
 

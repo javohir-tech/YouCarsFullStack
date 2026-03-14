@@ -270,6 +270,8 @@ class GetFuelsView(ListAPIView):
 # ////////////        CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
 class CarView(APIView):
+    
+    
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]

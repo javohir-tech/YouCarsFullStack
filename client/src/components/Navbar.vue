@@ -21,7 +21,7 @@
                                 <a target="_blank" href="https://www.instagram.com/suvonov_javohir1/">
                                     <InstagramOutlined class="icon" />
                                 </a>
-                                <a target="_blank" href="https://github.com/javohir-tech">
+                                <a target="_blank" href="https://github.com/javohir-tech/YouCarsFullStack">
                                     <GithubOutlined class="icon" />
                                 </a>
                                 <a target="_blank" href="http://www.linkedin.com/in/javohir-suvonov-a98925303">
