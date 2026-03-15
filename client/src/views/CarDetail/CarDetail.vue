@@ -335,7 +335,6 @@ const handleGetCar = async () => {
     car_data_loader.value = true
     try {
         const { data } = await api.get(`/cars/car/${route.params.id}/`)
-        console.log(data)
         author_id.value = data.author_id
         like.value = data.data.me_liked
         car_data.value = data.data
