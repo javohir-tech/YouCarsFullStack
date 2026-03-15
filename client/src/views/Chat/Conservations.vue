@@ -9,7 +9,7 @@
                 <h1>Сообщения</h1>
             </a-flex>
             <div v-for="partner in conversationStore.conversations" :key="partner.partner_id" class="conversations">
-                <ConversationItem :partner_id="partner.partner_id" :avatar="partner.avatar"
+                <conversationItem :partner_id="partner.partner_id" :avatar="partner.avatar"
                     :partner_name="partner.partner" :last_message="partner.last_message"
                     :last_message_time="partner.last_message_time" :is_read="partner.is_read"
                     :unread_count="partner.unread_count" :is_online="partner.is_online"
@@ -28,7 +28,7 @@ import { useConversations } from '@/composables/useConversations';
 import { useConversationStore } from '@/store/useConversationStore';
 
 ////////////////////// COMPONENTS //////////////////////////////
-import { ConversationItem } from '@/components';
+import { conversationItem } from '@/components';
 import { LeftOutlined } from '@ant-design/icons-vue';
 
 const conversationStore = useConversationStore()

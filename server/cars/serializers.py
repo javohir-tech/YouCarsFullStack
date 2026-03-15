@@ -576,6 +576,19 @@ class GetCarsSerializer(serializers.ModelSerializer):
         return False
 
 
+# /////////////////////////////////////////////////////////
+# ////////////       SEARCH FILTER         ////////////////
+# /////////////////////////////////////////////////////////
+class SearchFilterSerializer(serializers.ModelSerializer):
+    marka = serializers.StringRelatedField()
+    author = serializers.StringRelatedField()
+    car_model = serializers.StringRelatedField()
+
+    class Meta:
+        model = Car
+        fields = ["id", "marka", "author", "car_model"]
+
+
 class CarDeletionSerializer(serializers.Serializer):
     reason = serializers.IntegerField()
 

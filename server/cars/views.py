@@ -55,6 +55,7 @@ from .serializers import (
     getAllModelsSerializer,
     GetMarkasWithModels,
     BannerSerializer,
+    SearchFilterSerializer,
 )
 
 # ///////////// PAGINATORS ////////////////////
@@ -271,8 +272,7 @@ class GetFuelsView(ListAPIView):
 # ////////////        CAR      ////////////////////////////
 # /////////////////////////////////////////////////////////
 class CarView(APIView):
-    
-    
+
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
@@ -780,9 +780,30 @@ class GetAllCarsView(ListAPIView):
     queryset = Car.objects.filter(status=Car.STATUS_CHOICES.PUBLISHED).order_by(
         "-views"
     )
-    filter_backends = [DjangoFilterBackend , SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = CarFilter
-    search_fields = ["author__username" , "marka__marka" , "car_model__name"]
+    search_fields = ["author__username", "marka__marka", "car_model__name"]
+    pagination_class = CustomPagination
+
+
+# /////////////////////////////////////////////////////////
+# ////////////       SEARCH FILTER         ////////////////
+# /////////////////////////////////////////////////////////
+class SearchFilterView(ListAPIView):
+    """
+    search qidiruv qilish
+    """
+
+    permission_classes = [AllowAny]
+    serializer_class = SearchFilterSerializer
+    queryset = (
+        Car.objects.filter(status=Car.STATUS_CHOICES.PUBLISHED)
+        .select_related("marka", "car_model", "author")
+        .only("id", "marka__marka", "car_model__name", "author__username")
+        .order_by("-views")
+    )
+    filter_backends = [SearchFilter]
+    search_fields = ["author__username", "marka__marka", "car_model__name"]
     pagination_class = CustomPagination
 
 
@@ -799,6 +820,7 @@ class GetSimilarCarsView(ListAPIView):
             .order_by("-views")
             .exclude(id=id)[:3]
         )
+
 
 # /////////////////////////////////////////////////////////
 # ////////////       GET MY CARS          /////////////////

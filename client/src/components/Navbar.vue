@@ -71,7 +71,7 @@
 
                             <!-- Mobile Search (центрда) -->
                             <div class="mobile_search">
-                                <a-input-search v-model:value="value" placeholder="Поиск по названию" />
+                                <SearchInput />
                             </div>
 
                             <div class="dropdown-wrapper">
@@ -85,13 +85,12 @@
                                 </div>
                                 <div>
                                     <span><router-link to="/moto">Мотоциклы</router-link></span>
-                                       <SwapRightOutlined class="avto_icon" />
+                                    <SwapRightOutlined class="avto_icon" />
                                 </div>
                             </div>
 
                             <div class="search">
-                                <a-input-search v-model:value="value" placeholder="input search text"
-                                    style="width: 400px" />
+                                <SearchInput />
                             </div>
 
                             <div class="message">
@@ -279,12 +278,12 @@ import { ref, watch } from 'vue';
 import { useUserStore } from '@/store/useUserStore';
 import { useConversationStore } from '@/store/useConversationStore';
 import router from '@/router';
+import SearchInput from './SearchInput.vue';
 
 
 const conversationStore = useConversationStore()
 const userStore = useUserStore()
 const value1 = ref('ru');
-const value = ref("")
 const loading = ref(true)
 const isMobileMenuOpen = ref(false)
 
@@ -473,7 +472,7 @@ watch(isMobileMenuOpen, (newValue) => {
 }
 
 /* Mobile Search */
-.mobile_search {
+.mobile_search div{
     display: none;
 }
 
@@ -691,11 +690,11 @@ watch(isMobileMenuOpen, (newValue) => {
         display: none;
     }
 
-    .search {
+    .search div{
         flex: 1;
     }
 
-    .search .ant-input-search {
+    .search div .ant-input-search {
         width: 100% !important;
     }
 
@@ -734,13 +733,13 @@ watch(isMobileMenuOpen, (newValue) => {
         display: block;
     }
 
-    .mobile_search {
+    .mobile_search div{
         display: block;
         flex: 1;
         margin: 0 15px;
     }
 
-    .mobile_search .ant-input-search {
+    .mobile_search div .ant-input-search {
         width: 100%;
     }
 
