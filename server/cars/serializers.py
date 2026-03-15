@@ -581,12 +581,11 @@ class GetCarsSerializer(serializers.ModelSerializer):
 # /////////////////////////////////////////////////////////
 class SearchFilterSerializer(serializers.ModelSerializer):
     marka = serializers.StringRelatedField()
-    author = serializers.StringRelatedField()
     car_model = serializers.StringRelatedField()
 
     class Meta:
         model = Car
-        fields = ["id", "marka", "author", "car_model"]
+        fields = ["id", "marka", "car_model"]
 
 
 class CarDeletionSerializer(serializers.Serializer):

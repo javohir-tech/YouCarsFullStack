@@ -782,7 +782,7 @@ class GetAllCarsView(ListAPIView):
     )
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = CarFilter
-    search_fields = ["author__username", "marka__marka", "car_model__name"]
+    search_fields = [ "marka__marka", "car_model__name"]
     pagination_class = CustomPagination
 
 
@@ -798,12 +798,12 @@ class SearchFilterView(ListAPIView):
     serializer_class = SearchFilterSerializer
     queryset = (
         Car.objects.filter(status=Car.STATUS_CHOICES.PUBLISHED)
-        .select_related("marka", "car_model", "author")
-        .only("id", "marka__marka", "car_model__name", "author__username")
+        .select_related("marka", "car_model")
+        .only("id", "marka__marka", "car_model__name")
         .order_by("-views")
     )
     filter_backends = [SearchFilter]
-    search_fields = ["author__username", "marka__marka", "car_model__name"]
+    search_fields = ["marka__marka", "car_model__name"]
     pagination_class = CustomPagination
 
 

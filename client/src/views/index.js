@@ -9,6 +9,7 @@ import News from "./News/News.vue";
 import Kontak from "./Kontak/Kontak.vue";
 import AboutView from "./About/AboutView.vue";
 import Order from "./Order/Order.vue";
+import ResultView from "./Result/ResultView.vue";
 ////////////////// Chat ///////////////////////
 import ChatView from "./Chat/ChatView.vue";
 import Conservations from "./Chat/Conservations.vue";
@@ -25,6 +26,7 @@ export {
     Conservations,
     News,
     Kontak,
-    AboutView, 
-    Order
+    AboutView,
+    Order,
+    ResultView,
 }

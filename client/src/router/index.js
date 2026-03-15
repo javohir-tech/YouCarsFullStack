@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 ///////////// MAIN LAYUOT ////////////
 import mainLayout from '@/layout/mainLayout.vue'
 ///////////////// VIEWS ////////////////
-import { AboutView, avtomabile, BlogDetail, CarDetail, ChatView, Conservations, Home, Katalog, Kontak, Moto, News, Order, transport } from '@/views'
+import { AboutView, avtomabile, BlogDetail, CarDetail, ChatView, Conservations, Home, Katalog, Kontak, Moto, News, Order, ResultView, transport } from '@/views'
 import { forgetPassword, login, newPassword, singup, verifyCode } from '@/auth'
 //////////////// STORE /////////////////
 import { useUserStore } from '@/store/useUserStore'
@@ -68,6 +68,11 @@ const router = createRouter({
         {
           path: "order",
           component: Order
+        },
+        {
+          path: "result",
+          name: "result",
+          component: ResultView
         },
         ////// AUTH /////
         {
