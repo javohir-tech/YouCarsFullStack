@@ -10,6 +10,7 @@ import Kontak from "./Kontak/Kontak.vue";
 import AboutView from "./About/AboutView.vue";
 import Order from "./Order/Order.vue";
 import ResultView from "./Result/ResultView.vue";
+import NotFount from "./NotFound/NotFount.vue";
 ////////////////// Chat ///////////////////////
 import ChatView from "./Chat/ChatView.vue";
 import Conservations from "./Chat/Conservations.vue";
@@ -29,4 +30,5 @@ export {
     AboutView,
     Order,
     ResultView,
+    NotFount
 }
