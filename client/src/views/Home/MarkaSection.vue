@@ -4,7 +4,8 @@
             <a-col v-if="loading" class="marka_col" v-for="_ in new Array(12).fill(1)" :xs="12" :sm="8" :md="6" :lg="4">
                 <a-skeleton active />
             </a-col>
-            <a-col v-else class="marka_col" :xs="12" :sm="8" :md="6" :lg="4" v-for="marka in data" :key="marka.id">
+            <a-col v-else class="marka_col" :xs="12" :sm="8" :md="6" :lg="4" v-for="marka in data" :key="marka.id"
+                @click="handleResult(marka.marka)">
                 <div class="marka_box">
                     <img :src="marka.photo" :alt="marka.marka">
                     <p>{{ capitalize(marka.marka) }}</p>
@@ -16,12 +17,20 @@
 
 <script setup>
 import useFetch from '@/Hooks/useFetch';
+import router from '@/router';
 import { onMounted } from 'vue';
 const { data, loading, error, getData } = useFetch()
 
 //////////////////////  methods ////////////////////////
 const capitalize = (text) => {
     return text[0].toUpperCase() + text.slice(1, text.length)
+}
+
+const handleResult = (marka) => {
+    router.push({
+        name : "result", 
+        query : {marka : marka}
+    })
 }
 
 onMounted(() => {

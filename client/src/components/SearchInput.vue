@@ -14,13 +14,23 @@
 import router from '@/router'
 import api from '@/utils/axios'
 import { SearchOutlined } from '@ant-design/icons-vue'
+import { useRoute } from 'vue-router'
 import { ref } from 'vue'
+const route = useRoute()
 
-const searchQuery = ref('')
 const options = ref([])
 const loading = ref(false)
 let debounceTimer = null
 const isSelected = ref(false)
+
+const getInitialSearch = () => {
+    const { search, marka, model } = route.query
+
+    if (marka && model) return `${marka}-${model}`
+    if (search) return search
+    return ""
+}
+const searchQuery = ref(getInitialSearch())
 
 const onSearch = (val) => {
     clearTimeout(debounceTimer)
@@ -51,8 +61,6 @@ const onSearch = (val) => {
 }
 
 const onSelect = (val, option) => {
-    const currentSearchQuery = searchQuery.value
-    console.log(currentSearchQuery)
     searchQuery.value = option.label
     isSelected.value = true
     const car = option.car
@@ -61,7 +69,7 @@ const onSelect = (val, option) => {
         name: "result",
         query: {
             marka: car.marka,
-            car_model: car.car_model,
+            model: car.car_model,
         }
     })
 }
@@ -80,4 +88,6 @@ const OnEnter = () => {
     })
     console.log("Qidirilayotgan:", searchQuery.value)
 }
+
+
 </script>
