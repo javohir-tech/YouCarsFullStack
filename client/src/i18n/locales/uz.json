@@ -1,0 +1,10 @@
+{
+    "nav": {
+        "home": "Bosh sahifa",
+        "catalog": "Katalog",
+        "about": "Biz haqimizda",
+        "news" :"Yangiliklar", 
+        "contact" : "Kontaklar"
+    },
+    "search": "Mashina qidirish..."
+}

@@ -8,11 +8,11 @@
                 <Row align="center">
                     <Col :xs="24" :sm="24" :md="14" :lg="14">
                         <ul class="menu_list">
-                            <li><router-link to="/">Главная</router-link></li>
-                            <li><router-link to="/katalog">Каталог</router-link></li>
-                            <li><router-link to="/about">О нас</router-link></li>
-                            <li><router-link to="/news">Новости</router-link></li>
-                            <li><router-link to="/kontak">Контакты</router-link></li>
+                            <li><router-link to="/">{{ $t('nav.home') }}</router-link></li>
+                            <li><router-link to="/katalog">{{ $t('nav.catalog') }}</router-link></li>
+                            <li><router-link to="/about">{{ $t('nav.about') }}</router-link></li>
+                            <li><router-link to="/news">{{ $t('nav.news') }}</router-link></li>
+                            <li><router-link to="/kontak">{{ $t('nav.contact') }}</router-link></li>
                         </ul>
                     </Col>
                     <Col :xs="0" :sm="0" :md="10" :lg="10">
@@ -279,11 +279,12 @@ import { useUserStore } from '@/store/useUserStore';
 import { useConversationStore } from '@/store/useConversationStore';
 import router from '@/router';
 import SearchInput from './SearchInput.vue';
+import { useI18n } from 'vue-i18n';
 
-
+const {t , locale} = useI18n()
 const conversationStore = useConversationStore()
 const userStore = useUserStore()
-const value1 = ref('ru');
+const value1 = ref(localStorage.getItem("lang")|| "ru");
 const loading = ref(true)
 const isMobileMenuOpen = ref(false)
 
@@ -292,6 +293,8 @@ const focus = () => {
 };
 
 const handleChange = value => {
+    locale.value = value
+    localStorage.setItem("lang" , value)
     console.log(`selected ${value}`);
 };
 
