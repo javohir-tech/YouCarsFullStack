@@ -34,7 +34,7 @@ from .models import (
 )
 
 # ////////////////////// Permissions /////////////////////
-from .permissions import IsAuthor, IsAuthorImage
+from .permissions import IsAuthor, IsAuthorImage, IsManager
 
 # //////////// SERIALIZERS  /////////////////////////////
 from .serializers import (
@@ -276,6 +276,8 @@ class CarView(APIView):
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
+        if self.request.method == "POST":
+            return [IsAuthenticated(), IsManager()]
         return [IsAuthenticated(), IsAuthor()]
 
     @swagger_auto_schema(
@@ -782,7 +784,7 @@ class GetAllCarsView(ListAPIView):
     )
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = CarFilter
-    search_fields = [ "marka__marka", "car_model__name"]
+    search_fields = ["marka__marka", "car_model__name"]
     pagination_class = CustomPagination
 
 

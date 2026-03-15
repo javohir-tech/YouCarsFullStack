@@ -198,8 +198,6 @@ const handleDelete = async () => {
 
     deleteLoading.value = true
     try {
-        console.log(selectedReason.value)
-        console.log(selectedCar.value.id)
         const response = await api.delete(`/cars/car/${selectedCar.value.id}/`, {
             data: { reason: selectedReason.value }
         })

@@ -8,6 +8,24 @@
     <a-spin :spinning="isLoading" tip="Loading..." size="large">
 
       <div v-if="!errors" class="container">
+        <a-alert type="warning" closable>
+          <template #description>
+            <p>
+              Loyiha hozircha test rejimida ishlayapti product upload qilish uchun user pozitsiyangiz ni manager ga
+              o'zgartirish talab etiladi . Test qilip ko'rish uchun adminga yozing
+            </p>
+            <div style="color: red">
+              telegram : <a target="_blank" href="https://t.me/Suvonov_Javoh1r">Suvonov_Javoh1r</a>
+            </div>
+            <div style="color: #1890ff;">
+              linkedin : <a href="http://www.linkedin.com/in/javohir-suvonov-a98925303">Suvonov Javohir</a>
+            </div>
+            <div>
+              chat : <router-link to="/profile/chat/2a2e4d11-d2dc-4e26-bdcc-22c3cabbf2bd/suvonov">Suvonov</router-link>
+            </div>
+            <p style="color: brown;">Agar Admin Manager etip tayinlaganini tastiqlagan bo'lsa test qilip ko'rish uchun tovar qoshishingiz mumkin</p>
+          </template>
+        </a-alert>
         <div class="page-header">
           <h1>{{ route.params.id ? "Редактировать объявление" : "Разместите объявление" }}</h1>
           <p>{{
@@ -686,6 +704,10 @@ const carData = {
       if (error.response) {
         const errors = error.response.data
         for (let item in errors) {
+          if (errors.detail) {
+            message.error(errors.detail)
+            return
+          }
           if (errors[item]) {
             message.error(errors[item][0])
             break
@@ -962,7 +984,7 @@ const handleSubmit = async () => {
       message.success('Объявление успешно опубликовано!')
     }
 
-    
+
     router.push(`/cars/detail/${carId}`)
   } catch (error) {
     console.error('Submit error:', error);
