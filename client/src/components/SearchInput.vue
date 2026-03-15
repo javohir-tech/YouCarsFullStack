@@ -80,13 +80,13 @@ const OnEnter = () => {
         isSelected.value = false
         return
     }
+    if(!searchQuery.value.trim()) return
     router.push({
         name: "result",
         query: {
             search: searchQuery.value
         }
     })
-    console.log("Qidirilayotgan:", searchQuery.value)
 }
 
 

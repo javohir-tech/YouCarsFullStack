@@ -32,7 +32,7 @@
 <script setup>
 import { CallCard, CarCard } from '@/components';
 import api from '@/utils/axios';
-import { computed, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute()
@@ -41,12 +41,12 @@ const route = useRoute()
 const loading = ref(false)
 const results = ref([])
 ////// Pagination
-const pageSize = ref(1)
+const pageSize = ref(12)
 const current = ref(1)
 const total = ref(0)
 
 const getInitialSearch = () => {
-    const { search, marka, model, car_marka } = route.query
+    const { search, marka, model } = route.query
     if (marka && model) return `${marka}-${model}`
     if (marka) return marka
     if (search) return search
