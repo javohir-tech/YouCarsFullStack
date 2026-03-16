@@ -1,20 +1,18 @@
 <template>
   <div class="container">
     <a-breadcrumb class="bread_crumb" separator=">">
-      <a-breadcrumb-item><router-link to="/">Главная</router-link></a-breadcrumb-item>
-      <a-breadcrumb-item>О нас</a-breadcrumb-item>
+      <a-breadcrumb-item><router-link to="/">{{ t('nav.home') }}</router-link></a-breadcrumb-item>
+      <a-breadcrumb-item>{{ t('about.breadcrumb.about') }}</a-breadcrumb-item>
     </a-breadcrumb>
     <!-- Hero -->
     <section class="about-hero">
       <div class="about-hero__text">
-        <span class="about-badge">О нас</span>
+        <span class="about-badge">{{ t('about.hero.badge') }}</span>
         <div class="header">
-          <h1>Новый формат <span class="about-accent">автомобильной торговли</span></h1>
+          <h1>{{ t('about.hero.title') }} <span class="about-accent">{{ t('about.hero.accent') }}</span></h1>
         </div>
         <p class="about-hero__desc">
-          YouCar — надёжный автомобильный рынок в Узбекистане. Здесь обычные пользователи
-          размещают объявления о продаже своих автомобилей, а покупатели с помощью удобных
-          фильтров находят подходящий вариант.
+          {{ t('about.hero.description') }}
         </p>
       </div>
       <div class="about-stats">
@@ -29,7 +27,7 @@
 
     <!-- How it works -->
     <section class="about-section">
-      <h2 class="section_header">Как это работает?</h2>
+      <h2 class="section_header">{{ t('about.howItWorks.title') }}</h2>
       <div class="about-steps">
         <div class="about-step" v-for="(step, i) in steps" :key="i">
           <div class="about-step__num">{{ i + 1 }}</div>
@@ -45,7 +43,7 @@
 
     <!-- Why us -->
     <section class="about-section">
-      <h2 class="section_header">Почему YouCar?</h2>
+      <h2 class="section_header">{{ t('about.whyUs.title') }}</h2>
       <div class="about-features">
         <div class="about-feature" v-for="item in features" :key="item.title">
           <div class="about-feature__icon">
@@ -61,7 +59,7 @@
 
     <!-- Contact -->
     <section class="about-section">
-      <h2 class="section_header">Связаться с нами</h2>
+      <h2 class="section_header">{{ t('about.contact.title') }}</h2>
       <div class="about-contact__grid">
         <a href="tel:+77123290" class="about-contact__item">
           <i class="fa-solid fa-phone"></i>
@@ -73,7 +71,7 @@
         </a>
         <div class="about-contact__item">
           <i class="fa-solid fa-location-dot"></i>
-          <span>Узбекистан</span>
+          <span>{{ t('about.contact.location') }}</span>
         </div>
       </div>
     </section>
@@ -82,49 +80,54 @@
 </template>
 
 <script setup>
-const stats = [
-  { value: '5 000+', label: 'Объявлений' },
-  { value: '12 000+', label: 'Пользователей' },
-  { value: '3', label: 'Года опыта' },
-]
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 
-const steps = [
-  {
-    title: 'Зарегистрируйтесь',
-    desc: 'Создайте аккаунт за несколько минут и войдите на платформу.',
-  },
-  {
-    title: 'Разместите объявление',
-    desc: 'Загрузите информацию и фотографии автомобиля, укажите цену.',
-  },
-  {
-    title: 'Найдите покупателя',
-    desc: 'Заинтересованные пользователи свяжутся с вами напрямую и договорятся о сделке.',
-  },
-]
+const { t } = useI18n();
 
-const features = [
+const stats = computed(() => [
+  { value: '5 000+', label: t('about.stats.announcements') },
+  { value: '12 000+', label: t('about.stats.users') },
+  { value: '3', label: t('about.stats.experience') },
+])
+
+const steps = computed(() => [
+  {
+    title: t('about.howItWorks.steps.0.title'),
+    desc: t('about.howItWorks.steps.0.description'),
+  },
+  {
+    title: t('about.howItWorks.steps.1.title'),
+    desc: t('about.howItWorks.steps.1.description'),
+  },
+  {
+    title: t('about.howItWorks.steps.2.title'),
+    desc: t('about.howItWorks.steps.2.description'),
+  },
+])
+
+const features = computed(() => [
   {
     icon: 'fa-solid fa-shield-halved',
-    title: 'Безопасно',
-    desc: 'Объявления размещают только зарегистрированные пользователи.',
+    title: t('about.whyUs.features.0.title'),
+    desc: t('about.whyUs.features.0.description'),
   },
   {
     icon: 'fa-solid fa-bolt',
-    title: 'Быстро',
-    desc: 'Ваше объявление появится на сайте в течение нескольких минут.',
+    title: t('about.whyUs.features.1.title'),
+    desc: t('about.whyUs.features.1.description'),
   },
   {
     icon: 'fa-solid fa-magnifying-glass',
-    title: 'Удобный поиск',
-    desc: 'Фильтры по марке, цене, году выпуска и другим параметрам.',
+    title: t('about.whyUs.features.2.title'),
+    desc: t('about.whyUs.features.2.description'),
   },
   {
     icon: 'fa-solid fa-comments',
-    title: 'Прямое общение',
-    desc: 'Продавец и покупатель общаются без посредников.',
+    title: t('about.whyUs.features.3.title'),
+    desc: t('about.whyUs.features.3.description'),
   },
-]
+])
 </script>
 
 <style scoped>

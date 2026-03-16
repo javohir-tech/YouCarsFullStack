@@ -1,60 +1,19 @@
 <template>
     <section class="servises_section">
         <div class="header">
-            <h1>Почему мы?</h1>
+            <h1>{{ t('services.title') }}</h1>
         </div>
         <div class="section_cards">
             <a-row :gutter="[16, 24]">
-                <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
+                <a-col class="gutter-row" :xs="24" :md="12" :lg="6" v-for="(card, index) in serviceCards" :key="index">
                     <div class="section_card">
                         <div class="card_image">
-                            <img src="./../../../public/key.png" alt="key image">
+                            <img :src="`/public/${cardImages[index]}`" :alt="card.title">
                         </div>
                         <div class="card_info">
-                            <p class="card_title">Работаем под ключ</p>
+                            <p class="card_title">{{ card.title }}</p>
                             <p class="card_subtitle">
-                                У нас вы можете приобрести автомобиль напрямую у официального автодилера, без
-                                посредников и переводчиков.
-                            </p>
-                        </div>
-                    </div>
-                </a-col>
-                <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
-                    <div class="section_card">
-                        <div class="card_image">
-                            <img src="./../../../public/message.png" alt="key image">
-                        </div>
-                        <div class="card_info">
-                            <p class="card_title">онлайн-чат 24/7</p>
-                            <p class="card_subtitle">
-                                Мы всегда на связи, чтобы ответить на ваши вопросы и помочь вам с выбором.
-                            </p>
-                        </div>
-                    </div>
-                </a-col>
-                <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
-                    <div class="section_card">
-                        <div class="card_image">
-                            <img src="./../../../public/car.png" alt="key image">
-                        </div>
-                        <div class="card_info">
-                            <p class="card_title">Упрощенный выбор авто</p>
-                            <p class="card_subtitle">
-                                мы создали этот сайт, чтобы сделать поиск автомобиля по вашим критериям максимально
-                                простым и удобным.
-                            </p>
-                        </div>
-                    </div>
-                </a-col>
-                <a-col class="gutter-row" :xs="24" :md="12" :lg="6">
-                    <div class="section_card">
-                        <div class="card_image">
-                            <img src="./../../../public/car2.png" alt="key image">
-                        </div>
-                        <div class="card_info">
-                            <p class="card_title">Доставка</p>
-                            <p class="card_subtitle">
-                                поставка в любой регион РФ, прямая связь без посредников
+                                {{ card.description }}
                             </p>
                         </div>
                     </div>
@@ -65,7 +24,17 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 
+const { locale, messages, t } = useI18n();
+
+const cardImages = ['key.png', 'message.png', 'car.png', 'car2.png'];
+
+const serviceCards = computed(() => {
+    const cards = messages.value[locale.value]?.services?.cards || [];
+    return Array.isArray(cards) ? cards : [];
+});
 </script>
 
 <style scoped>

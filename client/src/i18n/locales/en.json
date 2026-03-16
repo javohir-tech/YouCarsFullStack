@@ -6,5 +6,101 @@
         "news": "News",
         "contact": "Contacts"
     },
-    "search": "Search car..."
+    "search": "Search car...",
+    "about": {
+        "breadcrumb": {
+            "home": "Home",
+            "about": "About"
+        },
+        "hero": {
+            "badge": "About",
+            "title": "A new format of",
+            "accent": "automotive trading",
+            "description": "YouCar is a reliable automotive marketplace in Uzbekistan. Here, ordinary users post advertisements for the sale of their cars, and buyers use convenient filters to find the right option."
+        },
+        "stats": {
+            "announcements": "Listings",
+            "users": "Users",
+            "experience": "Years of experience"
+        },
+        "howItWorks": {
+            "title": "How does it work?",
+            "steps": [
+                {
+                    "title": "Register",
+                    "description": "Create an account in a few minutes and log in to the platform."
+                },
+                {
+                    "title": "Post a Listing",
+                    "description": "Upload car information and photos, specify the price."
+                },
+                {
+                    "title": "Find a Buyer",
+                    "description": "Interested users will contact you directly and negotiate the deal."
+                }
+            ]
+        },
+        "whyUs": {
+            "title": "Why YouCar?",
+            "features": [
+                {
+                    "title": "Safe",
+                    "description": "Listings are posted only by registered users."
+                },
+                {
+                    "title": "Fast",
+                    "description": "Your listing will appear on the site within a few minutes."
+                },
+                {
+                    "title": "Convenient Search",
+                    "description": "Filters by brand, price, year of manufacture, and other parameters."
+                },
+                {
+                    "title": "Direct Communication",
+                    "description": "Seller and buyer communicate without intermediaries."
+                }
+            ]
+        },
+        "contact": {
+            "title": "Contact Us",
+            "phone": "+77 123 29 04",
+            "email": "suvonovjavohir625@gmail.com",
+            "location": "Uzbekistan"
+        }
+    },
+    "services": {
+        "title": "Why us?",
+        "cards": [
+            {
+                "title": "Turnkey Solution",
+                "description": "You can purchase a car directly from an official auto dealer with us, without intermediaries and translators."
+            },
+            {
+                "title": "Online chat 24/7",
+                "description": "We are always available to answer your questions and help you with your choice."
+            },
+            {
+                "title": "Simplified car selection",
+                "description": "We created this site to make the search for a car according to your criteria as simple and convenient as possible."
+            },
+            {
+                "title": "Delivery",
+                "description": "Delivery to any region, direct contact without intermediaries"
+            }
+        ]
+    },
+    "aboutSection": {
+        "title": "About Our Company",
+        "description": "We have extensive experience working with the Korean car market and carefully select cars for our clients, taking into account their needs and budget. We work only with reliable suppliers and carriers to ensure safe and reliable delivery.",
+        "buttonText": "Contact Us"
+    },
+    "banner": {
+        "buttonText": "More Details",
+        "moreHeader": "New"
+    },
+    "callCard": {
+        "title": "Can't decide?",
+        "subtitle": "Leave a request, and our managers will help you!",
+        "buttonText": "Leave a Request"
+    }
 }

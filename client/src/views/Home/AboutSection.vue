@@ -11,15 +11,15 @@
             <a-col class="gutter-row" :xs="{ span: 24, order: 1 }" :md="{ span: 12, order: 2 }"
                 :lg="{ span: 12, order: 2 }">
                 <h3 class="about_section_title">
-                    О нашей компании
+                    {{ t('aboutSection.title') }}
                 </h3>
                 <p class="about_section_subtitle">
-                    Мы имеем огромный опыт работы с автомобильным рынком Кореи и тщательно отбираем автомобили для
-                    наших клиентов, учитывая их потребности и бюджет. Мы работаем только с надежными поставщиками и
-                    перевозчиками, чтобы обеспечить безопасность и надежность доставки.
+                    {{ t('aboutSection.description') }}
                 </p>
                 <div class="about_section_btn">
-                    <a-button @click="router.push('/about')" type="primary" block size="large">Связаться с нами</a-button>
+                    <a-button @click="router.push('/about')" type="primary" block size="large">{{
+                        t('aboutSection.buttonText')
+                        }}</a-button>
                 </div>
             </a-col>
         </a-row>
@@ -28,7 +28,9 @@
 
 <script setup>
 import router from '@/router';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 </script>
 
 <style scoped>

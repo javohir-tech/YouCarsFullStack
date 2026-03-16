@@ -3,8 +3,104 @@
         "home": "Bosh sahifa",
         "catalog": "Katalog",
         "about": "Biz haqimizda",
-        "news" :"Yangiliklar", 
-        "contact" : "Kontaklar"
+        "news": "Yangiliklar",
+        "contact": "Kontaklar"
     },
-    "search": "Mashina qidirish..."
+    "search": "Mashina qidirish...",
+    "about": {
+        "breadcrumb": {
+            "home": "Bosh sahifa",
+            "about": "Haqimizda"
+        },
+        "hero": {
+            "badge": "Haqimizda",
+            "title": "Yangi shakldagi",
+            "accent": "avtomobil savdosi",
+            "description": "YouCar — O'zbekistondagi ishonchli avtomobil bozori. Bu yerda oddiy foydalanuvchilar o'z avtomobillarini sotish haqida elanlarni joylashtiradilar, sotuvchilar esa qulay filtrlar yordamida mos variantni topdilar."
+        },
+        "stats": {
+            "announcements": "E'lonlar",
+            "users": "Foydalanuvchilar",
+            "experience": "Yillik tajriba"
+        },
+        "howItWorks": {
+            "title": "Bu qanday ishlaydi?",
+            "steps": [
+                {
+                    "title": "Ro'yxatdan o'ting",
+                    "description": "Bir necha daqiqada akkaunt yarating va platformaga kiriring."
+                },
+                {
+                    "title": "E'lon joylashtiring",
+                    "description": "Avtomobil haqida ma'lumot va suratlari yuklang, narxni ko'rsating."
+                },
+                {
+                    "title": "Xaridor topcing",
+                    "description": "Qiziqgan foydalanuvchilar siz bilan birjani bog'lanib, shartnoma bo'yicha razilashadi."
+                }
+            ]
+        },
+        "whyUs": {
+            "title": "Nega YouCar?",
+            "features": [
+                {
+                    "title": "Xavfsiz",
+                    "description": "E'lonlarni faqat ro'yxatdan o'tgan foydalanuvchilar joylashtiradilar."
+                },
+                {
+                    "title": "Tez",
+                    "description": "Sizning e'loningiz bir necha daqiqada saytda paydo bo'ladi."
+                },
+                {
+                    "title": "Qulay qidirish",
+                    "description": "Brenda, narx, ishlab chiqarish yili va boshqa parametrlarga ko'ra filtrlar."
+                },
+                {
+                    "title": "To'g'ridan-to'g'ri muloqot",
+                    "description": "Sotuvchi va xaridor oraliq vositachemsiz gaplashadilar."
+                }
+            ]
+        },
+        "contact": {
+            "title": "Biz bilan bog'lanish",
+            "phone": "+77 123 29 04",
+            "email": "suvonovjavohir625@gmail.com",
+            "location": "O'zbekiston"
+        }
+    },
+    "services": {
+        "title": "Nega biz?",
+        "cards": [
+            {
+                "title": "Kalit ostiga topshirish",
+                "description": "Bizda siz avtomobilni to'g'ridan-to'g'ri rasmiy avtomobil dileryasidan sotuvchilarsiz va tarjimonlarsiz sotib olishingiz mumkin."
+            },
+            {
+                "title": "24/7 onlayn chat",
+                "description": "Biz har doim sizning savollaringizga javob berish va tanlov bilan yordam berish uchun tayyor."
+            },
+            {
+                "title": "Soddalashtirish avtomobil tanlov",
+                "description": "Biz bu saytni yaratdik, shunda avtomobilni sizning mezonlaringiz bo'yicha qidirish maksimal sodda va qulay bo'lsin."
+            },
+            {
+                "title": "Yetkazib berish",
+                "description": "RF ning istalgan hududiga yetkazib berish, oraliq vositachilarsiz to'g'ridan-to'g'ri bog'lanish"
+            }
+        ]
+    },
+    "aboutSection": {
+        "title": "Kompaniyamiz haqida",
+        "description": "Biz Koreya avtomobil bozoridagi katta tajribagamiz bor va mijozlarimiz uchun avtomobillarni sinchiklik bilan tanlaymiz, ularning ehtiyojlari va byujetini hisobga olamiz. Biz yetkazib berishning xavfsizligi va ishonchliligini ta'minlash uchun faqat ishonchli yetkazuvchilar va tashuvchilar bilan ishlayapman.",
+        "buttonText": "Biz bilan bog'lanish"
+    },
+    "banner": {
+        "buttonText": "Batafsil",
+        "moreHeader": "Yangi"
+    },
+    "callCard": {
+        "title": "Tanlashdan charchang?",
+        "subtitle": "Ariza qoldiring, bizning menejerlar sizga yordam beradilar!",
+        "buttonText": "Ariza qoldirish"
+    }
 }

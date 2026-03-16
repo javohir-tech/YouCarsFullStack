@@ -2,10 +2,10 @@
     <div class="call_section">
         <a-row :gutter="[16, 24]">
             <a-col class="call_section_info" :lg="12">
-                <h2>Не можете определится с выбором?</h2>
-                <p>Оставьте заявку, и наши менеджеры проконсультируют вас!</p>
-                <router-link to="/order" class="call_btn"><a-button size="large" block>Оставить
-                        заявку</a-button></router-link>
+                <h2>{{ t('callCard.title') }}</h2>
+                <p>{{ t('callCard.subtitle') }}</p>
+                <router-link to="/order" class="call_btn"><a-button size="large" block>{{ t('callCard.buttonText')
+                }}</a-button></router-link>
             </a-col>
             <a-col class="call_section_image" :lg="12">
                 <img src="../../public/callImage.png" alt="call image">
@@ -15,6 +15,9 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 </script>
 
 <style scoped>

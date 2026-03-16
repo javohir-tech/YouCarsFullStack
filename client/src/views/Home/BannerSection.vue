@@ -9,13 +9,15 @@
                 <a-row class="hero_section_row">
                     <a-col :md="12">
                         <div class="hero_section_info">
-                            <h1 class="hero_section_header">Новый {{ banner.marka }} {{ banner.model }}!</h1>
+                            <h1 class="hero_section_header">{{ t('banner.moreHeader') }} {{ banner.marka }} {{
+                                banner.model
+                                }}!</h1>
                             <p class="hero_section_subtitle">
                                 {{ banner.subtitle }}
                             </p>
                             <div class="her_section_btn">
-                                <a-button @click="toNavigate(banner.car_id)" type="primary" block
-                                    size="large">Подробнее</a-button>
+                                <a-button @click="toNavigate(banner.car_id)" type="primary" block size="large">{{
+                                    t('banner.buttonText') }}</a-button>
                             </div>
                         </div>
                     </a-col>
@@ -55,10 +57,12 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 import useFetch from '@/Hooks/useFetch'
 import { onMounted, ref } from 'vue'
 import router from '@/router'
+import { useI18n } from 'vue-i18n'
 
 const modules = [Navigation, Pagination, Autoplay]
 
 const { data, loading, error, getData } = useFetch()
+const { t } = useI18n()
 
 const imageLoading = ref(true)
 
