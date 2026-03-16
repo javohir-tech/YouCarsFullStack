@@ -15,7 +15,7 @@
                                     </div>
                                     <div class="user_info">
                                         <h3>{{ userStore.username }}</h3>
-                                        <p>Рейтинг 5.0</p>
+                                        <p>{{ t('profile.rating') }}</p>
                                     </div>
                                 </a-flex>
 
@@ -23,14 +23,14 @@
 
                                 <div class="user_email">
                                     <a-flex justify="space-between" align="center">
-                                        <p>E-mail</p>
+                                        <p>{{ t('profile.email') }}</p>
                                         <p><a href="#">{{ userStore.email }}</a></p>
                                     </a-flex>
                                     <a-flex justify="space-between" align="center">
-                                        <p>Тариф</p>
+                                        <p>{{ t('profile.plan') }}</p>
                                         <p>
                                             <a href="#">
-                                                <InfoCircleOutlined /> Базовый тариф
+                                                <InfoCircleOutlined /> {{ t('profile.basicPlan') }}
                                             </a>
                                         </p>
                                     </a-flex>
@@ -39,26 +39,28 @@
                                 <div class="profile_routes">
                                     <router-link to="/profile/storage" class="profile_route">
                                         <StarOutlined class="router_icon" />
-                                        <p>Избранное</p>
+                                        <p>{{ t('profile.favorites') }}</p>
                                     </router-link>
                                     <router-link to="/profile/conversations" class="profile_route">
                                         <MessageOutlined class="router_icon" />
-                                        <p>Сообщения</p>
+                                        <p>{{ t('profile.messages') }}</p>
                                     </router-link>
                                     <div class="profile_route">
                                         <LayoutOutlined class="router_icon" />
                                         <a-dropdown>
                                             <a class="ant-dropdown-link" style="width: 100%;" @click.prevent>
-                                                Разместить объявление
+                                                {{ t('profile.postListing') }}
                                                 <DownOutlined />
                                             </a>
                                             <template #overlay>
                                                 <a-menu>
                                                     <a-menu-item>
-                                                        <router-link to="/profile/mycars">Мои объвления</router-link>
+                                                        <router-link to="/profile/mycars">{{ t('profile.myListings')
+                                                            }}</router-link>
                                                     </a-menu-item>
                                                     <a-menu-item>
-                                                        <router-link to="/upload">Добавить авто</router-link>
+                                                        <router-link to="/upload">{{ t('profile.addCar')
+                                                            }}</router-link>
                                                     </a-menu-item>
                                                 </a-menu>
                                             </template>
@@ -66,18 +68,18 @@
                                     </div>
                                     <router-link to="/profile" class="profile_route">
                                         <ThunderboltOutlined class="router_icon" />
-                                        <p>Тариф</p>
+                                        <p>{{ t('profile.plan') }}</p>
                                     </router-link>
                                     <router-link to="/profile/settings" class="profile_route">
                                         <ToolOutlined class="router_icon" />
-                                        <p>Настройки аккаунта</p>
+                                        <p>{{ t('profile.accountSettings') }}</p>
                                     </router-link>
                                 </div>
 
                                 <div class="log_out">
-                                    <a-popconfirm title="Вы действительно хотите выйти?" ok-text="Да" cancel-text="Нет"
-                                        @confirm="handleLogOut">
-                                        <a-button block danger>Выйти</a-button>
+                                    <a-popconfirm :title="t('profile.confirmLogout')" :ok-text="t('profile.yes')"
+                                        :cancel-text="t('profile.no')" @confirm="handleLogOut">
+                                        <a-button block danger>{{ t('profile.logout') }}</a-button>
                                     </a-popconfirm>
                                 </div>
                             </div>
@@ -110,6 +112,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { RouterView, useRouter, useRoute } from 'vue-router'
 ////////////////// STORE ///////////////////////////
 import { useUserStore } from '@/store/useUserStore'
+import { useI18n } from 'vue-i18n'
 //////////////// ANTD ////////////////////////
 import { message } from 'ant-design-vue'
 import {
@@ -125,6 +128,7 @@ import {
 import { useConversations } from '@/composables/useConversations'
 import { PresenceOnline } from '@/composables/PresenceOnline'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()

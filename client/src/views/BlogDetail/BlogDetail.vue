@@ -32,7 +32,7 @@
                             <right-outlined class="similar_icon" />
                         </div>
                         <div class="link_to_blog">
-                            <router-link to="/blogs">Читать больше новостей <arrow-right-outlined
+                            <router-link to="/news">Читать больше новостей <arrow-right-outlined
                                     class="blogs_link" /></router-link>
                         </div>
                     </div>

@@ -4,7 +4,7 @@
             <div class="back">
                 <i class="fa-solid fa-angle-left" @click="toBack"></i>
             </div>
-            <h1>Мои объявления</h1>
+            <h1>{{ t('profile.myListings') }}</h1>
         </a-flex>
 
         <div class="tabs">
@@ -26,7 +26,9 @@
 import router from '@/router'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const route = useRoute()
 
 const isActive = computed(() => {

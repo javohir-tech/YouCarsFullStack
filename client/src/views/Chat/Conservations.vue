@@ -6,7 +6,7 @@
                 <div class="back">
                     <i class="fa-solid fa-angle-left" @click="toBack"></i>
                 </div>
-                <h1>Сообщения</h1>
+                <h1>{{ t('profile.messages') }}</h1>
             </a-flex>
             <div v-for="partner in conversationStore.conversations" :key="partner.partner_id" class="conversations">
                 <conversationItem :partner_id="partner.partner_id" :avatar="partner.avatar"
@@ -33,7 +33,9 @@ import { LeftOutlined } from '@ant-design/icons-vue';
 
 const conversationStore = useConversationStore()
 const { loading } = useConversations()
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n()
 function toBack() {
     router.push("/profile")
 }

@@ -5,7 +5,7 @@
                 <div class="back">
                     <i class="fa-solid fa-angle-left" @click="toBack"></i>
                 </div>
-                <h1>Настройки</h1>
+                <h1>{{ t('profileSettings.title') }}</h1>
             </a-flex>
 
             <!-- Rasm Upload Qismi -->
@@ -24,15 +24,15 @@
                     </div>
                     <div class="avatar-actions" v-if="image">
                         <a-button type="primary" @click="handleChangeImage" :loading="uploadLoading">
-                            <SaveOutlined /> Сохранить
+                            <SaveOutlined /> {{ t('profileSettings.save') }}
                         </a-button>
                         <a-button @click="cancelUpload">
-                            <CloseOutlined /> Отмена
+                            <CloseOutlined /> {{ t('profileSettings.cancel') }}
                         </a-button>
                     </div>
                     <div class="avatar-actions" v-if="photo && !image">
                         <a-button danger @click="showDeleteConfirm">
-                            <DeleteOutlined /> Удалить фото
+                            <DeleteOutlined /> {{ t('profileSettings.deletePhoto') }}
                         </a-button>
                     </div>
                 </div>
@@ -41,15 +41,15 @@
             <!-- Email Form -->
             <a-form :model="EmailForm" :rules="emailRules" @finish="handleEmailRetriew" @finishFailed="onFinishFailed"
                 layout="vertical">
-                <a-form-item name='email' class="form-item" label="Email">
-                    <a-input v-model:value="EmailForm.email" class="custom-input" placeholder="E-mail" size="large"
-                        autocomplete="email" />
+                <a-form-item name='email' class="form-item" :label="t('profileSettings.email')">
+                    <a-input v-model:value="EmailForm.email" class="custom-input"
+                        :placeholder="t('profileSettings.email')" size="large" autocomplete="email" />
                 </a-form-item>
 
                 <a-form-item class="form-item">
                     <a-button :loading="emailLoading" type="primary" html-type="submit" size="large"
                         class="submit-button">
-                        Изменить
+                        {{ t('profileSettings.change') }}
                     </a-button>
                 </a-form-item>
             </a-form>
@@ -58,22 +58,22 @@
             <a-form :model="UserInfoState" :rules="UserInfoRules" @finish="handleUpdateUser"
                 @finishFailed="onFinishFailed" layout="vertical">
                 <div class="user_info">
-                    <a-form-item name="username" class="form-item" label="Username">
-                        <a-input v-model:value="UserInfoState.username" class="custom-input" placeholder="Username"
-                            size="large" autocomplete="username" />
+                    <a-form-item name="username" class="form-item" :label="t('profileSettings.username')">
+                        <a-input v-model:value="UserInfoState.username" class="custom-input"
+                            :placeholder="t('profileSettings.username')" size="large" autocomplete="username" />
                     </a-form-item>
-                    <a-form-item name="first_name" class="form-item" label="First Name">
-                        <a-input v-model:value="UserInfoState.first_name" class="custom-input" placeholder="First Name"
-                            size="large" autocomplete="given-name" />
+                    <a-form-item name="first_name" class="form-item" :label="t('profileSettings.firstName')">
+                        <a-input v-model:value="UserInfoState.first_name" class="custom-input"
+                            :placeholder="t('profileSettings.firstName')" size="large" autocomplete="given-name" />
                     </a-form-item>
-                    <a-form-item name="last_name" class="form-item" label="Last Name">
-                        <a-input v-model:value="UserInfoState.last_name" class="custom-input" placeholder="Last Name"
-                            size="large" autocomplete="family-name" />
+                    <a-form-item name="last_name" class="form-item" :label="t('profileSettings.lastName')">
+                        <a-input v-model:value="UserInfoState.last_name" class="custom-input"
+                            :placeholder="t('profileSettings.lastName')" size="large" autocomplete="family-name" />
                     </a-form-item>
                 </div>
                 <a-form-item class="form-item">
                     <a-button :loading="loading" type="primary" html-type="submit" size="large">
-                        Изменить
+                        {{ t('profileSettings.change') }}
                     </a-button>
                 </a-form-item>
             </a-form>
@@ -82,23 +82,26 @@
             <a-form :model="passwordState" :rules="passwordRules" @finish="handlePasswordChange"
                 @finishFailed="onFinishFailed" layout="vertical">
                 <div class="user_info">
-                    <a-form-item name="old_password" label="Старый пароль" class="form-item">
-                        <a-input-password v-model:value="passwordState.old_password" placeholder="Старый пароль"
-                            class="custom-input" size="large" autocomplete="current-password" />
+                    <a-form-item name="old_password" :label="t('profileSettings.oldPassword')" class="form-item">
+                        <a-input-password v-model:value="passwordState.old_password"
+                            :placeholder="t('profileSettings.oldPassword')" class="custom-input" size="large"
+                            autocomplete="current-password" />
                     </a-form-item>
-                    <a-form-item name="new_password" label="Новый пароль" class="form-item">
-                        <a-input-password v-model:value="passwordState.new_password" placeholder="Новый пароль"
-                            class="custom-input" size="large" autocomplete="new-password" />
+                    <a-form-item name="new_password" :label="t('profileSettings.newPassword')" class="form-item">
+                        <a-input-password v-model:value="passwordState.new_password"
+                            :placeholder="t('profileSettings.newPassword')" class="custom-input" size="large"
+                            autocomplete="new-password" />
                     </a-form-item>
-                    <a-form-item name="confirm_password" label="Подтвердите пароль" class="form-item">
+                    <a-form-item name="confirm_password" :label="t('profileSettings.confirmPassword')"
+                        class="form-item">
                         <a-input-password v-model:value="passwordState.confirm_password"
-                            placeholder="Подтвердите пароль" class="custom-input" size="large"
+                            :placeholder="t('profileSettings.confirmPassword')" class="custom-input" size="large"
                             autocomplete="new-password" />
                     </a-form-item>
                 </div>
                 <a-form-item class="form-item">
                     <a-button :loading="passwordLoading" type="primary" html-type="submit" size="large">
-                        Изменить пароль
+                        {{ t('profileSettings.changePassword') }}
                     </a-button>
                 </a-form-item>
             </a-form>
@@ -113,13 +116,14 @@
 <script setup>
 import api from '@/utils/axios';
 import { message, Modal } from 'ant-design-vue';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, createVNode } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/useUserStore';
+import { useI18n } from 'vue-i18n';
 import { CameraOutlined, SaveOutlined, CloseOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { createVNode } from 'vue';
 
 const userStore = useUserStore();
+const { t } = useI18n();
 const loading = ref(false);
 const getUserLoading = ref(false);
 const emailLoading = ref(false);
@@ -264,12 +268,12 @@ const passwordRules = {
 // O'chirish confirmation modali
 const showDeleteConfirm = () => {
     Modal.confirm({
-        title: 'Вы уверены?',
+        title: t('profileSettings.confirmDelete'),
         icon: createVNode(ExclamationCircleOutlined),
-        content: 'Вы действительно хотите удалить фото профиля?',
-        okText: 'Да, удалить',
+        content: t('profileSettings.confirmDeleteContent'),
+        okText: t('profileSettings.yesDelete'),
         okType: 'danger',
-        cancelText: 'Отмена',
+        cancelText: t('profileSettings.cancel'),
         onOk() {
             handleDeleteImage();
         },
@@ -289,7 +293,7 @@ const handleDeleteImage = async () => {
         }
     } catch (error) {
         console.log(error.response || error);
-        message.error('Ошибка при удалении фото');
+        message.error(t('profileSettings.errorDeletePhoto'));
     }
 };
 
@@ -349,13 +353,13 @@ const onFileChange = (e) => {
 const cancelUpload = () => {
     image.value = null;
     getUserInfo(); // Original rasmni qaytarish
-    message.info('Загрузка отменена');
+    message.info(t('profileSettings.uploadCancelled'));
 };
 
 // Rasmni saqlash
 const handleChangeImage = async () => {
     if (!image.value) {
-        message.warning('Сначала выберите фото');
+        message.warning(t('profileSettings.selectPhotoFirst'));
         return;
     }
 
@@ -373,11 +377,11 @@ const handleChangeImage = async () => {
         photo.value = data.photo;
         userStore.updateAvatar(data.photo);
         image.value = null;
-        message.success(data.message || 'Фото успешно обновлено');
+        message.success(data.message || t('profileSettings.photoUpdated'));
         getUserInfo()
     } catch (error) {
         console.log(error.response || error);
-        message.error('Ошибка при загрузке фото');
+        message.error(t('profileSettings.errorUploadPhoto'));
     } finally {
         uploadLoading.value = false;
     }
@@ -392,10 +396,10 @@ const handleUpdateUser = async (values) => {
             last_name: values.last_name,
             first_name: values.first_name
         });
-        message.success(data.message || 'Данные обновлены');
+        message.success(data.message || t('profileSettings.dataUpdated'));
     } catch (error) {
         console.log(error.response || error);
-        message.error('Ошибка при обновлении данных');
+        message.error(t('profileSettings.errorUpdatingData'));
     } finally {
         loading.value = false;
     }

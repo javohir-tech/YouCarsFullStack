@@ -4,16 +4,16 @@
             <div class="back">
                 <i class="fa-solid fa-angle-left" @click="toBack"></i>
             </div>
-            <h1>Избранное</h1>
+            <h1>{{ t('storage.title') }}</h1>
         </a-flex>
         <div v-if="loading" class="loading">
-            <a-spin clas="spin" size="large" tip="loading..." />
+            <a-spin clas="spin" size="large" :tip="t('storage.loading')" />
         </div>
         <div v-if="total === 0 && !getError && !loading" class="empty">
-            <a-empty description="Нет сохраненных объявлений" />
-            <p>Чтобы добавить авто в избранное, нажмите на сердечко на карточке машины!</p>
+            <a-empty :description="t('storage.noSaved')" />
+            <p>{{ t('storage.addToFavorites') }}</p>
             <router-link to="/katalog">
-                <a-button type="primary">Перейти в каталог</a-button>
+                <a-button type="primary">{{ t('storage.goToCatalog') }}</a-button>
             </router-link>
         </div>
         <div v-if="getError" class="error">
@@ -39,9 +39,11 @@
 import { CarCard } from '@/components';
 import router from '@/router';
 import api from '@/utils/axios';
+import { useI18n } from 'vue-i18n';
 import { LeftOutlined } from '@ant-design/icons-vue';
 import { onMounted, ref } from 'vue';
 
+const { t } = useI18n();
 const cars = ref([])
 const loading = ref(false)
 const getError = ref(false)
@@ -145,12 +147,12 @@ onMounted(() => {
         padding: 15px;
     }
 
-     .header h1 {
+    .header h1 {
         font-weight: 500;
         font-size: 22px;
     }
 
-    .back{
+    .back {
         font-size: 22px;
     }
 }

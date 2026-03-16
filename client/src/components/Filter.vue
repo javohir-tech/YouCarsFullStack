@@ -4,59 +4,61 @@
       <div class="filter_radio">
         <a-radio-group block class="radio" v-model:value="condition" @change="handleChangeCondition"
           button-style="solid" size="large">
-          <a-radio-button value="all">Все</a-radio-button>
-          <a-radio-button value="new">Новые</a-radio-button>
-          <a-radio-button value="fair">С пробегом</a-radio-button>
+          <a-radio-button value="all">{{ t('filter.all') }}</a-radio-button>
+          <a-radio-button value="new">{{ t('filter.new') }}</a-radio-button>
+          <a-radio-button value="fair">{{ t('filter.withMileage') }}</a-radio-button>
         </a-radio-group>
         <div class="check_box">
           <a-radio-group v-model:value="availability" @change="handleChangeAvailability">
-            <a-radio value="in_stock">В наличии</a-radio>
-            <a-radio value="on_order">Под заказ</a-radio>
+            <a-radio value="in_stock">{{ t('filter.inStock') }}</a-radio>
+            <a-radio value="on_order">{{ t('filter.onOrder') }}</a-radio>
           </a-radio-group>
         </div>
       </div>
       <div class="select_box">
         <div class="select_item">
-          <p class="select_title">Выберите марку</p>
-          <a-select v-model:value="marka" class="select_form" placeholder="Marka" :options="markas" @focus="focus"
-            @change="handleChange" :loading="markaLoading" :filter-option="filterOption" show-search
+          <p class="select_title">{{ t('filter.selectBrand') }}</p>
+          <a-select v-model:value="marka" class="select_form" :placeholder="t('filter.brand')" :options="markas"
+            @focus="focus" @change="handleChange" :loading="markaLoading" :filter-option="filterOption" show-search
             popupClassName="multi-column-dropdown">
           </a-select>
         </div>
         <div class="select_item">
-          <p class="select_title">ВЫберите модель</p>
-          <a-select v-model:value="model" class="select_form" placeholder="Model" :options="models" @focus="focusModel"
-            @change="handleChangeModel" :filter-option="filterOption" show-search :loading="modelLoading"
-            popupClassName="multi-column-dropdown">
+          <p class="select_title">{{ t('filter.selectModel') }}</p>
+          <a-select v-model:value="model" class="select_form" :placeholder="t('filter.model')" :options="models"
+            @focus="focusModel" @change="handleChangeModel" :filter-option="filterOption" show-search
+            :loading="modelLoading" popupClassName="multi-column-dropdown">
           </a-select>
         </div>
         <div class="select_item">
-          <p class="select_title">Страна</p>
-          <a-select v-model:value="country" class="select_form" placeholder="Country" :options="countries"
+          <p class="select_title">{{ t('filter.country') }}</p>
+          <a-select v-model:value="country" class="select_form" :placeholder="t('filter.country')" :options="countries"
             @focus="focusCountry" @change="handleChangeCountry" :filter-option="filterOption" show-search
             :loading="countryLoading" popupClassName="multi-column-dropdown">
           </a-select>
         </div>
         <div class="select_item">
-          <p class="select_title">Год</p>
+          <p class="select_title">{{ t('filter.year') }}</p>
           <a-range-picker v-model:value="year" class="select_form" @change="onRangeChange" picker="year" />
         </div>
         <div class="select_item">
-          <p class="select_title">Цена</p>
+          <p class="select_title">{{ t('filter.price') }}</p>
           <a-slider v-model:value="value2" range :step="1000" :max="200000" @afterChange="onAfterChange" />
         </div>
       </div>
     </div>
     <div class="filter_btns">
-      <a-button size="large" @click="handleClear" :disabled="validClear"><close-outlined /> Сбросить</a-button>
+      <a-button size="large" @click="handleClear" :disabled="validClear"><close-outlined /> {{ t('filter.reset')
+        }}</a-button>
       <a-button type="primary" size="large" @click="handleNavigate" :disabled="validClear">
-        {{ validClear ? 0 : props.count }} Предложений</a-button>
+        {{ validClear ? 0 : props.count }} {{ t('filter.offers') }}</a-button>
     </div>
   </div>
 </template>
 
 <script setup>
 import api from '@/utils/axios';
+import { useI18n } from 'vue-i18n';
 import { CloseOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { computed, onMounted, ref } from 'vue';
@@ -64,6 +66,7 @@ import { useRouter } from 'vue-router';
 
 
 const router = useRouter()
+const { t } = useI18n()
 const validMarkaforModel = ref(null)
 
 const emit = defineEmits(['params', 'clear'])
@@ -88,9 +91,9 @@ const validClear = computed(() => {
 const condition = ref('all')
 const availability = ref("")
 
-const marka = ref("Марка");
-const model = ref("Модель")
-const country = ref("Страна")
+const marka = ref(t('filter.brand'));
+const model = ref(t('filter.model'))
+const country = ref(t('filter.country'))
 
 // Loaders
 const markaLoading = ref(false)
@@ -256,9 +259,9 @@ const handleGetCountries = async () => {
 const handleClear = () => {
   emit('clear')
   params.value = {}
-  model.value = "Модель"
-  marka.value = "Марка"
-  country.value = "Страна"
+  model.value = t('filter.model')
+  marka.value = t('filter.brand')
+  country.value = t('filter.country')
   condition.value = "all"
   year.value = null
   availability.value = null

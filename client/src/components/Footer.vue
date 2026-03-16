@@ -20,39 +20,39 @@
                             </a>
                         </div>
                         <div class="footer_info">
-                            © 1-й автоброкер
+                            {{ t('footer.slogan') }}
                             <br>
-                            Внесём качественные изменения в Вашу жизнь!
+                            {{ t('footer.tagline') }}
                         </div>
                     </div>
                 </a-col>
                 <a-col class="gutter-row" :xs="12" :md="5">
                     <div class="footer_section">
-                        <h2 class="header">Компания</h2>
+                        <h2 class="header">{{ t('footer.company') }}</h2>
                         <div class="links">
-                            <router-link to="/katalog">Каталог</router-link>
-                            <router-link to="/">О нас</router-link>
-                            <router-link to="/">Новости</router-link>
-                            <router-link to="/">Контакты</router-link>
-                            <router-link to="/">Избранные</router-link>
+                            <router-link to="/katalog">{{ t('footer.catalog') }}</router-link>
+                            <router-link to="/">{{ t('nav.about') }}</router-link>
+                            <router-link to="/">{{ t('nav.news') }}</router-link>
+                            <router-link to="/">{{ t('nav.contact') }}</router-link>
+                            <router-link to="/">{{ t('footer.favorites') }}</router-link>
                         </div>
                     </div>
                 </a-col>
                 <a-col class="gutter-row" :xs="12" :md="5">
                     <div class="footer_section">
-                        <h2 class="header">Избранные</h2>
+                        <h2 class="header">{{ t('footer.favorites') }}</h2>
                         <div class="links">
-                            <router-link to="/katalog">Из Европы</router-link>
-                            <router-link to="/">Из США</router-link>
-                            <router-link to="/">Из ОАЭ</router-link>
-                            <router-link to="/">Из Китая</router-link>
-                            <router-link to="/">Из Кореи</router-link>
+                            <router-link to="/katalog">{{ t('footer.fromEurope') }}</router-link>
+                            <router-link to="/">{{ t('footer.fromUSA') }}</router-link>
+                            <router-link to="/">{{ t('footer.fromUAE') }}</router-link>
+                            <router-link to="/">{{ t('footer.fromChina') }}</router-link>
+                            <router-link to="/">{{ t('footer.fromKorea') }}</router-link>
                         </div>
                     </div>
                 </a-col>
                 <a-col class="gutter-row" :xs="24" :md="9">
                     <div class="footer_section">
-                        <h2 class="header">Марки</h2>
+                        <h2 class="header">{{ t('footer.brands') }}</h2>
                         <div class="markas">
                             <div class="links">
                                 <router-link to="/katalog">Audi</router-link>
@@ -93,10 +93,10 @@
                     </div>
                 </a-col>
             </a-row>
-            <div  class="footer_under">
+            <div class="footer_under">
                 <p class="secret_div"></p>
-                <p>Политика конфиденциальности</p>
-                <p>Сделано в JavohirTech</p>
+                <p>{{ t('footer.privacy') }}</p>
+                <p>{{ t('footer.madeBy') }}</p>
             </div>
         </footer>
     </div>
@@ -104,6 +104,9 @@
 
 <script setup>
 import { GithubOutlined, InstagramOutlined, LinkedinOutlined } from '@ant-design/icons-vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 </script>
 
@@ -147,34 +150,36 @@ import { GithubOutlined, InstagramOutlined, LinkedinOutlined } from '@ant-design
     font-weight: 500;
 }
 
-.header{
+.header {
     font-weight: 700;
     font-size: 17px;
     color: rgba(41, 56, 67, 1);
 }
 
-.links{
+.links {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    a{
+
+    a {
         font-size: 15px;
         font-weight: 500;
         color: rgba(90, 90, 90, 1);
     }
 }
 
-.markas{
+.markas {
     display: flex;
     justify-content: space-between;
 }
 
-.footer_under{
+.footer_under {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 30px 0 15px 0;
-    p{
+
+    p {
         font-weight: 500;
         font-size: 13px;
         color: rgba(90, 90, 90, 1);
@@ -182,17 +187,17 @@ import { GithubOutlined, InstagramOutlined, LinkedinOutlined } from '@ant-design
     }
 }
 
-@media(max-width: 768px){
-    .secret_div{
+@media(max-width: 768px) {
+    .secret_div {
         display: none;
     }
 
     .markas {
         flex-wrap: wrap;
-        justify-content:first baseline;
+        justify-content: first baseline;
     }
 
-    .footer{
+    .footer {
         margin-top: 0px;
     }
 }

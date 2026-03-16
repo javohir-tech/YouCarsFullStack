@@ -2,32 +2,23 @@
   <div class="container">
 
     <a-breadcrumb class="bread_crumb" separator=">">
-      <a-breadcrumb-item><router-link to="/">Главная</router-link></a-breadcrumb-item>
-      <a-breadcrumb-item>Оставить заявку</a-breadcrumb-item>
+      <a-breadcrumb-item><router-link to="/">{{ t('nav.home') }}</router-link></a-breadcrumb-item>
+      <a-breadcrumb-item>{{ t('order.breadcrumb') }}</a-breadcrumb-item>
     </a-breadcrumb>
 
     <div class="zayavka-wrap">
 
       <div class="zayavka-info">
         <div class="header">
-          <h1>Оставьте заявку</h1>
+          <h1>{{ t('order.title') }}</h1>
         </div>
         <p class="zayavka-info__desc">
-          Не можете определиться с выбором? Оставьте заявку — наш менеджер свяжется с вами,
-          поможет подобрать автомобиль и ответит на все вопросы.
+          {{ t('order.description') }}
         </p>
         <ul class="zayavka-info__list">
-          <li>
+          <li v-for="(benefit, index) in benefits" :key="index">
             <i class="fa-solid fa-circle-check"></i>
-            <span>Бесплатная консультация</span>
-          </li>
-          <li>
-            <i class="fa-solid fa-circle-check"></i>
-            <span>Ответим в течение 30 минут</span>
-          </li>
-          <li>
-            <i class="fa-solid fa-circle-check"></i>
-            <span>Поможем с выбором и торгом</span>
+            <span>{{ benefit }}</span>
           </li>
         </ul>
       </div>
@@ -38,40 +29,40 @@
           <div class="zayavka-success__icon">
             <i class="fa-solid fa-circle-check"></i>
           </div>
-          <h2 class="zayavka-success__title">Заявка отправлена!</h2>
+          <h2 class="zayavka-success__title">{{ t('order.successTitle') }}</h2>
           <p class="zayavka-success__desc">
-            Мы получили вашу заявку и свяжемся с вами в ближайшее время.
+            {{ t('order.successDesc') }}
           </p>
-          <button class="zayavka-btn" @click="resetForm">Отправить ещё одну</button>
+          <button class="zayavka-btn" @click="resetForm">{{ t('order.sendAnother') }}</button>
         </div>
 
         <!-- Form -->
         <form v-else class="zayavka-form" @submit.prevent="submitForm">
           <div class="zayavka-form__group">
-            <label class="zayavka-form__label">Ваше имя <span class="req">*</span></label>
+            <label class="zayavka-form__label">{{ t('order.labels.name') }} <span class="req">*</span></label>
             <input v-model="form.name" type="text" class="zayavka-form__input"
-              :class="{ 'zayavka-form__input--error': errors.name }" placeholder="Например: Иван Иванов" />
+              :class="{ 'zayavka-form__input--error': errors.name }" :placeholder="t('order.placeholders.name')" />
             <span v-if="errors.name" class="zayavka-form__error">{{ errors.name }}</span>
           </div>
 
           <div class="zayavka-form__group">
-            <label class="zayavka-form__label">Номер телефона <span class="req">*</span></label>
+            <label class="zayavka-form__label">{{ t('order.labels.phone') }} <span class="req">*</span></label>
             <input v-model="form.phone" type="tel" class="zayavka-form__input"
-              :class="{ 'zayavka-form__input--error': errors.phone }" placeholder="+998 90 123 45 67" />
+              :class="{ 'zayavka-form__input--error': errors.phone }" :placeholder="t('order.placeholders.phone')" />
             <span v-if="errors.phone" class="zayavka-form__error">{{ errors.phone }}</span>
           </div>
 
           <div class="zayavka-form__group">
-            <label class="zayavka-form__label">Какой автомобиль вас интересует? <span class="req">*</span></label>
+            <label class="zayavka-form__label">{{ t('order.labels.car') }} <span class="req">*</span></label>
             <input v-model="form.car" type="text" class="zayavka-form__input"
-              :class="{ 'zayavka-form__input--error': errors.car }" placeholder="Например: Geely Monjaro 2025" />
+              :class="{ 'zayavka-form__input--error': errors.car }" :placeholder="t('order.placeholders.car')" />
             <span v-if="errors.car" class="zayavka-form__error">{{ errors.car }}</span>
           </div>
 
           <div class="zayavka-form__group">
-            <label class="zayavka-form__label">Дополнительный комментарий</label>
+            <label class="zayavka-form__label">{{ t('order.labels.comment') }}</label>
             <textarea v-model="form.comment" class="zayavka-form__textarea"
-              placeholder="Укажите бюджет, пожелания по цвету, комплектации и т.д." rows="4"></textarea>
+              :placeholder="t('order.placeholders.comment')" rows="4"></textarea>
           </div>
 
           <span v-if="errors.server" class="zayavka-form__error zayavka-form__error--server">
@@ -81,7 +72,7 @@
 
           <button type="submit" class="zayavka-btn" :disabled="loading">
             <i v-if="loading" class="fa-solid fa-spinner fa-spin"></i>
-            <span>{{ loading ? 'Отправка...' : 'Отправить заявку' }}</span>
+            <span>{{ loading ? t('order.sending') : t('order.button') }}</span>
             <i v-if="!loading" class="fa-solid fa-paper-plane"></i>
           </button>
         </form>
@@ -92,7 +83,10 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t, messages, locale } = useI18n()
 
 // ⚠️ Замените на свои данные
 const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_TOKEN
@@ -115,6 +109,8 @@ const errors = reactive({
 const loading = ref(false)
 const submitted = ref(false)
 
+const benefits = computed(() => messages.value[locale.value]?.order?.benefits || [])
+
 function validate() {
   let valid = true
   errors.name = ''
@@ -123,20 +119,20 @@ function validate() {
   errors.server = ''
 
   if (!form.name.trim()) {
-    errors.name = 'Пожалуйста, введите ваше имя'
+    errors.name = t('order.errors.name')
     valid = false
   }
 
   if (!form.phone.trim()) {
-    errors.phone = 'Пожалуйста, введите номер телефона'
+    errors.phone = t('order.errors.phone')
     valid = false
   } else if (!/^[\d\s\+\-\(\)]{7,20}$/.test(form.phone.trim())) {
-    errors.phone = 'Введите корректный номер телефона'
+    errors.phone = t('order.errors.phoneInvalid')
     valid = false
   }
 
   if (!form.car.trim()) {
-    errors.car = 'Пожалуйста, укажите интересующий автомобиль'
+    errors.car = t('order.errors.car')
     valid = false
   }
 
@@ -177,7 +173,7 @@ async function submitForm() {
 
     submitted.value = true
   } catch (e) {
-    errors.server = 'Не удалось отправить заявку. Попробуйте позже.'
+    errors.server = t('order.errors.server')
     console.error(e)
   } finally {
     loading.value = false

@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <a-breadcrumb class="bread_crumb" separator=">">
-            <a-breadcrumb-item><router-link to="/">Главная</router-link></a-breadcrumb-item>
-            <a-breadcrumb-item><router-link to="/katalog">Каталог</router-link></a-breadcrumb-item>
+            <a-breadcrumb-item><router-link to="/">{{ t('carDetail.home') }}</router-link></a-breadcrumb-item>
+            <a-breadcrumb-item><router-link to="/katalog">{{ t('carDetail.catalog') }}</router-link></a-breadcrumb-item>
             <a-breadcrumb-item>{{ car_data.marka }} {{ car_data.car_model }}</a-breadcrumb-item>
         </a-breadcrumb>
         <div class="car_banner">
@@ -64,13 +64,13 @@
                                     <div class="car_aviability" v-if="car_data.availability === 'in_stock'">
                                         <CheckOutlined class="aviability_icon" />
                                         <p class="subtitle">
-                                            В наличии
+                                            {{ t('carDetail.inStock') }}
                                         </p>
                                     </div>
                                     <div class="car_aviability" v-else-if="car_data.availability === 'on_order'">
                                         <ExclamationOutlined class="aviability_icon in_order_icon" />
                                         <p class="subtitle">
-                                            Под заказ
+                                            {{ t('carDetail.onOrder') }}
                                         </p>
                                     </div>
                                 </div>
@@ -80,33 +80,33 @@
 
                                 <div class="car_info_data">
                                     <div class="car_info_item">
-                                        <p class="title">Марка</p>
+                                        <p class="title">{{ t('carDetail.brand') }}</p>
                                         <p class="subtitle">{{ car_data.marka }}</p>
                                     </div>
                                     <div class="car_info_item">
-                                        <p class="title">Модель</p>
+                                        <p class="title">{{ t('carDetail.model') }}</p>
                                         <p class="subtitle">{{ car_data.car_model }}</p>
                                     </div>
                                     <div class="car_info_item">
-                                        <p class="title">Год выпуска</p>
+                                        <p class="title">{{ t('carDetail.year') }}</p>
                                         <p class="subtitle">{{ car_data.year }}</p>
                                     </div>
                                     <div class="car_info_item">
-                                        <p class="title">Пробег</p>
+                                        <p class="title">{{ t('carDetail.mileage') }}</p>
                                         <p class="subtitle">{{ car_data.milage }} км</p>
                                     </div>
                                     <div class="car_info_item">
-                                        <p class="title">Цвет</p>
+                                        <p class="title">{{ t('carDetail.color') }}</p>
                                         <p class="subtitle">{{ car_data.color }}</p>
                                     </div>
                                     <div class="car_info_item">
-                                        <p class="title">Двигатель</p>
+                                        <p class="title">{{ t('carDetail.engine') }}</p>
                                         <p class="subtitle">{{ car_data.displacement }} л / {{ car_data.power }} л.с</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="car_price">
-                                <p class="price_text">Цена:</p>
+                                <p class="price_text">{{ t('carDetail.price') }}</p>
                                 <p class="price">{{ car_data.price }}$</p>
                             </div>
                             <div class="author_info">
@@ -119,13 +119,13 @@
                                         </div>
                                         <div class="author">
                                             <p class="author_name">{{ car_data.author }}</p>
-                                            <p class="title">Рейтинг 5.0</p>
+                                            <p class="title">{{ t('carDetail.rating') }}</p>
                                         </div>
                                     </div>
                                     <div class="message" @click="navigate(author_id, car_data.author)">
                                         <div>
                                             <MessageOutlined class="message_icon" />
-                                            <p class="subtitle">Написать</p>
+                                            <p class="subtitle">{{ t('carDetail.message') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -137,7 +137,7 @@
         </div>
 
         <div class="description">
-            <h2>Описание</h2>
+            <h2>{{ t('carDetail.description') }}</h2>
             <div v-if="car_data_loader">
                 <a-skeleton active />
             </div>
@@ -150,48 +150,48 @@
             <a-row :gutter="[16, 24]" align="stretch">
                 <a-col class="gutter-row" :xs="24" :lg="12">
                     <div class="car_under_box">
-                        <h2 class="header">Технические характеристики</h2>
+                        <h2 class="header">{{ t('carDetail.technicalSpecs') }}</h2>
                         <div v-if="car_data_loader">
                             <a-skeleton active />
                         </div>
                         <div v-else class="car_info_flex">
                             <div class="item">
                                 <a-flex justify="space-between">
-                                    <p class="title">Марка</p>
+                                    <p class="title">{{ t('carDetail.brand') }}</p>
                                     <p class="subtitle">{{ car_data.marka }}</p>
                                 </a-flex>
                                 <a-flex justify="space-between">
-                                    <p class="title">Модель</p>
+                                    <p class="title">{{ t('carDetail.model') }}</p>
                                     <p class="subtitle">{{ car_data.car_model }}</p>
                                 </a-flex>
                                 <a-flex justify="space-between">
-                                    <p class="title">Год выпуска</p>
+                                    <p class="title">{{ t('carDetail.year') }}</p>
                                     <p class="subtitle">{{ car_data.year }}</p>
                                 </a-flex>
                                 <a-flex justify="space-between">
-                                    <p class="title">Пробег</p>
+                                    <p class="title">{{ t('carDetail.mileage') }}</p>
                                     <p class="subtitle">{{ car_data.milage }} км</p>
                                 </a-flex>
                                 <a-flex justify="space-between">
-                                    <p class="title">Цвет</p>
+                                    <p class="title">{{ t('carDetail.color') }}</p>
                                     <p class="subtitle">{{ car_data.color }}</p>
                                 </a-flex>
                                 <a-flex justify="space-between">
-                                    <p class="title">Двигатель</p>
+                                    <p class="title">{{ t('carDetail.engine') }}</p>
                                     <p class="subtitle">{{ car_data.displacement }} л / {{ car_data.power }} л.с</p>
                                 </a-flex>
                             </div>
                             <div class="item">
                                 <a-flex justify="space-between">
-                                    <p class="title">Страна</p>
+                                    <p class="title">{{ t('carDetail.country') }}</p>
                                     <p class="subtitle">{{ car_data.country }}</p>
                                 </a-flex>
                                 <a-flex justify="space-between">
-                                    <p class="title">Коробка</p>
+                                    <p class="title">{{ t('carDetail.transmission') }}</p>
                                     <p class="subtitle">{{ getDriveType(car_data.drive_type) }}</p>
                                 </a-flex>
                                 <a-flex justify="space-between">
-                                    <p class="title">Топливо</p>
+                                    <p class="title">{{ t('carDetail.fuel') }}</p>
                                     <p class="subtitle">{{ getDriveType(car_data.fuel) }}</p>
                                 </a-flex>
                             </div>
@@ -200,16 +200,16 @@
                 </a-col>
                 <a-col class="gutter-row" :xs="24" :lg="12">
                     <div class="car_under_box">
-                        <h2 class="header">Задайте вопрос продавцу</h2>
+                        <h2 class="header">{{ t('carDetail.askSeller') }}</h2>
                         <div v-if="car_data_loader">
                             <a-skeleton active />
                         </div>
                         <div v-else class="question_btns">
-                            <button class="question_btn">Здравствуйте</button>
-                            <button class="question_btn">Какой срок доставки?</button>
-                            <button class="question_btn">птс ОРИГИНАЛ?</button>
-                            <button class="question_btn">Пробег оригинал?</button>
-                            <button class="question_btn">Какой бензин?</button>
+                            <button class="question_btn">{{ t('carDetail.hello') }}</button>
+                            <button class="question_btn">{{ t('carDetail.deliveryTime') }}</button>
+                            <button class="question_btn">{{ t('carDetail.ptIsOriginal') }}</button>
+                            <button class="question_btn">{{ t('carDetail.mileageIsOriginal') }}</button>
+                            <button class="question_btn">{{ t('carDetail.fuelType') }}</button>
                         </div>
                     </div>
                 </a-col>
@@ -218,7 +218,7 @@
 
         <div class="similar_section">
             <div class="section_header">
-                <h1>Похожие</h1>
+                <h1>{{ t('carDetail.similar') }}</h1>
             </div>
             <div class="similar_cars">
                 <a-row :gutter="[16, 24]">
@@ -235,7 +235,7 @@
                     </a-col>
                 </a-row>
                 <div v-if="!similar_loading && similar_cars.length === 0" class="empty">
-                    <a-empty class="empty" description="Аналогичных автомобилей не найдено."/>
+                    <a-empty class="empty" :description="t('carDetail.noSimilar')" />
                 </div>
             </div>
         </div>
@@ -246,7 +246,8 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
@@ -265,6 +266,7 @@ import { CallCard, CarCard } from '@/components';
 import LikeManager from '@/Hooks/LikeManager';
 import { message } from 'ant-design-vue';
 
+const { t, messages, locale } = useI18n()
 const { like, handleLike, handleDisLike } = LikeManager()
 
 const modules = [FreeMode, Navigation, Thumbs]
@@ -298,9 +300,9 @@ const onError = () => {
 
 const getDriveType = (type) => {
     const types = {
-        'FWD': 'Передний',
-        'RWD': 'Задний',
-        'AWD': 'Полный'
+        'FWD': t('carDetail.fwd'),
+        'RWD': t('carDetail.rwd'),
+        'AWD': t('carDetail.awd')
     }
     return types[type] || type
 }
@@ -308,10 +310,13 @@ const getDriveType = (type) => {
 const formatDate = (dateString) => {
     if (!dateString) return ''
     const date = new Date(dateString)
-    const months = [
-        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-    ]
+    const currentLocale = locale.value
+    const monthsData = {
+        'uz': ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'],
+        'ru': ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+        'en': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    }
+    const months = monthsData[currentLocale] || monthsData['en']
     const day = date.getDate()
     const month = months[date.getMonth()]
     const year = date.getFullYear()
@@ -355,7 +360,7 @@ const navigate = (author_id, author_name) => {
     const userName = localStorage.getItem("username")
 
     if (author_id === userId || author_name === userName) {
-        message.warning("ozizga yoza olmaysiz")
+        message.warning(t('carDetail.cantMessage'))
         return
     }
     if (!isDektop.value) {
