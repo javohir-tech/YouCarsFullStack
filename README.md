@@ -20,16 +20,16 @@
 
 | Module | Description |
 |---|---|
-| 🔐 **Authentication** | Sign up, login, email verification, password reset |
-| 🚗 **Car Listings** | Browse cars by type (avtomobil, transport, moto), filter by brand/model/color/fuel/country |
-| 📋 **Catalog** | Full catalog with advanced search & filter |
-| 📝 **Car Upload** | Post a new car ad with images, update or archive existing ones |
-| ❤️ **Favorites** | Like/dislike cars, view saved listings |
-| 🔍 **Similar Cars** | Related listings on car detail page |
-| 📰 **Blog / News** | Blog posts with detail view and similar articles |
-| 💬 **Real-time Chat** | WebSocket-based messaging between users (Django Channels) |
-| 👤 **Profile** | User info, avatar, my cars (published / draft / archived) |
-| 🌐 **i18n** | English 🇬🇧 / O'zbek 🇺🇿 / Русский 🇷🇺 |
+|  **Authentication** | Sign up, login, email verification, password reset |
+|  **Car Listings** | Browse cars by type (avtomobil, transport, moto), filter by brand/model/color/fuel/country |
+|  **Catalog** | Full catalog with advanced search & filter |
+|  **Car Upload** | Post a new car ad with images, update or archive existing ones |
+|  **Favorites** | Like/dislike cars, view saved listings |
+|  **Similar Cars** | Related listings on car detail page |
+|  **Blog / News** | Blog posts with detail view and similar articles |
+|  **Real-time Chat** | WebSocket-based messaging between users (Django Channels) |
+|  **Profile** | User info, avatar, my cars (published / draft / archived) |
+|  **i18n** | English 🇬🇧 / O'zbek 🇺🇿 / Русский 🇷🇺 |
 
 ---
 
